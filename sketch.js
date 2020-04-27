@@ -84,7 +84,7 @@ function setup() {
   let text = createP("gary-martin");
   
   text.position(80, 50);
-  text.style("font-family", "monospace");
+  text.style("font-family", "tahoma");
   text.style("background-color", "#F20FD7");
   text.style("color", "#FFFFFF");
   text.style("font-size", "18pt");
@@ -94,7 +94,7 @@ function setup() {
           
   texty.position(84, 140);
   //texty.style("background-color", "#FFFFFF");
-  texty.style("font-family", "monospace");
+  texty.style("font-family", "tahoma");
   texty.style("color", "#F20FD7");
   texty.style("font-size", "18pt");
   
@@ -105,7 +105,7 @@ function setup() {
            
   textz.position(84, windowHeight - 120);
   //textz.style("background-color", "#FFFFFF");
-  textz.style("font-family", "monospace");
+  textz.style("font-family", "tahoma");
   textz.style("color", "#F20FD7");
   textz.style("font-size", "12pt");
   
