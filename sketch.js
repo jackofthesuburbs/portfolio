@@ -138,10 +138,10 @@ function draw() {
   
   if (mouseIsPressed) {
     noStroke();
-    fill(255, 246, 84, 150);
+    fill(247, 243, 7, 150);
     rect(pmouseX - 10, pmouseY - 30, 40, 40);
     noStroke();
-    fill(242, 15, 215, 150);
+    fill(247, 7, 135, 150);
     ellipse(mouseX, mouseY, 30, 30);
     ellipse(pmouseX, pmouseY, 10, 10);
     
@@ -153,7 +153,7 @@ function draw() {
 
   if (soundt.isPlaying()) {
     noStroke();
-    fill(0, 230, 255);
+    fill(7, 247, 231);
     ellipse(windowWidth/2, windowHeight/2, r, r);
   
     r += 10;
@@ -165,7 +165,7 @@ function draw() {
 
   if (soundh.isPlaying()) {
       noStroke();
-      fill(92, 246, 74);
+      fill(135, 247, 7);
       quad(random(0,windowWidth), random(0,windowHeight), random(0,windowWidth), random(0,windowHeight), random(0,windowWidth), random(0,windowHeight), random(0,windowWidth), random(0,windowHeight));
 
   }
@@ -179,25 +179,25 @@ function draw() {
 
   if (soundp.isPlaying()) {
         noStroke();
-        fill(242, 15, 215);
+        fill(247, 7, 135);
         ellipse(windowWidth/3, random(0,windowHeight), 70);
-        fill(0, 230, 255);
+        fill(7, 247, 231);
         ellipse(windowWidth/3 + windowWidth/3, random(0,windowHeight), 70);
-        fill(92, 246, 74);
+        fill(135, 247, 7);
         ellipse(windowWidth/2, random(0,windowHeight), 70);
   }
 
   
   if (soundl.isPlaying()) {
     noStroke();
-    fill(92, 246, 74);
+    fill(135, 247, 7);
     ellipse(random(0, width), random(0, height), 90, 90);
   }
 
   
   if (soundn.isPlaying()) {
     noStroke();
-    fill(0, 230, 255);
+    fill(7, 247, 231);
     //rect(r + 60, 400, r, r);
    // rect(400 - r, 200, r, r);
    // rect(600, r+240, r, r);
@@ -210,7 +210,7 @@ function draw() {
   
    if (sounde.isPlaying()) {
         noStroke();
-        fill(255, 246, 84);
+        fill(247, 243, 7);
         ellipse(random(0, windowWidth), windowHeight/3, 80, 80);
         ellipse(random(0, windowWidth), windowHeight/3 + windowHeight/3, 80, 80);
         ellipse(windowWidth/3 + windowWidth/3, random(0,windowHeight), 80, 80);
@@ -221,7 +221,7 @@ function draw() {
 
   if (soundg.isPlaying()) {
         noStroke();
-        fill(255, 246, 84);
+        fill(247, 243, 7);
         rect(random(0, windowWidth), 0, random(0,10), random(windowHeight/3, windowHeight));
         //rect(windowWidth/2, windowHeight/2, 80, 80);
      
@@ -229,7 +229,7 @@ function draw() {
   
   if (sounda.isPlaying()) {
         noStroke();
-        fill(30, 75, 255, 150);
+        fill(7, 23, 247, 150);
         rect(x + x/2, y, 50, 50);
   
         // Jiggling randomly on the horizontal axis
@@ -246,7 +246,7 @@ function draw() {
 
   if (soundy.isPlaying()) {
         noStroke();
-        fill(242, 15, 215, 150);
+        fill(247, 7, 135, 150);
         rect(f, y, 70, 70);
     
         f = f - 10;
@@ -262,6 +262,7 @@ function draw() {
     
   }
   
+  
   //var t = 10;
   //fill(242, 15, 215);
   //textSize(12);
@@ -272,7 +273,6 @@ function draw() {
   
 
 }
-
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
