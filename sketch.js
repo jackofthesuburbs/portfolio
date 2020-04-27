@@ -84,17 +84,17 @@ function setup() {
   let text = createP("gary-martin");
   
   text.position(80, 50);
-  text.style("font-family", "tahoma");
+  text.style("font-family", "gill sans");
   text.style("background-color", "#F20FD7");
   text.style("color", "#FFFFFF");
   text.style("font-size", "18pt");
   text.style("padding", "12px");
   
-  let texty = createP("i'm a Cardiff based music maker and researcher<br> exploring systems of consumption and creation,<br> and human-technology relationships.<br><br> currently Head of Education at <a href='https://www.wearepyka.com/'>pyka</a>, and Lecturer<br> of Music at the University of Gloucestershire.<br><br>get in touch via <a href='mailto:ofthesuburbs@gmail.com'>email</a>, read my recent thoughts<br> on my <a href='https://www.gmontheinter.net/'>blog</a>, and see some of my work on <a href='https://www.instagram.com/jackofthesuburbs/'>Instagram</a>.");      
+  let texty = createP("I'm a Cardiff based music maker and researcher<br> exploring systems of consumption and creation,<br> and human-technology relationships.<br><br> currently Head of Education at <a href='https://www.wearepyka.com/'>pyka</a>, and Lecturer<br> of Music at the University of Gloucestershire.<br><br>get in touch via <a href='mailto:ofthesuburbs@gmail.com'>email</a>, read my recent thoughts<br> on my <a href='https://www.makingmutationsaudible.com/'>blog</a>, and see some of my work on <a href='https://www.instagram.com/jackofthesuburbs/'>Instagram</a>.");      
           
   texty.position(84, 140);
   //texty.style("background-color", "#FFFFFF");
-  texty.style("font-family", "tahoma");
+  texty.style("font-family", "gill sans");
   texty.style("color", "#F20FD7");
   texty.style("font-size", "18pt");
   
@@ -105,7 +105,7 @@ function setup() {
            
   textz.position(84, windowHeight - 120);
   //textz.style("background-color", "#FFFFFF");
-  textz.style("font-family", "tahoma");
+  textz.style("font-family", "gill sans");
   textz.style("color", "#F20FD7");
   textz.style("font-size", "12pt");
   
