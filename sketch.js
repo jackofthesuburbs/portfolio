@@ -90,7 +90,7 @@ function setup() {
   text.style("font-size", "18pt");
   text.style("padding", "12px");
   
-  let texty = createP("hi i'm gary-martin. i'm a music maker and theorist<br> exploring systems of consumption and creation,<br> and human-technology relationships.<br><br> i'm currently Head of Education at <a href='https://www.wearepyka.com/'>pyka</a>, and Lecturer<br> of Music at the University of Gloucestershire.<br><br>get in touch via <a href='mailto:ofthesuburbs@gmail.com'>email</a>, read my recent thoughts<br> on my <a href='https://www.gmontheinter.net/'>blog</a>, and see some of my work on <a href='https://www.instagram.com/garymartin.world/'>Instagram</a>.");      
+  let texty = createP("hi there, i'm a music maker and theorist,<br> exploring systems of consumption and<br>creation, and human-technology relationships.<br><br> i'm currently Head of Education at <a href='https://www.wearepyka.com/'>pyka</a>, and Lecturer<br> of Music at the University of Gloucestershire.<br><br>get in touch via <a href='mailto:ofthesuburbs@gmail.com'>email</a>, read my recent thoughts<br> on my <a href='https://www.gmontheinter.net.com/'>blog</a>, and see some of my work on <a href='https://www.instagram.com/gary-martin.world/'>Instagram</a>.");      
           
   texty.position(84, 140);
   //texty.style("background-color", "#FFFFFF");
