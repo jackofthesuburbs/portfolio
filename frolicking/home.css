@@ -1,0 +1,225 @@
+body {
+  font-family: sans-serif;
+  background: #D3D3D3 url('bgS.jpg') no-repeat fixed center;
+}
+
+h1, h2, h3, h4, p {
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
+  font-size: 14px;
+  font-family: serif;
+}
+
+a {
+  color: #000;
+  text-decoration: none;
+  font-weight: normal;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: serif;
+}
+
+#main{
+  max-width: 920px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 30px;
+}
+
+#header {
+    border-bottom: 1px solid black;
+    margin-top: 5px;
+    margin-bottom: 30px;
+    font-family: sans-serif;
+    text-align: left;
+    padding-top: 5px;
+    padding-right: 10px;
+    padding-bottom: 20px;
+}
+
+#header-col {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  grid-gap: 10px;
+  align-items: baseline;
+}
+
+#header p {
+  margin-bottom: 0;
+  font-size: 13px;
+
+}
+
+#header h1 {
+  color: yellowgreen;
+  margin-bottom: 0;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+#header-nav {
+  width: 88%;
+  margin-top: 20px;
+  padding: 5px;
+  padding-left: 10px; padding-right: 10px;
+  border: 1px solid black;
+}
+
+#header-nav a, #header-nav p, #footer p{
+  width: auto;
+  display:inline-block;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background: #fff;
+}
+
+#blocks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.block {
+  background-color: #F7F7F7;
+  /*height: 300px;
+  width: 300px;*/
+  min-height: 300px;
+  max-height: 300px;
+  overflow: hidden;
+  overflow-y: scroll;
+  line-height: 1.2;
+}
+
+#blocks p, #blocks .list h2, #blocks .list a {
+  border-bottom: 1px solid #E6E6E6;
+  padding: 8px;
+}
+#blocks .list a {
+  display: block;
+  background: #fff;
+}
+
+.btn-group button {
+  background-color: #fff;
+  border: 1px solid grey;
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  width: 100%; /* Set a width if needed */
+  display: block; /* Make the buttons appear below each other */
+  text-align: left;
+  padding-left: 10px;
+  -webkit-appearance: none;
+
+}
+
+.rand_img {
+  background-size: cover;
+  background-position: center center;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: auto;
+  height: auto;
+  grid-gap: 0px;
+}
+
+.indent {
+  margin-left: 30px;
+}
+
+.gallery_display {
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery div {
+
+}
+
+.gallery div:hover {
+  opacity: 0.8;
+}
+
+.thumb {
+  cursor: pointer;
+}
+
+.thumb img {
+  width:100%;
+  height: auto;
+}
+
+
+#footer {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding-top: 10px;
+  border-top: 1px solid black;
+}
+
+
+@media(max-width: 800px) {
+  #main {
+    width: 100%;
+    margin-top: 10px;
+  }
+  body{
+      background: #D3D3D3;
+  }
+  #blocks, #header {
+    grid-template-columns: 1fr;
+  }
+
+  .blocks {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+  }
+  #header h1 {
+    font-size: 55px;
+  }
+  .gallery_display{
+    overflow-y: scroll;
+  }
+  #footer {
+    margin-bottom: 50px;
+  }
+}
+
+@media only screen and (max-device-width: 566px) {
+  #main {
+    width: 100%;
+    margin-top: 10px;
+  }
+    body{
+      background: #D3D3D3;
+  }
+  #blocks, #header {
+    grid-template-columns: 1fr;
+  }
+
+  .blocks {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+  }
+  #header h1 {
+    font-size: 50px;
+  }
+  #header p {
+    font-size: 15px;
+  }
+  .gallery_display{
+    overflow-y: scroll;
+  }
+  #footer {
+    margin-bottom: 50px;
+  }
+}
