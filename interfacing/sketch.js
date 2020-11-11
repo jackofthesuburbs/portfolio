@@ -26,14 +26,14 @@ function setup() {
   texty.style("padding", "12px");
   
   
-  let textz = createP("<a href='/interfacing/Interfacing.pdf'>Download PDF</a><br><a href='https://docs.google.com/spreadsheets/d/e/2PACX-1vSaN8DCA7uFvLZWv8m5r0Dw9od-yVdc_2M4zmEFyhRC0qJ7SKVmmFaxqGvyJzchD18tezhHrpm40odi/pubhtml'>Tools and resources</a>");      
+  let textz = createP("<a href='https//gary-martin.world/interfacing/Interfacing.pdf'>Download PDF</a><br><a href='heading1.js'>Tools + Resources</a>");      
           
   textz.position(134, 350);
   //textz.style("background-color", "#FFC4AB");
   textz.style("font-family", "times");
   textz.style("color", "#004D80");
   textz.style("font-size", "14pt");
-  textz.style("linkColor", "#004D80");
+  textz.style("linkColor", "#FFFFFF");
   
   
   
