@@ -26,7 +26,7 @@ function setup() {
   texty.style("padding", "12px");
   
   
-  let textz = createP("<a href='/interfacing/Interfacing.pdf'>Download PDF</a><br><a href='https://docs.google.com/spreadsheets/d/e/2PACX-1vSaN8DCA7uFvLZWv8m5r0Dw9od-yVdc_2M4zmEFyhRC0qJ7SKVmmFaxqGvyJzchD18tezhHrpm40odi/pubhtml'>Tools and resources.</a>");      
+  let textz = createP("<a href='/interfacing/Interfacing.pdf'>Download PDF</a><br><a href='https://docs.google.com/spreadsheets/d/e/2PACX-1vSaN8DCA7uFvLZWv8m5r0Dw9od-yVdc_2M4zmEFyhRC0qJ7SKVmmFaxqGvyJzchD18tezhHrpm40odi/pubhtml'>Tools and resources</a>");      
           
   textz.position(134, 350);
   //textz.style("background-color", "#FFC4AB");
