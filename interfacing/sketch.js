@@ -26,7 +26,7 @@ function setup() {
   texty.style("padding", "12px");
   
   
-  let textz = createP("Click <a href='heading1.js'>here</a> to enter.");      
+  let textz = createP("<a href='https//gary-martin.world/interfacing/Interfacing.pdf'>Download PDF</a><br><a href='https//gary-martin.world/tools+resources'>Tools and resources.</a>");      
           
   textz.position(134, 350);
   //textz.style("background-color", "#FFC4AB");
