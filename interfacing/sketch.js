@@ -33,7 +33,7 @@ function setup() {
   textz.style("font-family", "times");
   textz.style("color", "#004D80");
   textz.style("font-size", "14pt");
-  textz.style("linkColor", "#FFFFFF");
+  textz.style("linkColor", "#004D80");
   
   
   
