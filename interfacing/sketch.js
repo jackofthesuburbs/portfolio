@@ -26,7 +26,7 @@ function setup() {
   texty.style("padding", "12px");
   
   
-  let textz = createP("<a href='https//gary-martin.world/interfacing/Interfacing.pdf'>Download PDF</a><br><a href='heading1.js'>Tools + Resources</a>");      
+  let textz = createP("<a href='/interfacing/Interfacing.pdf'>Download PDF</a><br><a href='https://docs.google.com/spreadsheets/d/1wEBXfkWyiJ6h0n3sPMqlJxTcs-s2ITWJ1ZesvhILeqE/edit?usp=sharing'>Tools + Resources</a>");      
           
   textz.position(134, 350);
   //textz.style("background-color", "#FFC4AB");
