@@ -90,7 +90,7 @@ function setup() {
   text.style("font-size", "18pt");
   text.style("padding", "12px");
   
-  let texty = createP("Hi there, I'm a sound artist, designer and educator,<br> exploring systems of consumption and<br>creation, and human-technology relationships.<br><br>Currently Head of Education at <a href='https://www.wearepyka.com/'>pyka</a>, and Lecturer <br>of Music at the University of Gloucestershire. <br><br> Here you can send me an <a href='mailto:higarymartin@protonmail.com'>email</a>,<br>subscribe to my <a href='https://actualsalad.substack.com/p/coming-soon?r=b7cfj&utm_campaign=post&utm_medium=email&utm_source=copy'>newsletter</a>, check out<br>my <a href='https://www.gary-martin.club'>portfolio</a>, read my <a href='https://www.gmontheinter.net/'>blog</a>.");      
+  let texty = createP("Hi there, I'm a sound artist, designer and educator,<br> exploring systems of consumption and<br>creation, and human-technology relationships.<br><br>Currently Head of Education at <a href='https://www.wearepyka.com/'>pyka</a>, and Lecturer <br>of Music at the University of Gloucestershire. <br><br> Here you can send me an <a href='mailto:higarymartin@protonmail.com'>email</a>,<br>subscribe to my <a href='https://actualsalad.substack.com'>newsletter</a>, check out<br>my <a href='https://www.gary-martin.club'>portfolio</a>, read my <a href='https://www.gmontheinter.net/'>blog</a>.");      
           
   texty.position(84, 140);
   //texty.style("background-color", "#FFFFFF");
