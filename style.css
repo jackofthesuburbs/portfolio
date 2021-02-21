@@ -47,13 +47,13 @@ html {
 
 body {
     font: 12px/15px "Open Sans", sans-serif;
-    font-color: black;
 }
 
 p {
     font-size: 12px;
     line-height: 15px;
     margin-bottom:15px
+    
 }
 
 p:last-child {
@@ -77,8 +77,8 @@ ul li {
 }
 
 .topbar {
-    height: auto;
-    font-weight: 600;
+    height: auto;    
+    font-weight: strong;
     background-color: var(--background-color);
     display: flex;
     flex-flow: row;
