@@ -72,9 +72,18 @@ a:hover {
     opacity:.5
 }
 
+
+ul {
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+}
+
+
 ul li {
     list-style-type:none
 }
+
 
 .topbar {
     height: auto;    
@@ -359,3 +368,6 @@ input:focus {outline: none;}
   height: 10px;
   display: inline-block;
 }
+
+
+
