@@ -1,82 +1,149 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Language" content="sv">
-    <meta name="GENERATOR" content="Microsoft FrontPage 5.0">
-    <meta name="ProgId" content="FrontPage.Editor.Document">
-    <meta http-equiv="Content-Type" content="text/html;
-          charset=windows-1252">
-    
-    <title>gary-martin</title>
-   
-    </head> 
-      
-   
-    <style>
-      #boxes {
-        content: "";
-        display: table;
-        clear: both;
-      }
-      div {
-        float: left;
-        height: 100%;
-        min-width 300px;
-        max-width: 600px;
-        padding: 0px 20px;
-      }
-      #column1 {
-        background-color: #ffffff;
-     
-      }
-      #column2 {
-        background-color: #ffffff;
-     
-      }
-      #column3 {
-      background-color: #ffffff;
+<style>
+* {
+  box-sizing: border-box;
+}
 
-      }
-#column4 {
-      background-color: #ffffff;
 
-      }
-      h3 {
-        color: #000000;
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <main id="boxes">
-      <h3>gary-martin</h3>
-      <div id="column1">
-<p><b>About</b></p> 
-        <p>I am an artist, researcher and educator based in Cardiff, whose work explores systems of consumption and creation, and human-technology relationships.</p> 
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 11px;
+  text-align: left;
+}
+
+
+.flex-container > div {
+  background-color: white;
+  max-width: 250px;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-top: 30px;
+  text-align: left;
+  line-height: 15px;
+  font-size: 14px;
+}
+
+.flex-item-one {
+  background-color: grey;
+  padding: 0px 10px;
+  flex: 25%;
+}
+
+.flex-item-two {
+  background-color: dodgerblue;
+  padding: 0px 10px;
+  flex: 25%;
+}
+
+.flex-item-three {
+  background-color: grey;
+  padding: 0px 10px;
+  flex: 25%;
+}
+
+.flex-item-four {
+  background-color: dodgerblue;
+  padding: 0px 10px;
+  flex: 25%;
+}
+
+
+/* Responsive layout - makes a one column-layout instead of two-column layout */
+@media (max-width: 800px) {
+  .flex-container {
+    flex-direction: column;
+  }
+}
+
+
+a:link {
+  color: grey;
+  text-decoration: underline;
+}
+
+/* visited link */
+a:visited {
+  color: black;
+}
+
+/* mouse over link */
+a:hover {
+  color: black;
+}
+
+/* selected link */
+a:active {
+  color: grey;
+}
+
+
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+h3 { 
+  display: block;
+  font-size: 1em;
+  margin-top: 2em;
+  margin-bottom: 0em;
+  margin-left: 2.5em;
+  margin-right: 0;
+  font-weight: none;
+}
+
+
+
+</style>
+</head>
+<body>
+
+
+ <h3>gary-martin</h3>
+
+
+
+
+<div class="flex-container">
+
+
+  <div class="flex-item-one">
+  <p><b>about</b></p> 
+<p>I am an artist, researcher and educator based in Cardiff, whose work explores systems of consumption and creation, and human-technology relationships.</p> 
 <p>My creative and academic practice currently focuses on music economics, community and collaboration, and the attention economy.</p> 
 <p>I am founder of the cooperative record label Third Nature Recordings, Lecturer of Music at the University of Gloucestershire, and Head of Education at pyka.</p>
-     
-      </div>
-      <div id="column2">
-<p><b>Now</b></p> 
-       <p> I've just released a single called <a href="https://jackofthesuburbs.bandcamp.com/track/pacemaker" style="text-decoration:underline;">'Pacemaker'</a>  as Jack of the Suburbs, my solo music project.</p>
+  
+  </div>
+  <div class="flex-item-two">
+  <p><b>now</b></p> 
+<p> I've just released a single called <a href="https://jackofthesuburbs.bandcamp.com/track/pacemaker" style="text-decoration:underline;">'Pacemaker'</a>  as Jack of the Suburbs, my solo music project.</p>
 <p>Over the winter I began playing chess on the chess.com app. It's highly addictave and am enjoying playing 10 minute matches.</p>    
 <p>I'm looking to buy a van to refurbish so my partner and I can take trips around Wales. I also want to be able to make music away from home so will use it as a portable studio.</p>
 <p>I'm about to complete my MA in Creative Music Practice that I started in September 2019.</p>
-      </div>
-      <div id="column3">
-<p><b>Projects</b></p>
-       <p>I recently set up a cooperative record label, called <a href="https://thirdnature.world" target="self">Third Nature Recordings</a>, to explore more equitable systems for music makers.</p>
+  
+  </div>
+  <div class="flex-item-three">
+  <p><b>projects</b></p>
+  <p>I recently set up a cooperative record label, called <a href="https://thirdnature.world" target="self">Third Nature Recordings</a>, to explore more equitable systems for music makers.</p>
 <p>Along with Jack Rees and Leigh Davies, I'm working on making music with inherited cassette tapes as the <a href="http://geocities.ws/thecoin/LLTA" target="self">Llandovery Tape Archive</a>.</p>
 <p>I recently carried out a research project on music making practices on internet platforms which culminated in a paper called <a href="https://docs.google.com/document/d/e/2PACX-1vQ3LSNa7K8biQUZBqxiKUjOva2iZhn6eRQM7Yod3cpzKfpAmnGSAhLQZm2NWGxBkQ/pub" target="self">Platform Determinism</a>.</p>
 <p>I am in the process of publishing a digital/physical zine called <a href="/interfacing/" style="text-decoration:underline;">Interfacing</a>, about how to work together while being apart, as part of a collaboration with Site Sit on their <a href="https://www.kultivera.nu/pluggedin" style="text-decoration:underline;">Plugged In</a> project.</p>
 <p>During the summer of 2020 I started a virtual performance project called <a href="https://www.youtube.com/watch?v=lTgKnafEt8M" target="self">Cul-De-Sac Festival</a>, designed to encourage artists to consider how the platforms on which they share their work inform the work itself.</p>
 <p> I'm part of the <a href="http://geocities.ws/thecoin"> ← </a> coin webring <a href="http://geocities.ws/jackrees/index.html"> → </a>.</p>
-
-
-<div id="column3">
-<p><b>Companions</b></p>
+  </div>
+  
+  <div class="flex-item-four">
+  <p><b>companions</b></p>
 <ul>
+
 <li><a href="https://electricnoodlebox.com"> Aidan Taylor </a></li>
 <li><a href="https://borisabono.com"> Boris a Bono </a></li>
 <li><a href="https://crumpetmoon.com"> Crumpet Moon </a></li>
@@ -106,34 +173,8 @@
 
 </ul>
 
-
-
-
-
-
-
-
-
-
-
-
-                  
-      </div>
-    </main>
-    
-    
-    
-    </body> 
-</html>            
-           
-<br><br>
- <a href="index.html" style="text-decoration:underline;">&#8592; back</a>       
-        
-
-
-        </div>
-        </font>
-        </span>
+  </div>
+</div>
 
 </body>
 </html>
