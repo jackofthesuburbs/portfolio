@@ -6,26 +6,70 @@
     <link rel="shortcut icon" type="image/png" href="/image.png">
     <title>notes + stuff</title>
     <style>
-        body {
-            color: #000;
+    
+   ul.no-bullets {
+		list-style-type: none;
+  		margin: 0;
+  		padding: 0;
+        
         }
-        img {
-            width: 100%;
-            max-width: 100px;
+
+	body {
+		color: #000;
+		padding-left: 90px;
+		padding-top: 90px;
+        
         }
-        blockquote {
-            margin: 0;
+
+	h1, h2, h3, h4 {
+		font-weight: normal;
+		font-size: 16px;
+        
         }
+
+	a {
+		color: #000;
+        
+        }
+
+	section {
+		border: 1px solid #000;
+        padding: 10px;
+		margin-bottom: 20px;
+        
+        }
+
+	section, img, video {
+		width: 100%;
+		max-width: 500px;
+        
+        }
+
+	@media(max-width: 535px) {
+    .grid figure {
+        max-width: 100%;
+        
+        }
+       }   
+        
     </style>
 </head>
+
 <body>
-    <img src="images/image.png" alt="image">
 
-    <p>notes + stuff</p>
 
-    <ul>
-      
-        <li><a href="/posts/post1.html">Post 1</a></li>
+
+
+    <img src="garden.gif" alt="a gif of foliage waving in the wind">
+	<br><br>
+    
+    <section>
+    	<b>heavy salad 🌱</b> <br><br>
+        Hi there, I created this digital garden as a way to nurture thoughts, develop <a href="https://notes.andymatuschak.org/Evergreen_notes">evergreen notes</a>, and track ideas across fields/projects. 
+    </section>
+
+    <ul class="no-bullets">
+		<li><a href="/posts/post1.html">Post 1</a></li>
     </ul>
 
     <br>
@@ -33,8 +77,7 @@
 
     
 
-    <p>
-        Powered by html. 
+    <p> Made with html. 
     </p>
 
     <br>
