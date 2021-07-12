@@ -25,7 +25,7 @@ function setup() {
   text.style("padding", "12px");
   
   
-  let texty = createP("The role of space in understanding post-internet music. ");
+  let texty = createP("The Role of Space in Understanding Post-Internet Music. ");
   
   texty.position(120, 200);
   //texty.style("font-family", "times")
