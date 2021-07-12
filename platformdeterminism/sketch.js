@@ -35,7 +35,7 @@ function setup() {
   texty.style("padding", "12px");
   
   
-  let textz = createP("<a href='https//gary-martin.world/interfacing/Interfacing.pdf'>📖 Download PDF</a>");      
+  let textz = createP("<a href='https//gary-martin.world/platformdeterminism/platformdeterminism.pdf'>📖 Download PDF</a>");      
           
   textz.position(134, 300);
   //textz.style("background-color", "#FFC4AB");
