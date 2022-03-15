@@ -1,0 +1,42 @@
+body {
+  margin: 2em;
+  font-family: "Avenir";
+  font-size: 14px;
+  color: #FEE3DC;
+  background: #0D0D05;
+}
+
+h1 {
+    font-weight: normal;
+    border-bottom: 1px dotted #FEE3DC;
+}
+
+h3 {
+    font-weight: normal;
+}
+
+a {
+    color: #FEE3DC;
+}
+
+ul {
+    padding-left: 0px;
+    padding-bottom: 5px;
+    list-style-type: none;
+}
+
+li {
+  float: left;
+  padding-right: 10px;
+  line-height: 1.5em;
+}
+
+.card {
+    border: 1px solid #FEE3DC;
+    width: 100%;
+    max-width: 400px;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 2em;
+    background-color: #0D0D05;
+}
