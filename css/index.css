@@ -118,7 +118,8 @@ hr {
 }
 
 .whole {
-  max-width: 450px;
+  /*max-width: 450px;*/
+  max-width: 500px;
   margin: 75px auto 50px;
   text-align: left;
   position: relative;
