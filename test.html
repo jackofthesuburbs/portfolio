@@ -1,83 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather-Influenced Generative Design Example</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-    canvas {
-      display: block;
-    }
-  </style>
+  <title>Generative Music System</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://unpkg.com/@tonejs/tone@14.8.29/build/Tone.min.js"></script>
 </head>
 <body>
-  <canvas id="myCanvas"></canvas>
+  <h1>Generative Music System</h1>
+
+  <button id="play-button">Play music</button>
+
   <script>
-    const apiKey = "a8c02a3e1260f2f4e6c6ac86658b8325"; // Replace with your API key from OpenWeatherMap
-    const city = "New York"; // Replace with your desired city
+    $(document).ready(function() {
+      const apikey = 'a8c02a3e1260f2f4e6c6ac86658b8325';
+      const city = 'New York'; // Replace with the desired city
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}`;
 
-    const canvas = document.getElementById("myCanvas");
-    const ctx = canvas.getContext("2d");
+      let chord;
+      let synth;
 
-    const colors = ["#5959EF", "#A0D97A", "#8B572A", "#6EB5FF", "#FF974D", "#EFA2D1", "#1E6B7A"];
+      $.ajax({
+        url: url,
+        dataType: 'jsonp',
+        success: function(data) {
+          const weather = data.weather[0].main;
+          console.log(weather); // Log the weather data to the console
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+          // Generate music based on weather data
+          switch(weather) {
+            case 'Clear':
+              chord = ['C4', 'E4', 'G4'];
+              break;
+            case 'Clouds':
+              chord = ['D4', 'F4', 'A4'];
+              break;
+            case 'Rain':
+              chord = ['G4', 'B4', 'D5'];
+              break;
+            default:
+              chord = ['A4', 'C5', 'E5'];
+              break;
+          }
 
-    function drawCircle(x, y, radius, color) {
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-      ctx.fillStyle = color;
-      ctx.fill();
-    }
+          synth = new Tone.Synth().toDestination();
+        },
+        error: function(xhr, status, error) {
+          console.log(error); // Log any errors to the console
+        }
+      });
 
-    function getRandomColor() {
-      return colors[Math.floor(Math.random() * colors.length)];
-    }
+      $('#play-button').click(function() {
+        const now = Tone.now();
 
-    function getRandomRadius(tempFactor) {
-      return Math.random() * 30 * tempFactor + 5;
-    }
-
-    function drawRandomCircle(tempFactor) {
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
-      const radius = getRandomRadius(tempFactor);
-      const color = getRandomColor();
-      drawCircle(x, y, radius, color);
-    }
-
-    function draw(tempFactor) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < 50; i++) {
-        drawRandomCircle(tempFactor);
-      }
-    }
-
-    async function fetchCurrentTemperature() {
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
-      const data = await response.json();
-      const temperature = data.main.temp;
-      return temperature;
-    }
-
-    async function animate() {
-      const currentTemperature = await fetchCurrentTemperature();
-      const tempFactor = Math.abs(currentTemperature) / 100;
-
-      draw(tempFactor);
-      setTimeout(animate, 2000);
-    }
-
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-    animate();
+        // Play the chord
+        synth.triggerAttackRelease(chord, '2n', now);
+      });
+    });
   </script>
 </body>
 </html>
