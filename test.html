@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather-Influenced Generative Design Example</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas"></canvas>
+  <script>
+    const apiKey = "75e247fa3ea281f97ac25a996cbcb4cf"; // Replace with your API key from OpenWeatherMap
+    const city = "New York"; // Replace with your desired city
+
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const colors = ["#5959EF", "#A0D97A", "#8B572A", "#6EB5FF", "#FF974D", "#EFA2D1", "#1E6B7A"];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function drawCircle(x, y, radius, color) {
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+
+    function getRandomColor() {
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function getRandomRadius(tempFactor) {
+      return Math.random() * 30 * tempFactor + 5;
+    }
+
+    function drawRandomCircle(tempFactor) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const radius = getRandomRadius(tempFactor);
+      const color = getRandomColor();
+      drawCircle(x, y, radius, color);
+    }
+
+    function draw(tempFactor) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < 50; i++) {
+        drawRandomCircle(tempFactor);
+      }
+    }
+
+    async function fetchCurrentTemperature() {
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+      const data = await response.json();
+      const temperature = data.main.temp;
+      return temperature;
+    }
+
+    async function animate() {
+      const currentTemperature = await fetchCurrentTemperature();
+      const tempFactor = Math.abs(currentTemperature) / 100;
+
+      draw(tempFactor);
+      setTimeout(animate, 2000);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    animate();
+  </script>
+</body>
+</html>
