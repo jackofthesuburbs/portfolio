@@ -67,12 +67,12 @@ h4 {
 
 a {
   color: #FEE3DC;
-  text-decoration: none;
+  text-decoration: underline;
   background: transparent;
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 ul {
