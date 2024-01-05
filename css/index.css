@@ -66,8 +66,10 @@ h4 {
 }
 
 a {
-  color: #FEE3DC;
+  color: #Eb615e;
   text-decoration: underline;
+  text-decoration-color: #Eb615e;
+  text-decoration-thickness: 1px;
   background: transparent;
 }
 
