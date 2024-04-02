@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
   padding: 2em;
   line-height: 1.5;
   font-family: -apple-system, BlinkMacSystemFont, "helvetica neue", helvetica,
@@ -80,6 +80,7 @@ footer {
   position: absolute;
   margin-top: 5em;
   padding: 2em 0;
+  max-width: 550px;
 }
 
 
@@ -126,6 +127,10 @@ footer {
     grid-template-columns: 1fr;
     grid-gap: 2em;
   }
+
+  body {
+    font-size: 14px;
+  }
 }
 
 
@@ -134,5 +139,8 @@ footer {
     display: grid;
     grid-template-columns: 1fr;
     grid-gap: 2em;
+  }
+  body {
+    font-size: 14px;
   }
 }
