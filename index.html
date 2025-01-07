@@ -7,23 +7,39 @@
     <style>
         *, *:before, *:after { box-sizing: border-box; }
         body {
+            font-family: -apple-system, BlinkMacSystemFont, "helvetica neue", helvetica, arial, sans-serif;
+            margin: 0;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             -webkit-text-size-adjust: none;
-            font-family: -apple-system, BlinkMacSystemFont, "helvetica neue", helvetica, arial, sans-serif;
-            margin: 0;
-            color: #000000;
-            line-height: 1.4;
+            color: #000;
+            line-height: 1.2;
             padding: 20px;
             background-color: #fff8e7;
         }
         a {
-            color: #000000;
+            color: #000;
             text-decoration: underline;
         }
 
+img {
+            width: 450px;
+            height: 315px;
+            object-fit: cover;
+            display: block;
+            border-radius: 12px;
+        }
+
+
+        .avatar {
+            display: inline-block;
+            margin-right: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
         p {
-            max-width: 580px;
+            max-width: 450px;
         }
         ul {
             margin: 0;
@@ -41,46 +57,92 @@
             margin-left: 5px;
             content: '→';
         }
+        h2 {
+            font-size: 16px;
+            margin-top: 40px;
+        }
+        .small {
+            font-size: 11px;
+            margin-top: -2px;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
     </style>
+
+
+
+
+
+
 </head>
 <body>
 
     <p style="margin-top: 0;">🪨</p>
 
-      <p><b>gary-martin</b> is an artist, designer, and facilitator interested in systems of consumption and creation.
+    <p><b>gary-martin</b> is an artist, designer, and educator interested in systems of consumption and creation.
 
       his social practice playfully engages with the interrelations of objects and environments through participatory art, toolkit design, and audio-visual composition.
 
-      for over a decade he has facilitated art projects with young people across Wales and partners like Cadw, Prince’s Trust, Shakespeare’s Globe, and Tate Britain.
+      for over a decade, he has facilitated art projects with young people across Wales, and partners like <i>Cadw</i>, <i>Prince’s Trust</i>, <i>Shakespeare’s Globe</i>, and <i>Tate</i>.
 
-      he is a creative producer with <a href="https://www.pyka.wales" target="_blank">pyka</a>, co-creating objects, structures and spaces that enable exploration of worlds built with sound.
+      he is a creative producer with <a href="https://www.pyka.wales" target="_blank">pyka</a>, co-creating objects, structures and spaces that enable exploration of worlds built with sound. 
 
-      he is also a lecturer in the school of creative arts at the <a href="https://instagram.com/uogmusic" target="_blank">University of Gloucestershire </a> where his teaching focuses on networked cultures and the political ecology of creative practice.
-      </p>
+      he is also a lecturer in the school of creative arts at the <a href="https://instagram.com/uogmusic" target="_blank">University of Gloucestershire </a> where his teaching focuses on networked cultures and the political ecology of creative practice. </p>
 
+      <img src="images/gm.png" alt="hi there">
+  
+</div>
+
+<br>
 
       <ul>
-          <li><a href="https://public.me/gary-martin" target="_blank">log</a></li>
-          <li><a href="https://gary-martin.montaigne.io" target="_blank">notes</a></li>
-          <li><a href="https://are.na/gary-martin" target="_blank">are.na</a></li>
-          <li><a href="https://www.instagram.com/garymart.in" target="_blank">instagram</a></li>
-          <li><a href="https://docs.google.com/spreadsheets/d/1Y6xKKKzslXaY3vpVGBGqZKdhsDl-wJ6_omdvGc-pjGo/edit?usp=sharing" target="_blank">cv</a></li>
-          <li><a style="color:grey;" href="" target="">projects</a></li>
-
-
-          
+        <li><a href="https://gary-martin.montaigne.io" target="_blank">notes</a></li>
+        <li><a href="https://are.na/gary-martin" target="_blank">are.na</a></li>
+        <li><a href="https://www.instagram.com/garymart.in" target="_blank">instagram</a></li>
+        <li><a href="https://docs.google.com/spreadsheets/d/1Y6xKKKzslXaY3vpVGBGqZKdhsDl-wJ6_omdvGc-pjGo/edit?usp=sharing" target="_blank">cv + projects</a></li>
       </ul>
-      <br>
+      
+      
 
-    <p>
-    he/they<br>
-    email@garymart.in
-    </p>
-          
-     <img src="images/gm.png" alt="gary-martin">
+        <p>
+          he / they<br>
+          email @ garymart.in
+        </p>
 
 
+   
+
+
+    <br>
+
+
+<script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+  });
+}
+</script>
 
 
 
