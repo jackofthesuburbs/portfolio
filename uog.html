@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GM's UoG</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Comic Sans MS", "Courier New", cursive;
+      font-size: 14px;
+      color: #00FF99;
+      background: black url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
+      overflow-x: hidden; /* stops horizontal scroll */
+    }
+
+    marquee {
+      font-size: 26px;
+      font-weight: bold;
+      color: #FF00FF;
+      background: linear-gradient(to right, #111, #330033, #111);
+      border: 5px ridge #00FF99;
+      padding: 0.5em;
+      margin-bottom: 1em;
+      text-shadow: 2px 2px #FF0000;
+    }
+
+    a {
+      color: #00FFFF;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    a:hover {
+      background: #FFFF00;
+      color: #000;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 1em;
+      padding: 1em;
+    }
+
+    .section {
+      border: 4px outset #FF00FF;
+      padding: 1em;
+      margin-bottom: 1em;
+      background: rgba(0,0,0,0.75);
+      box-shadow: 4px 4px 0px #00FF99;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    h3 {
+      font-weight: bold;
+      font-size: 16px;
+      color: #FFFF00;
+      margin-bottom: 0.5em;
+      border-bottom: 2px dotted #FF00FF;
+    }
+
+    ul {
+      padding-left: 15px;
+    }
+
+    li {
+      margin-bottom: 0.3em;
+    }
+
+    /* Modules grid in center */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0.5em;
+      margin-top: 1em;
+    }
+
+    .module-cell {
+      border: 2px dashed #00FFFF;
+      padding: 0.5em;
+      text-align: center;
+      background: #111;
+      color: #FF00FF;
+      font-weight: bold;
+    }
+
+    /* Dividers */
+    .divider {
+      text-align: center;
+      margin: 1em 0;
+    }
+    .divider img {
+      max-width: 90%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* All images responsive */
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Bouncing DVD logo */
+    #logo {
+      position: fixed;
+      top: 50px;
+      left: 50px;
+      width: 100px;
+      height: auto;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    /* Spinning image */
+    #spinner {
+      position: absolute;
+      width: 200px;
+      height: auto;
+      z-index: 9998;
+      animation: spin3d 6s linear infinite;
+      pointer-events: none;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes spin3d {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <marquee behavior="alternate" scrollamount="5">✨ GM's University of Gloucestershire Portal ✨</marquee>
+
+  <div class="layout">
+    <!-- Left column -->
+    <div>
+      <div class="divider">
+        <img src="uog/music1.gif" alt="Flames">
+      </div>
+      <div class="section">
+        <h3>Admin</h3>
+        <ul>
+          <li><a href="https://moodle.glos.ac.uk/my/">Moodle</a></li>
+          <li><a href="https://connectglosac.sharepoint.com/sites/staff-hub">Staff Home</a></li>
+          <li><a href="https://studentrecords.glos.ac.uk">Student Records</a></li>
+          <li><a href="https://hrselfservice.glos.ac.uk">My Records</a></li>
+        </ul>
+      </div>
+
+      <div class="divider">
+        <img src="uog/music2.gif" alt="Flames">
+      </div>
+
+      <div class="section">
+        <h3>Technical</h3>
+        <ul>
+          <li><a href="https://resourcebooker.glos.ac.uk/">Room Booker</a></li>
+          <li><a href="https://parkkitbookings.glos.ac.uk/">Equipment Booker</a></li>
+          <li><a href="https://timetables.glos.ac.uk/">Timetables</a></li>
+          <li><a href="https://glos.on.worldcat.org/discovery">Library</a></li>
+        </ul>
+      </div>
+
+      <div class="divider">
+        <img src="uog/mylinks.gif" alt="Flames">
+      </div>
+    </div>
+
+    <!-- Center column -->
+    <div>
+      <div class="divider">
+        <img src="uog/music3.gif" alt="Under Construction">
+      </div>
+
+      <div class="section">
+        <h3>Modules</h3>
+        <div class="modules-grid">
+          <div class="module-cell"><a href="https://moodle.glos.ac.uk/course/view.php?id=59879">MD4221</a></div>
+          <div class="module-cell"><a href="https://moodle.glos.ac.uk/course/view.php?id=58494">MD4217</a></div>
+          <div class="module-cell"><a href="https://moodle.glos.ac.uk/course/view.php?id=58111">MD4220</a></div>
+          <div class="module-cell"><a href="https://moodle.glos.ac.uk/course/view.php?id=58495">MD5325</a></div>
+          <div class="module-cell"><a href="https://moodle.glos.ac.uk/course/view.php?id=58497">MD6322</a></div>
+          <div class="module-cell"><a href="https://moodle.glos.ac.uk/course/view.php?id=58497">MD6322</a></div>
+          <div class="module-cell"><a href="https://moodle.glos.ac.uk/course/view.php?id=58937">MD6323</a></div>
+          <div class="module-cell"><a href="https://moodle.glos.ac.uk/course/view.php?id=58496">MD6216</a></div>
+        </div>
+      </div>
+
+      <div class="divider">
+        <img src="uog/teacher.gif" alt="Under Construction">
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div>
+      <div class="divider">
+        <img src="uog/music4.gif" alt="Under Construction">
+      </div>
+
+      <div class="section">
+        <h3>Sites</h3>
+        <ul>
+          <li><a href="https://drive.google.com/drive/my-drive">GDrive</a></li>
+          <li><a href="https://www.are.na/gary-martin/">Are.na</a></li>
+          <li><a href="https://padlet.com/dashboard">Padlet</a></li>
+          <li><a href="https://www.tiktok.com/en/">TikTok</a></li>
+          <li><a href="https://www.instagram.com">Instagram</a></li>
+        </ul>
+      </div>
+
+      <div class="divider">
+        <img src="uog/musictext2.gif" alt="Under Construction">
+      </div>
+
+      <div class="section">
+        <h3>Music</h3>
+        <ul>
+          <li><a href="https://www.factmag.com">Fact</a></li>
+          <li><a href="https://www.nme.com/music">NME</a></li>
+          <li><a href="https://mixmag.net/p1">Mix</a></li>
+          <li><a href="https://www.musicweek.com">MW</a></li>
+          <li><a href="https://www.midi.org">MIDI</a></li>
+          <li><a href="https://www.dazeddigital.com">Dazed</a></li>
+          <li><a href="https://pitchfork.com">Pitchfork</a></li>
+          <li><a href="https://crackmagazine.net">Crack</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- DVD Logo -->
+  <img id="logo" src="uog/logo1.png" alt="GM Logo">
+
+  <!-- Spinning image -->
+  <img id="spinner" src="uog/spinning.png" alt="Spinning Icon">
+
+  <script>
+    const logo = document.getElementById("logo");
+    const logos = ["logo1.png", "logo2.png", "logo3.png", "logo4.png", "logo5.png"];
+    let currentLogo = 0;
+
+    let x = 50, y = 50;
+    let dx = 2, dy = 2;
+
+    function moveLogo() {
+      const w = window.innerWidth - logo.width;
+      const h = window.innerHeight - logo.height;
+
+      x += dx;
+      y += dy;
+
+      if (x <= 0 || x >= w) dx *= -1;
+      if (y <= 0 || y >= h) dy *= -1;
+
+      logo.style.left = x + "px";
+      logo.style.top = y + "px";
+
+      requestAnimationFrame(moveLogo);
+    }
+
+    moveLogo();
+
+    const spinner = document.getElementById("spinner");
+
+    function randomizeSpinner() {
+      const maxX = window.innerWidth - spinner.width;
+      const maxY = window.innerHeight - spinner.height;
+      const randX = Math.floor(Math.random() * maxX);
+      const randY = Math.floor(Math.random() * maxY);
+      spinner.style.left = randX + "px";
+      spinner.style.top = randY + "px";
+    }
+
+    randomizeSpinner();
+
+    document.body.addEventListener("click", () => {
+      currentLogo = (currentLogo + 1) % logos.length;
+      logo.src = logos[currentLogo];
+      randomizeSpinner();
+    });
+
+    window.addEventListener("resize", randomizeSpinner);
+  </script>
+</body>
+</html>
