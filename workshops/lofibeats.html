@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Lofi Name Generator</title>
+<style>
+:root{
+  --bg:#f3efe7;
+  --panel:#fff6ea;
+  --accent:#d9b48f;
+  --ink:#111;
+  --muted:#6b6054;
+}
+html,body{height:100%;margin:0;font-family:'Courier New',monospace;background:linear-gradient(180deg,var(--bg),#efe8dc);color:var(--ink);text-align:left;}
+.container{max-width:720px;padding:20px;box-sizing:border-box;}
+.header{text-align:left;}
+.brand{font-size:1.25rem;letter-spacing:0.06rem;margin:6px 0;}
+.lead{margin:8px 0 18px 0;color:var(--muted);line-height:1.4;}
+.card{background:var(--panel);padding:14px;border-radius:6px;border:2px solid rgba(0,0,0,0.06);box-shadow:0 6px 18px rgba(0,0,0,0.04);max-width:100%;}
+.controls{margin-top:12px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
+.btn{appearance:none;border:2px solid var(--accent);background:transparent;padding:10px 14px;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit;}
+.result{margin-top:8px;padding:8px 10px;border:1px dashed rgba(0,0,0,0.08);min-height:42px;display:flex;align-items:center;justify-content:flex-start;font-size:1.05rem;}
+.small{font-size:0.85rem;color:var(--muted);margin-top:6px;}
+.copy{margin-left:8px;padding:6px 8px;border-radius:5px;border:1px solid rgba(0,0,0,0.06);background:transparent;cursor:pointer;}
+.scanline::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,rgba(255,255,255,0.02),rgba(0,0,0,0.02));opacity:0.6;pointer-events:none;transform:translateY(-100%);animation:scan 6s linear infinite;}
+.result,.card{position:relative;overflow:hidden;}
+@keyframes scan{0%{transform:translateY(-120%)}100%{transform:translateY(120%)}}
+@media(min-width:720px){.container{padding:28px;} .brand{font-size:1.6rem;} .controls{flex-direction:row;align-items:center;}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div class="brand">lofi beats workshop</div>
+    <p class="lead">Welcome producers — a tiny introduction: <strong>lofi</strong> is a chilled, textured style of beatmaking that foregrounds atmosphere over polish. It embraces tape hiss, mellow chords, slow grooves and the warmth of imperfect sounds. Use this tool to pick a cosy producer name and a dreamy track title for your next beat.</p>
+  </header>
+
+  <section class="card">
+    <h3>Producer name</h3>
+    <div class="small">Generate a name made from one adjective + one noun + a random modifier (letters, numbers, or punctuation) placed anywhere. No spaces, just vibes.</div>
+    <div class="controls">
+      <button id="genProducer" class="btn">Generate producer name</button>
+      <div id="producerResult" class="result scanline">—</div>
+      <button id="copyProducer" class="copy">Copy</button>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:14px;">
+    <h3>Track title</h3>
+    <div class="small">Generate a unique lofi track title — short phrases inspired by chill beats, study sessions, and late-night ambience.</div>
+    <div class="controls">
+      <button id="genTrack" class="btn">Generate track title</button>
+      <div id="trackResult" class="result scanline">—</div>
+      <button id="copyTrack" class="copy">Copy</button>
+    </div>
+  </section>
+
+  <footer style="margin-top:18px;color:var(--muted);font-size:0.85rem;">Made for classroom jams ·</footer>
+</div>
+
+<script>
+/* === Word Banks === */
+const ADJECTIVES = [
+"dusty","warm","soft","hazy","quiet","muted","dreamy","faded","cozy",
+"gentle","slow","foggy","calm","lazy","dim","mellow","lonely","subtle",
+"soothing","golden","rusted","breezy","tired","still","shaded","sleepy",
+"wistful","melancholy","sunlit","overcast","deep","restless","evening","morning",
+"midnight","autumn","wintry","spring","summery","shimmering","crackled","loose",
+"hidden","urban","rural","coastal","mountain","open","closed","folded","secret",
+"timeless","blurred","bare","worn","fragile","sincere","peaceful","moody","broken",
+"steady","glowing","flickering","burnt","sepia","grainy","handmade","careful",
+"quietly","familiar","unfamiliar","recycled","analog","taped","looped","echoing",
+"radiant","slowburn","lowkey","lowlight","shimmered","melodic","hushed","tender",
+"muted","shadowed","glistening","fluttering","swaying","lonely","bitter","sweet",
+"lunar","solar","pastel","rosy","amber","cerulean","misty","overgrown","ancient",
+"modern","softened","retro","fuzzy","crisp","cool","humid","rainy","sunny","cloudy",
+"windy","drifting","floating","magnetic","mossy","weathered","wooden","paper",
+"chalky","woven","brushed","hollow","bright","dimmed","tinted","blurred",
+"grain","hushed","serene","blooming","radiant","deepblue","softgold","bronzed",
+"lilac","rose","silver","beaming","spinning","rustling","glacial","barefoot","raw",
+"melty","cooled","shaded","tactile","smoky","handdrawn","bluehour","timid","fogged",
+"frosted","sunbleached","bleary","fluttered","low","high","half","distant","close",
+"even","uneven","vivid","pale","pastoral","industrial","neon","ambient","minimal",
+"dimly","shadowy","steady","endless","lonely","kind","melancholic","wistful",
+"gentled","reverent","cooling","whispered","crackly","dusty",
+"looped-out","late-night","retrograde","half-lit","grain-soft","smoothed","delicate","fleeting","casual","pensive","flickered",
+"somber","lazyday","suburban","downtown","nighttime","daytime","dusky","sunset",
+"twilight","afternoon","nocturnal","echoed","bleached","soft","restful","carefree",
+"washed","gentlehearted","saturated","grayscale","toned","smudged","fuzzyheaded",
+"blurry","sleep-deprived","ambient","hollowed","natural","organic"
+];
+const NOUNS = [
+"loop","vibe","chord","signal","cafe","studio","journal","window","cassette","mug",
+"lamp","tape","bench","sofa","streetlight","pavement","rain","mist","fog","busstop",
+"train","tram","corner","building","balcony","rooftop","river","canal","harbor",
+"station","clock","page","notebook","sketch","postcard","letter","photo","memory",
+"screen","film","frame","reflection","shadow","light","pattern","texture","vinyl",
+"groove","beat","sample","melody","tempo","note","chime","tone","resonance","pulse",
+"signal","echo","drift","whisper","breath","feather","leaf","tree","branch","hill",
+"forest","park","field","stream","pond","shore","beach","stone","pebble","path",
+"trail","gate","fence","wall","door","windowpane","curtain","mirror","cobble",
+"lampcord","cup","mug","glass","plate","record","turntable","sampler","keyboard",
+"cable","plug","speaker","radio","static","frequency","wave","channel","soundscape",
+"vapor","horizon","sky","cloud","storm","sun","moon","dawn","noon","twilight","night",
+"evening","morning","sunrise","sunset","shadowplay","lantern","alley","avenue",
+"crosswalk","bridge","sign","neon","poster","advert","storefront","signalpost",
+"bus","traincar","motor","bike","pedal","tire","rail","windowframe","stair",
+"doorway","threshold","balustrade","archway","tunnel","hallway","corridor","roof",
+"chimney","fireescape","antenna","wire","line","cablecar","harborlight","boat",
+"ship","dock","harborwall","sail","fountain","well","tower","crane","cityscape",
+"skyline","block","district","market","plaza","square","yard","garden","treehouse",
+"porch","balcony","windowledge","railway","signalbox","crossing","sidewalk",
+"busroute","road","carpark","garage","workshop","warehouse","studioflat","apartment",
+"bedroom","desk","lampstand","curtainrod","bookshelf","pillow","blanket","chair",
+"recordplayer","cassettecase","mix","playlist","channel","stream","playlist",
+"headphone","earbud","notepad","pen","pencil","eraser","chalkboard","blackboard",
+"classroom","library","campus","buildingfront","courtyard","fencepost","fieldmouse",
+"cat","dog","bird","pigeon","sparrow","raincloud","stormfront","tide","waveform",
+"patternedsky","skylight","windowlight","reflectionpool","mirrorpane","moonbeam",
+"dustpath","streetcorner","pavementlight","buslane","cityrain","coffeehouse",
+"lanternlight","roofbeam","brickwall","rust","peelingpaint","drizzle","breath",
+"heartbeat","whistle","hum","buzz","murmur","whir","tone","haze","airwave","memorycard",
+"notebookpage","postit","journalpage","deskcorner","tapeplayer","clicker",
+"screenlight","windowglow","vhs","cd","minidisc","archive","shelf","folder","file",
+"snapshot","framegrab","stillframe","vibecloud","tonebank","drumkit","melodyline",
+"lyricpage","microphone","loopstation","signalflow","busnoise","streetecho","neonsign",
+"tramline","railtone","lightbeam","rainpattern","cityfog","eveningglow","dawnlight",
+"puddle","reflection","shadowform","songtitle","sound","echohall","ambientloop",
+"vinylgroove","beatpath","cloudbank","weatherfront","streetlamp","storefront",
+"stationclock","kettle","steam","teacup","coffeegrind","matchlight","ashtray","smoke",
+"teapot","cloudform","raindrop","windowview","motel","turntable","noteline","soundbite",
+"melodysketch","draft","composition","mixtape","cut","recording","fader","slider",
+"monitor","tapehiss","reel","drum","snare","ride","kick","looptrack","sequence","chordset"
+];
+const MODIFIERS = [
+  "x","z","q",
+  "1","2","3","4","5","6","7","8","9","0",
+  "_","-",".","~","!","#"
+];
+
+const TRACK_PHRASES = [
+  "coffee for one","after class","rain on the sill","side b thoughts","midnight study","soft static","chinatown lights","tape rewind","scribbled note","melancholy loop","dust on vinyl","two stop tram","jazz homework","window hum","slow fade","kettle whistle","sketching faces","evening pulse","just before dawn","broken sampler","turntable rest","homework breaks","orange light","snare in the rain","late night sync","breeze loop","quiet alley","city hum","for the weekend","forgotten take","end of tape","sleep pattern","backroom echo","lowlight jam","waking up slowly","half tempo","sunset filter","loop 7","sidewalk slowdance","postcard home","in the margins","radio snow","couch session","coffee breath","night bus","empty tram","new loop 3","final bounce","soft jazz homework","snare dust","end credits","lofi sunrise","park bench","sunday static","raincloud jazz","b-side dreams","slow burner","warm chord","cheap cassette","paper bag lunch","pencil shavings","mug reflections","chalkboard haze","crackling dawn","still awake","bedroom tape","apartment bloom","mono love","streetlight reflections","asleep at desk","city sketches","vhs glow","lost patch","gentle groove","home loop","studying you","press play again","blue night mix","polaroid memory","daydream frequency","empty platform","pillow talk remix","tape hiss lullaby","dust motes","slow spin","echo chamber","reading light","soft edges","handmade rhythm","worn out sample","ambient homework","warm noise","coffee stains","vinyl sleep","lofi thoughts","paper heartbeat","offbeat noon","slow return","melody fragments","still motion"
+];
+
+/* === Helper functions === */
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function isLetter(c){return /^[a-z]$/i.test(c);}
+function getNonLetterModifier(){
+  const nonLetters = MODIFIERS.filter(m => !isLetter(m));
+  return rand(nonLetters);
+}
+
+/* === Producer name logic === */
+document.getElementById('genProducer').addEventListener('click',()=>{
+  const a = rand(ADJECTIVES);
+  const b = rand(NOUNS);
+  const m = rand(MODIFIERS);
+  const position = rand(["start","middle","end"]);
+  let name = "";
+
+  if (position === "start") {
+    name = `${m}${a}${b}`;
+  } else if (position === "middle") {
+    if (isLetter(m)) {
+      const sym = getNonLetterModifier();
+      name = `${a}${sym}${m}${b}`;
+    } else {
+      name = `${a}${m}${b}`;
+    }
+  } else {
+    if (isLetter(m)) {
+      const sym = getNonLetterModifier();
+      name = `${a}${b}${sym}${m}`;
+    } else {
+      name = `${a}${b}${m}`;
+    }
+  }
+  document.getElementById('producerResult').textContent = name;
+});
+
+/* === Track title logic === */
+function generateTrackTitle(){
+  if (Math.random() < 0.5) return rand(TRACK_PHRASES);
+
+  const titles = Array.from({length:Math.floor(2+Math.random()*2)},()=>rand(TRACK_PHRASES));
+  const words = titles.flatMap(t=>t.split(" "));
+  const shuffled = words.sort(()=>Math.random()-0.5);
+  const count = 2+Math.floor(Math.random()*3);
+  const slice = [...new Set(shuffled.slice(0,count))];
+  let title = slice.join(" ");
+
+  // stylistic tweaks
+  const style = Math.random();
+  if (style < 0.2) title = title.toLowerCase();
+  else if (style < 0.4) title = title.replace(/\b\w/g,c=>c.toUpperCase());
+  else title = title.charAt(0).toUpperCase()+title.slice(1);
+
+  // random decorations
+  const decorations = ["(demo)","(ver.1)","(remix)","mix","ver.","edit","take","cut","sketch"];
+  if (Math.random() < 0.25) title += " " + rand(decorations);
+  if (Math.random() < 0.15) title = title.replace(" ","-");
+  if (Math.random() < 0.1) title = title.replace(" "," / ");
+
+  return title;
+}
+
+document.getElementById('genTrack').addEventListener('click',()=>{
+  const title = generateTrackTitle();
+  document.getElementById('trackResult').textContent = title;
+});
+
+/* === Copy === */
+document.getElementById('copyProducer').addEventListener('click',async()=>{
+  const t=document.getElementById('producerResult').textContent;
+  try{await navigator.clipboard.writeText(t);alert('Copied: '+t);}catch(e){prompt('Copy this text',t);}
+});
+document.getElementById('copyTrack').addEventListener('click',async()=>{
+  const t=document.getElementById('trackResult').textContent;
+  try{await navigator.clipboard.writeText(t);alert('Copied: '+t);}catch(e){prompt('Copy this text',t);}
+});
+</script>
+</body>
+</html>
