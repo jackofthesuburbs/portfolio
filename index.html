@@ -108,8 +108,14 @@ h2 { font-size: 13px; margin-top: 0px; }
   body { padding: 20px; }
   .layout { display: block; }
   width: 100%;  
-  img { max-width: 100%; height: auto; }
 }
+
+img {
+    width: 100%;       /* fills container */
+    max-width: 100%;   /* never exceeds container */
+    height: auto;      /* keeps aspect ratio */
+  }
+  
 </style>
 </head>
 
