@@ -17,7 +17,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: none;
   color: #000;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.4;
   padding: 20px;
   background-color: #fff8e7;
@@ -26,9 +26,9 @@ body {
 a { color: #000; text-decoration: underline; }
 
 img {
-  width: 400px;
+  width: 300px;
   max-width: 400px;
-  height: 400px;
+  height: 300px;
   object-fit: cover;
   display: block;
   border-radius: 12px;
@@ -36,7 +36,7 @@ img {
 
 hr.new { border-top: 1px dashed #1506f9; }
 
-p { max-width: 400px; }
+p { max-width: 500px; }
 
 ul { margin: 0; padding: 0; list-style-type: none; }
 
@@ -83,41 +83,25 @@ h2 { font-size: 16px; margin-top: 0px; }
   /* Sidebar */
   .sidebar {
     padding: 40px;
-    width: 480px; /* 400px image + padding */
+    width: 400px; /* 400px image + padding */
     height: 100vh;
     overflow-y: auto;
     border-right: 1px solid #1506f9;
   }
 
-/* Feedin the middle,  scroll bar on right */
-  /* Feed wrapper takes full remaining width
+  /* Feed wrapper takes full remaining width */
   .feed-wrapper {
     height: 100vh;
-    overflow-y: auto;
+    overflow-y: auto; /* scrollbar flush against right edge */
   }
 
-   
+  /* Feed column centered inside wrapper */
   .feed {
-    width: 500px;
-    margin: 0 auto; 
+    width: 600px; /* same width as sidebar */
+    margin: 0 auto; /* centers feed content */
     padding: 40px;
   }
-  */
-
-/* Feed wrapper takes full remaining width */
-.feed-wrapper {
-  height: 100vh;
-  overflow-y: auto;  /* scrollbar flush against right edge */
 }
-
-/* Feed column aligned to right */
-.feed {
-  width: 500px;    /* same width as before */
-  padding: 40px;
-  margin: 0;       /* remove auto-centering */
-  float: right;    /* push the feed to the right */
-}
-
 
 /* ---------- Mobile ---------- */
 @media screen and (max-width: 899px) {
