@@ -25,11 +25,18 @@ body {
 
 a { color: #000; text-decoration: underline; }
 
-img {
+/*img {
   width: 300px;
   max-width: 300px;
   height: 300px;
   object-fit: cover;
+  display: block;
+  border-radius: 12px;
+}*/
+
+img {
+  max-width: 100%;
+  height: auto;
   display: block;
   border-radius: 12px;
 }
@@ -134,10 +141,11 @@ h2 { font-size: 13px; margin-top: 0px; }
 
   /* Sidebar image should stay fixed */
   .sidebar img {
-    width: 500px;
-    max-width: 500px;
-    height: 500px;
-  }
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  margin: 0 auto;
+}
 
   /* Feed images still responsive inside posts */
   .feed-item img {
