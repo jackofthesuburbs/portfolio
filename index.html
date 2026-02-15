@@ -105,16 +105,47 @@ h2 { font-size: 13px; margin-top: 0px; }
 
 /* ---------- Mobile ---------- */
 @media screen and (max-width: 899px) {
-  body { padding: 20px; }
-  .layout { display: block; }
-  width: 100%;  
-}
 
-img {
-    width: 100%;       /* fills container */
-    max-width: 100%;   /* never exceeds container */
-    height: auto;      /* keeps aspect ratio */
+  body { padding: 20px; }
+
+  .layout { display: block; }
+
+  /* Constrain sidebar content */
+
+
+
+  .sidebar {
+    max-width: 500px;
+    margin: 0 auto 40px auto;  /* center + space below */
   }
+
+  /* Constrain feed content */
+  .feed {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  /* Keep dotted boxes from stretching */
+  .feed-item {
+    max-width: 500px;
+    margin: 0 auto 24px auto;
+  }
+
+  /* Sidebar image should stay fixed */
+  .sidebar img {
+    width: 500px;
+    max-width: 500px;
+    height: 500px;
+  }
+
+  /* Feed images still responsive inside posts */
+  .feed-item img {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+  }
+}
   
 </style>
 </head>

@@ -17,7 +17,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: none;
   color: #000;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.4;
   padding: 20px;
   background-color: #fff8e7;
@@ -26,9 +26,9 @@ body {
 a { color: #000; text-decoration: underline; }
 
 img {
-  width: 400px;
-  max-width: 400px;
-  height: 400px;
+  width: 300px;
+  max-width: 300px;
+  height: 300px;
   object-fit: cover;
   display: block;
   border-radius: 12px;
@@ -36,19 +36,19 @@ img {
 
 hr.new { border-top: 1px dashed #1506f9; }
 
-p { max-width: 400px; }
+p { max-width: 500px; }
 
 ul { margin: 0; padding: 0; list-style-type: none; }
 
 ul li a { display: flex; align-items: center; text-decoration: none; width: max-content; }
 ul li a::after { display: inline-block; margin-left: 5px; content: '→'; }
 
-h2 { font-size: 16px; margin-top: 0px; }
+h2 { font-size: 13px; margin-top: 0px; }
 
 .feed-item { margin-bottom: 40px; }
-.feed-item h3 { font-size: 14px; margin: 0 0 4px 0; }
+.feed-item h3 { font-size: 13px; margin: 0 0 4px 0; }
 .feed-item h3 a { color: #1506f9; }
-.feed-item time { font-size: 11px; display: block; margin-bottom: 6px; }
+.feed-item time { font-size: 10px; display: block; margin-bottom: 6px; }
 /*.feed-item img { margin: 10px 0; width: 400px; max-width: 400px; height: auto; object-fit: initial; }*/
 
 .feed-item {
@@ -83,48 +83,70 @@ h2 { font-size: 16px; margin-top: 0px; }
   /* Sidebar */
   .sidebar {
     padding: 40px;
-    width: 480px; /* 400px image + padding */
+    width: 400px; /* 400px image + padding */
     height: 100vh;
     overflow-y: auto;
     border-right: 1px solid #1506f9;
   }
 
-/* Feedin the middle,  scroll bar on right */
-  /* Feed wrapper takes full remaining width
+  /* Feed wrapper takes full remaining width */
   .feed-wrapper {
     height: 100vh;
-    overflow-y: auto;
+    overflow-y: auto; /* scrollbar flush against right edge */
   }
 
-   
+  /* Feed column centered inside wrapper */
   .feed {
-    width: 500px;
-    margin: 0 auto; 
+    width: 600px; /* same width as sidebar */
+    margin: 0 auto; /* centers feed content */
     padding: 40px;
   }
-  */
-
-/* Feed wrapper takes full remaining width */
-.feed-wrapper {
-  height: 100vh;
-  overflow-y: auto;  /* scrollbar flush against right edge */
 }
-
-/* Feed column aligned to right */
-.feed {
-  width: 500px;    /* same width as before */
-  padding: 40px;
-  margin: 0;       /* remove auto-centering */
-  float: right;    /* push the feed to the right */
-}
-
 
 /* ---------- Mobile ---------- */
 @media screen and (max-width: 899px) {
+
   body { padding: 20px; }
+
   .layout { display: block; }
-  img { max-width: 100%; height: auto; }
+
+  /* Constrain sidebar content */
+
+
+
+  .sidebar {
+    max-width: 500px;
+    margin: 0 auto 40px auto;  /* center + space below */
+  }
+
+  /* Constrain feed content */
+  .feed {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  /* Keep dotted boxes from stretching */
+  .feed-item {
+    max-width: 500px;
+    margin: 0 auto 24px auto;
+  }
+
+  /* Sidebar image should stay fixed */
+  .sidebar img {
+    width: 500px;
+    max-width: 500px;
+    height: 500px;
+  }
+
+  /* Feed images still responsive inside posts */
+  .feed-item img {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+  }
 }
+  
 </style>
 </head>
 
@@ -142,7 +164,7 @@ h2 { font-size: 16px; margin-top: 0px; }
 
     <p>for over a decade he has facilitated creative projects with young people across Wales, and partners like <i>Cadw</i>, <i>The King's Trust</i>, <i>Shakespeare’s Globe</i>, and <i>Tate</i>.</p>
 
-    <p>he is a <a href ="https://www.watershed.co.uk/studio/residents/gary-martin">Pervasive Media Studio</a> resident and a creative producer with <a href="https://www.pyka.wales" target="_blank">pyka</a>, where he develops interactive sound tools and experiences. he is also a lecturer in the school of creative arts at the <a href="https://instagram.com/uogmusic" target="_blank">University of Gloucestershire</a> where he manages releases on <a href="https://instagram.com/parklandrecords/" target="_blank">Parkland Records</a> and his teaching focuses on critical practice in relation to networked cultures and political ecology.</p>
+    <p>he is a <a href ="https://www.watershed.co.uk/studio/residents/gary-martin">Pervasive Media Studio</a> resident and a designer with <a href="https://www.pyka.wales" target="_blank">pyka</a>, where he develops interactive sound tools and experiences. he is also a lecturer at the <a href="https://instagram.com/uogmusic" target="_blank">University of Gloucestershire</a> where he manages releases on <a href="https://instagram.com/parklandrecords/" target="_blank">Parkland Records</a> and his teaching focuses on critical practice in relation to networked cultures and political ecology.</p>
 
     <img src="images/gmgm.jpg" alt="hi there">
 
@@ -153,7 +175,7 @@ h2 { font-size: 16px; margin-top: 0px; }
       <li><a href="https://are.na/gary-martin" target="_blank">are.na</a></li>
       <li><a href="https://www.pi.fyi/u/gary-martin" target="_blank">pi.fyi</a></li>
       <li><a href="https://www.instagram.com/gary_mart.in" target="_blank">stinkstagram</a></li>
-      <li><a href ="https://jackofthesuburbs.bandcamp.com">music</a></li>
+      <li><a href ="https://soundcloud.com/jackofthesuburbs/tracks">music</a></li>
       <li><a href="https://docs.google.com/spreadsheets/d/1Y6xKKKzslXaY3vpVGBGqZKdhsDl-wJ6_omdvGc-pjGo/edit?usp=sharing" target="_blank">cv + projects</a></li>
     </ul>
 
@@ -168,7 +190,7 @@ h2 { font-size: 16px; margin-top: 0px; }
   <div class="feed-wrapper">
     <section class="feed">
 
-      <h2>i guess this is a blog</h2>
+      <h2>now</h2>
 
       <!-- Blank template 
       <article class="feed-item" id="post-template">
@@ -181,6 +203,25 @@ h2 { font-size: 16px; margin-top: 0px; }
         <img src="images/now/feed-01.jpg" alt="placeholder">
         <p class="feed-end"><hr class="new"></p>
       </article>-->
+
+
+
+      <article class="feed-item" id="post-2026-02-15">
+        <h3>
+          <a href="#post-2026-02-15">flare</a>
+        </h3>
+        <time datetime="2026-02-15">15 February 2026</time>
+        <p>just pushed out a new tune/sketch on soundcloud, i'm trying to tune back in to the way I used to experiment with making music - part of which was just pushing stuff out on soundcloud for fun and not being too preious.</p>
+        <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2266772534&color=%231506f9&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/jackofthesuburbs" title="jack of the suburbs" target="_blank" style="color: #cccccc; text-decoration: none;">jack of the suburbs</a> · <a href="https://soundcloud.com/jackofthesuburbs/flare" title="flare" target="_blank" style="color: #cccccc; text-decoration: none;">flare</a></div>
+      </article>
+
+
+
+
+      
+
+
+
 
       <!-- Parkland.FM post -->
       <article class="feed-item" id="post-2026-02-13">
