@@ -25,39 +25,12 @@ body {
 
 a { color: #000; text-decoration: underline; }
 
-/*img {
-  width: 300px;
-  max-width: 300px;
-  height: 300px;
-  object-fit: cover;
-  display: block;
-  border-radius: 12px;
-}*/
-
 img {
   max-width: 100%;
   height: auto;
   display: block;
   border-radius: 12px;
 }
-
-.video-embed {
-  position: relative;
-  width: 100%;
-  max-width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-}
-
-.video-embed iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-hr.new { border-top: 1px dashed #1506f9; }
 
 p { max-width: 500px; }
 
@@ -66,111 +39,42 @@ ul { margin: 0; padding: 0; list-style-type: none; }
 ul li a { display: flex; align-items: center; text-decoration: none; width: max-content; }
 ul li a::after { display: inline-block; margin-left: 5px; content: '→'; }
 
-h2 { font-size: 13px; margin-top: 0px; }
-
-.feed-item { margin-bottom: 40px; }
-.feed-item h3 { font-size: 13px; margin: 0 0 4px 0; }
-.feed-item h3 a { color: #1506f9; }
-.feed-item time { font-size: 10px; display: block; margin-bottom: 6px; }
-/*.feed-item img { margin: 10px 0; width: 400px; max-width: 400px; height: auto; object-fit: initial; }*/
-
-.feed-item {
-  border: 1px dotted #1506f9; /* blue dotted line */
-  border-radius: 8px;          /* optional: rounded corners for a softer look */
-  padding: 16px;               /* space between content and border */
-  margin-bottom: 24px;         /* spacing between posts (adjust as needed) */
-}
-
-.feed-item img {
-  width: 100%;        /* take up all available width inside the feed-item */
-  max-width: 500px;   /* but never exceed 400px */
-  height: auto;       /* maintain aspect ratio */
-  object-fit: cover;  /* crops nicely if needed */
-  display: block;
-  margin: 10px 0;     /* keep spacing above/below image */
-  border-radius: 12px; /* keep same rounded corners as before */
-}
-
 /* Scrollbar styling */
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { box-shadow: inset 0 0 0px grey; border-radius: 10px; }
 ::-webkit-scrollbar-thumb { background: #1506f9; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #38c202; }
 
-/* ---------- Desktop ---------- */
-@media screen and (min-width: 900px) {
-  body { padding: 0; }
-
-  .layout { display: grid; grid-template-columns: auto 1fr; height: 100vh; }
-
-  /* Sidebar */
-  .sidebar {
-    padding: 40px;
-    width: 400px; /* 400px image + padding */
-    height: 100vh;
-    overflow-y: auto;
-    border-right: 1px solid #1506f9;
-  }
-
-  /* Feed wrapper takes full remaining width */
-  .feed-wrapper {
-    height: 100vh;
-    overflow-y: auto; /* scrollbar flush against right edge */
-  }
-
-  /* Feed column centered inside wrapper */
-  .feed {
-    width: 600px; /* same width as sidebar */
-    margin: 0 auto; /* centers feed content */
-    padding: 40px;
-  }
+/* Centered single-column layout */
+.layout {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
 }
 
-/* ---------- Mobile ---------- */
-@media screen and (max-width: 899px) {
+.sidebar {
+  width: 100%;
+  max-width: 500px;
+  padding: 40px 20px;
+}
 
-  body { padding: 20px; }
-
-  .layout { display: block; }
-
-  /* Constrain sidebar content */
-
-
-
-  .sidebar {
-    max-width: 500px;
-    margin: 0 auto 40px auto;  /* center + space below */
-  }
-
-  /* Constrain feed content */
-  .feed {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 0;
-  }
-
-  /* Keep dotted boxes from stretching */
-  .feed-item {
-    max-width: 500px;
-    margin: 0 auto 24px auto;
-  }
-
-  /* Sidebar image should stay fixed */
-  .sidebar img {
+.sidebar img {
   width: 100%;
   max-width: 500px;
   height: auto;
   margin: 0 auto;
 }
 
-  /* Feed images still responsive inside posts */
-  .feed-item img {
-    width: 100%;
-    max-width: 500px;
-    height: auto;
-  }
+.sidebar p,
+.sidebar ul {
+  margin-left: auto;
+  margin-right: auto;
 }
-  
+
+@media screen and (min-width: 900px) {
+  .sidebar { padding: 60px 40px; }
+}
+
 </style>
 </head>
 
@@ -184,9 +88,7 @@ h2 { font-size: 13px; margin-top: 0px; }
 
     <p><b>gary-martin</b> is an artist, designer, and researcher. he is interested in systems of production and consumption, and their ecological entanglement. his social practice spans participatory art, speculative tools, and audio-visual composition.</p>
 
-    <!--shaped by perspectives on new materialism, <a href ="https://www.pyka.wales/_files/ugd/0aa76c_87323b17629c462a9f9bf3d7bb052368.pdf" target="_blank">access-first design</a>, and bad environmentalism, -->
-
-    <p>for over a decade he has facilitated creative projects with young people across Wales, and partners like <i>Cadw</i>, <i>The King's Trust</i>, <i>Shakespeare’s Globe</i>, and <i>Tate</i>.</p>
+    <p>for over a decade he has facilitated creative projects with young people across Wales, and partners like <i>Cadw</i>, <i>The King's Trust</i>, <i>Shakespeare's Globe</i>, and <i>Tate</i>.</p>
 
     <p>he is a <a href ="https://www.watershed.co.uk/studio/residents/gary-martin">Pervasive Media Studio</a> resident and a designer with <a href="https://www.pyka.wales" target="_blank">pyka</a>, where he develops interactive sound tools and experiences. he is also a lecturer at the <a href="https://instagram.com/uogmusic" target="_blank">University of Gloucestershire</a> where he manages releases on <a href="https://instagram.com/parklandrecords/" target="_blank">Parkland Records</a> and his teaching focuses on critical practice in relation to networked cultures and political ecology.</p>
 
@@ -208,104 +110,6 @@ h2 { font-size: 13px; margin-top: 0px; }
       <a href="mailto:grmrtn@proton.me">email me</a>
     </p>
 
-  </div>
-
-  <!-- Feed wrapper for scrollbar flush right -->
-  <div class="feed-wrapper">
-    <section class="feed">
-
-      <h2>now</h2>
-
-      <!-- Blank template 
-      <article class="feed-item" id="post-template">
-        <h3>
-          <a href="#post-template">TITLE</a>
-        </h3>
-        <time datetime="">DATE</time>
-        <p>TEXT</p>
-        <p><a href="#" target="_blank">link</a></p>
-        <img src="images/now/feed-01.jpg" alt="placeholder">
-        <p class="feed-end"><hr class="new"></p>
-      </article>-->
-
-
-      <article class="feed-item" id="post-2026-02-26">
-        <h3>
-          <a href="#post-2026-02-26">Process-based Musicking</a>
-        </h3>
-        <time datetime="2026-02-26">26 February 2026</time>
-        <p>could we experience all this lovely new type of musicking beyond the scrolling feed? there’s so much great stuff being made, and i find it a shame it’s stuck on these platforms - i’d much prefer something like this 💭</p>
-        <p>i made this in p5.js, <a href="https://editor.p5js.org/jackofthesuburbs/full/DVT64SkiY">click here</a> to play with it in your browser.</p>
-
-        <iframe 
-        width="100%" 
-        height="315"
-        src="https://www.youtube.com/embed/uxZ83pdMVEI?autoplay=1&mute=1&loop=1&playlist=uxZ83pdMVEI"
-        title="YouTube video"
-        frameborder="0"
-        allow="autoplay"
-        allowfullscreen>
-        </iframe>
-
-
-      </article>
-
-      <article class="feed-item" id="post-2026-02-26">
-        <h3>
-          <a href="#post-2026-02-26">Linksite Profile Template</a>
-        </h3>
-        <time datetime="2026-02-26">26 February 2026</time>
-        <p>I made a template for a HTML linksite that people can use. I might do some free workshops getting people to make their own quick and simple site on Neocities. <a href="/files/profile_links_starter_kit_v2.zip" download> click here </a> to download the zip file which includes a single HTML file and a readme file with some instructions.</p>
-
-        <img src="https://live.staticflickr.com/65535/55117154352_fe25f7e35b_b.jpg">
-        <img src="https://live.staticflickr.com/65535/55118418865_d42660dfe9_b.jpg">
-      </article>
-
-
-
-      <article class="feed-item" id="post-2026-02-15">
-        <h3>
-          <a href="#post-2026-02-15">if not now, when?</a>
-        </h3>
-        <time datetime="2026-02-15">15 February 2026</time>
-        <p>just pushed out an album of music on soundcloud and <a href="https://jackofthesuburbs.bandcamp.com/album/if-not-now-when">bandcamp</a>, called "if not now, when?". it’s a collection of tracks that I worked on between 2017 and 2023, but due to ‘the great cider spill of 2017’, and ‘the hard drive crash of ‘23’, they will never be properly finished as their Ableton projects are no longer available. they were beginning to hold me back a bit creatively, as I have tried to recreate certain tracks from scratch, or make the best of a mix with incomplete files. but I’ve got new ideas I want to work on, so I thought the best way to honor these tracks would be to just release them in their last state. I still want to celebrate them being made and the fun I had making them. so here they are, imperfect snapshots of some of the music I made over the last few year.</p>
-        <iframe width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2191946804&color=%231506f9&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/jackofthesuburbs" title="jack of the suburbs" target="_blank" style="color: #cccccc; text-decoration: none;">jack of the suburbs</a> · <a href="https://soundcloud.com/jackofthesuburbs/sets/innw" title="if not now, when?" target="_blank" style="color: #cccccc; text-decoration: none;">if not now, when?</a></div>
-      </article>
-
-
-
-
-      
-
-
-
-
-      <!-- Parkland.FM post -->
-      <article class="feed-item" id="post-2026-02-13">
-        <h3>
-          <a href="#post-2026-02-13">Parkland.FM</a>
-        </h3>
-        <time datetime="2026-02-13">13 February 2026</time>
-        <p>i've been thinking about how to develop Parkland Records and there's been interest and ideas forming around its potential with radio-based projects. currently, some students are working on their own 20-minute mixes based around the NTS Supporter Radio theme '<a href="https://www.nts.live/projects/supporter-radio" target="_blank">Your Specialist Subject</a>', and some other students are working on a radio documentary spotlighting people who make music happen in Cheltenham/Gloucestershire.</p>
-        <p>in a recent staff meeting the theme of 'culture, place, and displacement' was discussed in relation to research activity of the school (i think) - and it got me thinking about <a href="https://fruitfulfm.jackmurraybrown.com">Fruitful.FM</a>, a 'temporary radio station housed inside a greenhouse'.</p>
-        <img src="images/now/fruitfulfm.jpg" alt="fruitful fm radio station">
-        <p>ambitiously, i'm wondering if there is a project here that could combine a number of courses to produce things like a temporary (maybe permanent) structure to house a radio station, and a radio series that explores the place and displacement of the plant life in the Park Campus, as '<a href="https://www.readmaurice.co.uk/2024/07/17/the-park/">there are some 900 trees in The Park which are native and non-native species... obtained from different parts of the world including the United States of America and Europe</a>'.</p>
-        <img src="images/now/parktrees.jpg" alt="park trees">
-        
-      </article>
-
-      <!-- Hello world! post -->
-      <article class="feed-item" id="post-2026-01-07">
-        <h3>
-          <a href="#post-2026-01-07">hello world!</a>
-        </h3>
-        <time datetime="2026-01-06">7 January 2026</time>
-        <p>hello reader, this post marks the return of me using a blog to track professional/creative/(some)personal actvities, keeping all my actvitiy on my site. this site/blog is a single html file that I will update via Github desktop app. I spent hours looking into various CMS systems and external/3rd party apps with different interfaces, but to be honest, I found them all to be that tiny bit too much effort to use regularly. what I really wanted was the ease of posting on Tumblr circa 2010, but without the fear of my blog disappearing if it went through another acquistion or MySpace style cull. so after trialling a few systems, I've gone for what feels like the option that offers the least friction for me to post updates and thoughts, and that's just editing this little html file on my laptop.</p>
-        <img src="images/now/desk26.jpg" alt="gm's desk">
-        
-      </article>
-
-    </section>
   </div>
 
 </div>
