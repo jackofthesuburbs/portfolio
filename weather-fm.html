@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" class="night">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>weather.fm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+  :root{
+    --dark:#0b0f10; --dark-rgb:11,15,16;
+    --light:#e9e4d6; --light-rgb:233,228,214;
+    --blue:#5b8aa6; --green:#6f8f6a; --yellow:#d9b25c;
+  }
+  html.night{--bg:var(--dark); --bg-rgb:var(--dark-rgb); --fg:var(--light); --fg-rgb:var(--light-rgb);}
+  html.day{--bg:var(--light); --bg-rgb:var(--light-rgb); --fg:var(--dark); --fg-rgb:var(--dark-rgb);}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;
+    background:var(--bg);color:var(--fg);
+    font-family:'Space Mono',monospace;
+    transition:background 1.6s ease, color 1.6s ease;}
+  #terrain{position:fixed;inset:0;width:100%;height:100%;display:block;}
+
+  #wordmark{
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%);
+    font-family:'Fraunces',serif;font-style:italic;font-weight:300;
+    font-size:15px;letter-spacing:0.14em;color:rgba(var(--fg-rgb),0.62);
+    pointer-events:none;opacity:0;transition:opacity 1.4s ease, color 1.6s ease;
+    text-transform:lowercase;
+  }
+  #wordmark.show{opacity:1;}
+
+  #weatherPanel{
+    position:fixed;top:20px;left:20px;
+    padding:14px 16px;border:1px solid rgba(var(--fg-rgb),0.18);
+    background:rgba(var(--bg-rgb),0.55);backdrop-filter:blur(6px);
+    border-radius:2px;font-size:11px;line-height:1.9;
+    letter-spacing:0.04em;min-width:158px;
+    opacity:0;transform:translateY(-6px);
+    transition:opacity 1s ease, transform 1s ease, background 1.6s ease, border-color 1.6s ease;
+  }
+  #weatherPanel.show{opacity:1;transform:translateY(0);}
+  #weatherPanel .row{display:flex;justify-content:space-between;gap:14px;}
+  #weatherPanel .label{color:rgba(var(--fg-rgb),0.62);text-transform:uppercase;font-size:9px;letter-spacing:0.12em;}
+  #weatherPanel .val{color:var(--fg);text-transform:lowercase;}
+  #clockBlock{padding-bottom:8px;margin-bottom:7px;border-bottom:1px solid rgba(var(--fg-rgb),0.15);}
+  #wTime{font-size:16px;letter-spacing:0.08em;color:var(--fg);}
+  #wDate{font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(var(--fg-rgb),0.55);margin-top:2px;}
+
+  #muteBtn{
+    position:fixed;top:20px;right:20px;width:38px;height:38px;
+    border:1px solid rgba(var(--fg-rgb),0.22);background:rgba(var(--bg-rgb),0.55);
+    backdrop-filter:blur(6px);border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;transition:opacity 1s ease, border-color 0.3s ease, background 1.6s ease;
+    color:var(--fg);
+  }
+  #muteBtn.show{opacity:1;}
+  #muteBtn:focus-visible{outline:2px solid var(--yellow);outline-offset:2px;}
+  #muteBtn svg{width:16px;height:16px;}
+
+  #credit{
+    position:fixed;left:20px;bottom:20px;font-size:10px;letter-spacing:0.05em;
+    opacity:0;transition:opacity 1s ease, color 1.6s ease;
+  }
+  #credit.show{opacity:1;}
+  #credit a{color:rgba(var(--fg-rgb),0.55);text-decoration:none;border-bottom:1px solid rgba(var(--fg-rgb),0.3);
+    transition:color 0.3s ease, border-color 0.3s ease;}
+  #credit a:hover, #credit a:focus-visible{color:var(--fg);border-color:var(--fg);}
+
+  #modal{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(6,8,9,0.72);backdrop-filter:blur(10px);
+    transition:opacity 0.9s ease;z-index:10;padding:24px;
+  }
+  #modal.hidden{opacity:0;pointer-events:none;}
+  #modalCard{max-width:400px;text-align:center;padding:8px;}
+  #modalCard h1{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:300;
+    font-size:42px;margin:0 0 18px;letter-spacing:0.01em;color:var(--light);
+    text-transform:lowercase;
+  }
+  #modalCard p{font-size:13px;line-height:1.7;color:rgba(233,228,214,0.62);margin:0 0 26px;letter-spacing:0.02em;}
+  #beginBtn{
+    font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.1em;
+    text-transform:lowercase;background:transparent;color:var(--light);
+    border:1px solid rgba(233,228,214,0.62);padding:12px 30px;border-radius:2px;
+    cursor:pointer;transition:border-color 0.3s ease, background 0.3s ease;
+  }
+  #beginBtn:hover, #beginBtn:focus-visible{border-color:var(--yellow);background:rgba(217,178,92,0.08);}
+  #beginBtn:disabled{opacity:0.5;cursor:default;}
+  #locNote{margin-top:16px;font-size:10px;color:rgba(233,228,214,0.62);opacity:0.8;min-height:14px;letter-spacing:0.05em;}
+
+  @media (prefers-reduced-motion: reduce){
+    #wordmark, #weatherPanel, #muteBtn, #credit, #modal, html,body{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="terrain"></canvas>
+
+<div id="weatherPanel">
+  <div id="clockBlock">
+    <div id="wTime">—</div>
+    <div id="wDate">—</div>
+  </div>
+  <div class="row"><span class="label">sky</span><span class="val" id="wSky">—</span></div>
+  <div class="row"><span class="label">temp</span><span class="val" id="wTemp">—</span></div>
+  <div class="row"><span class="label">humidity</span><span class="val" id="wHumidity">—</span></div>
+  <div class="row"><span class="label">rain</span><span class="val" id="wPrecip">—</span></div>
+  <div class="row"><span class="label">wind</span><span class="val" id="wWind">—</span></div>
+</div>
+
+<button id="muteBtn" aria-label="Mute audio" aria-pressed="false">
+  <svg id="muteIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9v6h4l5 5V4L7 9H3z"/>
+    <path d="M16 8.5a5 5 0 0 1 0 7"/>
+    <path d="M19 6a9 9 0 0 1 0 12"/>
+  </svg>
+</button>
+
+<div id="wordmark">weather.fm</div>
+
+<div id="credit">developed by <a href="https://gary-mart.in" target="_blank" rel="noopener">gary-martin</a></div>
+
+<div id="modal">
+  <div id="modalCard">
+    <h1>weather.fm</h1>
+    <p>the sky above you, turned into sound. needs your location and your speakers — headphones recommended.</p>
+    <button id="beginBtn">begin</button>
+    <div id="locNote"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- utils ---------- */
+const clamp01 = v => Math.max(0, Math.min(1, v));
+const rand = (a,b) => a + Math.random()*(b-a);
+
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a>>>15, 1 | a);
+    t = t + Math.imul(t ^ t>>>7, 61 | t) ^ t;
+    return ((t ^ t>>>14) >>> 0) / 4294967296;
+  };
+}
+function seedFromCoords(lat, lon){
+  return (Math.floor((lat+90)*10000) ^ Math.floor((lon+180)*10000)) >>> 0;
+}
+
+/* ---------- gradient noise (perlin-like) ---------- */
+function makeNoise(seed){
+  const rnd = mulberry32(seed);
+  const grad = new Map();
+  function gradAt(ix, iy){
+    const key = ix+','+iy;
+    let g = grad.get(key);
+    if(!g){ const a = rnd()*Math.PI*2; g = [Math.cos(a), Math.sin(a)]; grad.set(key,g); }
+    return g;
+  }
+  const smooth = t => t*t*t*(t*(t*6-15)+10);
+  const lerp = (a,b,t) => a+t*(b-a);
+  return function(x,y){
+    const x0=Math.floor(x), x1=x0+1, y0=Math.floor(y), y1=y0+1;
+    const sx=smooth(x-x0), sy=smooth(y-y0);
+    const dot=(ix,iy)=>{ const g=gradAt(ix,iy); return (x-ix)*g[0]+(y-iy)*g[1]; };
+    const ix0=lerp(dot(x0,y0),dot(x1,y0),sx);
+    const ix1=lerp(dot(x0,y1),dot(x1,y1),sx);
+    return lerp(ix0,ix1,sy);
+  };
+}
+let noise2D = makeNoise(1);
+function fbm(nx, ny, octaves=5){
+  let amp=0.5, freq=1, sum=0, norm=0;
+  for(let i=0;i<octaves;i++){
+    sum += noise2D(nx*freq, ny*freq)*amp;
+    norm += amp;
+    amp*=0.55; freq*=2;
+  }
+  return sum/norm;
+}
+
+/* ---------- terrain rendering ---------- */
+const canvas = document.getElementById('terrain');
+const ctx = canvas.getContext('2d');
+let W, H, dpr;
+function resize(){
+  dpr = Math.min(window.devicePixelRatio||1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize', resize);
+resize();
+
+let paletteBias = 0.4;
+function paletteColor(tPos){
+  const biased = clamp01(tPos*(0.55+paletteBias*0.9));
+  const stops = [
+    {t:0,   c:[91,138,166]},
+    {t:0.5, c:[111,143,106]},
+    {t:1,   c:[217,178,92]},
+  ];
+  let c0=stops[0], c1=stops[stops.length-1];
+  for(let i=0;i<stops.length-1;i++){
+    if(biased>=stops[i].t && biased<=stops[i+1].t){ c0=stops[i]; c1=stops[i+1]; break; }
+  }
+  const lt = (biased-c0.t)/((c1.t-c0.t)||1);
+  const r=Math.round(c0.c[0]+(c1.c[0]-c0.c[0])*lt);
+  const g=Math.round(c0.c[1]+(c1.c[1]-c0.c[1])*lt);
+  const b=Math.round(c0.c[2]+(c1.c[2]-c0.c[2])*lt);
+  return `rgb(${r},${g},${b})`;
+}
+function marchCell(h00,h10,h11,h01,x0,y0,x1,y1,threshold){
+  const corners=[{h:h00,p:[x0,y0]},{h:h10,p:[x1,y0]},{h:h11,p:[x1,y1]},{h:h01,p:[x0,y1]}];
+  const pts=[];
+  for(let i=0;i<4;i++){
+    const a=corners[i], b=corners[(i+1)%4];
+    if((a.h<threshold)!==(b.h<threshold)){
+      const t=(threshold-a.h)/(b.h-a.h);
+      pts.push([a.p[0]+(b.p[0]-a.p[0])*t, a.p[1]+(b.p[1]-a.p[1])*t]);
+    }
+  }
+  return pts;
+}
+
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let driftT = 0;
+let lastDraw = 0;
+
+function drawTerrain(now){
+  requestAnimationFrame(drawTerrain);
+  if(now - lastDraw < 90) return;
+  lastDraw = now;
+  if(!reducedMotion) driftT += 0.045;
+
+  const cols = 64, rows = 38;
+  const cw = W/cols, ch = H/rows;
+  const scale = 2.0;
+
+  const heights = [];
+  for(let j=0;j<=rows;j++){
+    const row=[];
+    for(let i=0;i<=cols;i++){
+      const nx=(i/cols)*scale, ny=(j/rows)*scale;
+      row.push((fbm(nx+driftT*0.05, ny+driftT*0.035)+1)/2);
+    }
+    heights.push(row);
+  }
+
+  ctx.clearRect(0,0,W,H);
+  const levels = 10;
+  for(let k=0;k<levels;k++){
+    const thr = 0.15 + k*(0.72/levels);
+    const tPos = k/(levels-1);
+    ctx.strokeStyle = paletteColor(tPos);
+    ctx.globalAlpha = 0.22 + 0.18*Math.sin(driftT*0.25+k*0.7);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for(let j=0;j<rows;j++){
+      for(let i=0;i<cols;i++){
+        const pts = marchCell(
+          heights[j][i], heights[j][i+1], heights[j+1][i+1], heights[j+1][i],
+          i*cw, j*ch, (i+1)*cw, (j+1)*ch, thr
+        );
+        if(pts.length>=2){ ctx.moveTo(pts[0][0],pts[0][1]); ctx.lineTo(pts[1][0],pts[1][1]); }
+        if(pts.length===4){ ctx.moveTo(pts[2][0],pts[2][1]); ctx.lineTo(pts[3][0],pts[3][1]); }
+      }
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+requestAnimationFrame(drawTerrain);
+
+/* ---------- weather ---------- */
+function describeTemp(t){ return t<0?'freezing':t<9?'cold':t<15?'cool':t<21?'mild':t<27?'warm':'hot'; }
+function describeSky(c){ return c<20?'clear':c<50?'partly cloudy':c<80?'cloudy':'overcast'; }
+function describePrecip(p){ return p<=0?'dry':p<0.5?'damp':p<4?'rain':'heavy rain'; }
+function describeWind(w){ return w<10?'calm':w<25?'breezy':w<45?'windy':'gale'; }
+function describeHumidity(h){ return h<30?'dry':h<60?'mild':h<80?'humid':'sticky'; }
+
+async function fetchWeather(lat, lon){
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,cloud_cover,precipitation,wind_speed_10m&daily=sunrise,sunset&timezone=auto`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('weather fetch failed');
+  return await res.json();
+}
+
+async function getLocation(){
+  const ipFallback = async () => {
+    try{
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      if(data && data.latitude) return {lat:data.latitude, lon:data.longitude};
+    }catch(e){}
+    document.getElementById('locNote').textContent = 'location unavailable — using a default';
+    return {lat:51.5074, lon:-0.1278};
+  };
+  return new Promise(resolve=>{
+    if(!navigator.geolocation){ resolve(ipFallback()); return; }
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({lat:pos.coords.latitude, lon:pos.coords.longitude}),
+      async () => resolve(await ipFallback()),
+      {timeout:6000}
+    );
+  });
+}
+
+/* ---------- clock / day-night ---------- */
+let locationTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+let sunriseHM = null, sunsetHM = null;
+function extractHM(iso){ return iso.slice(11,16); }
+
+function updateClock(){
+  const now = new Date();
+  let hm, dateStr;
+  try{
+    hm = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:locationTz}).format(now);
+    dateStr = new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:locationTz}).format(now);
+  }catch(e){
+    hm = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}).format(now);
+    dateStr = new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'short'}).format(now);
+  }
+  document.getElementById('wTime').textContent = hm;
+  document.getElementById('wDate').textContent = dateStr.toLowerCase();
+
+  let isDay;
+  if(sunriseHM && sunsetHM){
+    isDay = hm >= sunriseHM && hm < sunsetHM;
+  } else {
+    const h = now.getHours();
+    isDay = h>=6 && h<20;
+  }
+  document.documentElement.classList.toggle('day', isDay);
+  document.documentElement.classList.toggle('night', !isDay);
+}
+
+/* ---------- audio engine ---------- */
+let warmth=0.45, cloudiness=0.4, precipIntensity=0, windiness=0.2, humidityAmt=0.5;
+let padTimer, leadTimer, clickTimer, muted=false;
+let audioReady=false;
+
+let limiter, masterGain, reverb, chorus, padFilter, leadFilter, pad, lead, clickHPF, clickSend, clicks, noiseFilter, noiseGain, noise;
+
+function setupAudio(){
+  limiter = new Tone.Limiter(-1).toDestination();
+  masterGain = new Tone.Gain(0.85).connect(limiter);
+  reverb = new Tone.Reverb({decay:9, wet:0.35});
+  reverb.connect(masterGain);
+  chorus = new Tone.Chorus(3.3, 2, 0.25).start().connect(reverb);
+  padFilter = new Tone.Filter({frequency:1100, type:'lowpass', rolloff:-24}).connect(chorus);
+  leadFilter = new Tone.Filter({frequency:2400, type:'lowpass'}).connect(reverb);
+
+  pad = new Tone.PolySynth(Tone.FMSynth, {
+    harmonicity:1.5, modulationIndex:3,
+    envelope:{attack:4, decay:2, sustain:0.55, release:8},
+    modulationEnvelope:{attack:4, decay:2, sustain:0.4, release:8}
+  }).connect(padFilter);
+  pad.volume.value = -17;
+
+  lead = new Tone.Synth({
+    oscillator:{type:'sine'},
+    envelope:{attack:0.6, decay:1.2, sustain:0.15, release:3.2}
+  }).connect(leadFilter);
+  lead.volume.value = -12;
+
+  clickHPF = new Tone.Filter({frequency:700, type:'highpass'}).connect(masterGain);
+  clickSend = new Tone.Gain(0.15).connect(reverb);
+  clicks = new Tone.MetalSynth({
+    envelope:{attack:0.001, decay:0.12, release:0.04},
+    harmonicity:5.1, modulationIndex:14, resonance:1800, octaves:0.7
+  });
+  clicks.connect(clickHPF);
+  clicks.connect(clickSend);
+  clicks.volume.value = -24;
+
+  noiseFilter = new Tone.Filter({frequency:850, type:'bandpass', Q:0.7}).connect(reverb);
+  noiseGain = new Tone.Gain(0.02).connect(noiseFilter);
+  noise = new Tone.Noise('pink').connect(noiseGain).start();
+
+  audioReady = true;
+}
+
+function currentScale(){ return warmth<0.5 ? [0,3,5,7,10] : [0,2,4,7,9]; }
+
+function applyToAudio(){
+  if(!audioReady) return;
+  padFilter.frequency.rampTo(350 + warmth*2800, 5);
+  leadFilter.frequency.rampTo(900 + warmth*3200, 5);
+  reverb.wet.rampTo(0.22 + cloudiness*0.45, 5);
+  chorus.depth = clamp01(0.1 + humidityAmt*0.6);
+  noiseGain.gain.rampTo(0.015 + cloudiness*0.07, 6);
+  paletteBias = warmth;
+}
+
+function scheduleClicks(){
+  clearTimeout(clickTimer);
+  const minI = 0.4 + (1-precipIntensity)*4.2;
+  const maxI = 1.5 + (1-precipIntensity)*7;
+  const pitch = 260 + precipIntensity*550 + rand(-40,40);
+  if(Math.random() < 0.15 + precipIntensity*0.5){
+    clicks.frequency.value = pitch;
+    clicks.triggerAttackRelease('16n', Tone.now());
+  }
+  clickTimer = setTimeout(scheduleClicks, rand(minI,maxI)*1000);
+}
+
+function scheduleLead(){
+  clearTimeout(leadTimer);
+  const scale = currentScale();
+  const octaveBase = 2 + Math.round(warmth*3);
+  const semis = scale[Math.floor(Math.random()*scale.length)];
+  const note = Tone.Frequency('D'+octaveBase).transpose(semis).toNote();
+  lead.triggerAttackRelease(note, rand(1.5,4), Tone.now(), rand(0.25,0.6));
+  const minI = 2.5 - windiness*1.3;
+  const maxI = 11 - windiness*5.5;
+  leadTimer = setTimeout(scheduleLead, rand(Math.max(1.2,minI), Math.max(2.5,maxI))*1000);
+}
+
+function schedulePad(){
+  clearTimeout(padTimer);
+  const scale = currentScale();
+  const octaveBase = 1 + Math.round(warmth*2);
+  const rootMidi = Tone.Frequency('D'+octaveBase).toMidi();
+  const chordSize = 3 + Math.round(cloudiness*2);
+  const notes = [];
+  for(let i=0;i<chordSize;i++){
+    const semis = scale[Math.floor(Math.random()*scale.length)] + (Math.random()<0.3?12:0);
+    notes.push(Tone.Frequency(rootMidi+semis, 'midi').toNote());
+  }
+  const changeInterval = 22 - windiness*11;
+  pad.triggerAttackRelease(notes, changeInterval+rand(2,6), Tone.now(), 0.22+cloudiness*0.15);
+  padTimer = setTimeout(schedulePad, Math.max(9,changeInterval)*1000);
+}
+
+function startAudioLoops(){
+  scheduleClicks();
+  scheduleLead();
+  schedulePad();
+}
+
+function updateParamsFromWeather(c){
+  const temp = c.temperature_2m, cloud = c.cloud_cover, precip = c.precipitation,
+        wind = c.wind_speed_10m, humidity = c.relative_humidity_2m;
+  warmth = clamp01((temp+5)/35);
+  cloudiness = clamp01(cloud/100);
+  precipIntensity = clamp01(precip/6);
+  windiness = clamp01(wind/50);
+  humidityAmt = clamp01(humidity/100);
+
+  document.getElementById('wSky').textContent = describeSky(cloud);
+  document.getElementById('wTemp').textContent = describeTemp(temp);
+  document.getElementById('wHumidity').textContent = describeHumidity(humidity);
+  document.getElementById('wPrecip').textContent = describePrecip(precip);
+  document.getElementById('wWind').textContent = describeWind(wind);
+
+  applyToAudio();
+}
+
+/* ---------- mute ---------- */
+const muteBtn = document.getElementById('muteBtn');
+muteBtn.addEventListener('click', ()=>{
+  muted = !muted;
+  if(masterGain) masterGain.gain.rampTo(muted?0:0.85, 0.35);
+  muteBtn.setAttribute('aria-pressed', String(muted));
+  muteBtn.setAttribute('aria-label', muted?'Unmute audio':'Mute audio');
+  muteBtn.style.borderColor = muted ? 'var(--yellow)' : 'rgba(var(--fg-rgb),0.22)';
+});
+
+/* ---------- init flow ---------- */
+const modal = document.getElementById('modal');
+const beginBtn = document.getElementById('beginBtn');
+const locNote = document.getElementById('locNote');
+
+async function loadWeatherAndClock(coords){
+  const data = await fetchWeather(coords.lat, coords.lon);
+  locationTz = data.timezone || locationTz;
+  if(data.daily && data.daily.sunrise && data.daily.sunset){
+    sunriseHM = extractHM(data.daily.sunrise[0]);
+    sunsetHM = extractHM(data.daily.sunset[0]);
+  }
+  updateParamsFromWeather(data.current);
+  updateClock();
+}
+
+beginBtn.addEventListener('click', async ()=>{
+  beginBtn.disabled = true;
+  locNote.textContent = 'finding you…';
+  await Tone.start();
+  setupAudio();
+
+  const coords = await getLocation();
+  noise2D = makeNoise(seedFromCoords(coords.lat, coords.lon));
+
+  try{
+    await loadWeatherAndClock(coords);
+  }catch(e){
+    applyToAudio();
+    updateClock();
+  }
+  startAudioLoops();
+  setInterval(updateClock, 1000);
+
+  modal.classList.add('hidden');
+  document.getElementById('wordmark').classList.add('show');
+  document.getElementById('weatherPanel').classList.add('show');
+  document.getElementById('credit').classList.add('show');
+  muteBtn.classList.add('show');
+
+  setInterval(async ()=>{
+    try{ await loadWeatherAndClock(coords); }catch(e){}
+  }, 10*60*1000);
+});
+</script>
+</body>
+</html>
