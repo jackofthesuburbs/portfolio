@@ -31,12 +31,17 @@
   }
   #wordmark.show{opacity:1;}
 
-  #weatherPanel{
+  #topLeftStack{
     position:fixed;top:20px;left:20px;
+    display:flex;flex-direction:column;gap:10px;
+    min-width:158px;
+  }
+
+  #weatherPanel{
     padding:14px 16px;border:1px solid rgba(var(--fg-rgb),0.18);
     background:rgba(var(--bg-rgb),0.55);backdrop-filter:blur(6px);
     border-radius:2px;font-size:11px;line-height:1.9;
-    letter-spacing:0.04em;min-width:158px;
+    letter-spacing:0.04em;
     opacity:0;transform:translateY(-6px);
     transition:opacity 1s ease, transform 1s ease, background 1.6s ease, border-color 1.6s ease;
   }
@@ -101,16 +106,19 @@
 
 <canvas id="terrain"></canvas>
 
-<div id="weatherPanel">
-  <div id="clockBlock">
-    <div id="wTime">—</div>
-    <div id="wDate">—</div>
+<div id="topLeftStack">
+  <div id="weatherPanel">
+    <div id="clockBlock">
+      <div id="wTime">—</div>
+      <div id="wDate">—</div>
+    </div>
+    <div class="row"><span class="label">sky</span><span class="val" id="wSky">—</span></div>
+    <div class="row"><span class="label">temp</span><span class="val" id="wTemp">—</span></div>
+    <div class="row"><span class="label">humidity</span><span class="val" id="wHumidity">—</span></div>
+    <div class="row"><span class="label">rain</span><span class="val" id="wPrecip">—</span></div>
+    <div class="row"><span class="label">wind</span><span class="val" id="wWind">—</span></div>
   </div>
-  <div class="row"><span class="label">sky</span><span class="val" id="wSky">—</span></div>
-  <div class="row"><span class="label">temp</span><span class="val" id="wTemp">—</span></div>
-  <div class="row"><span class="label">humidity</span><span class="val" id="wHumidity">—</span></div>
-  <div class="row"><span class="label">rain</span><span class="val" id="wPrecip">—</span></div>
-  <div class="row"><span class="label">wind</span><span class="val" id="wWind">—</span></div>
+
 </div>
 
 <button id="muteBtn" aria-label="Mute audio" aria-pressed="false">
@@ -400,13 +408,11 @@ function applyToAudio(){
 
 function scheduleClicks(){
   clearTimeout(clickTimer);
-  const minI = 0.4 + (1-precipIntensity)*4.2;
-  const maxI = 1.5 + (1-precipIntensity)*7;
-  const pitch = 260 + precipIntensity*550 + rand(-40,40);
-  if(Math.random() < 0.15 + precipIntensity*0.5){
-    clicks.frequency.value = pitch;
-    clicks.triggerAttackRelease('16n', Tone.now());
-  }
+  const minI = 0.6 + (1-precipIntensity)*2.2; // dry: ~2.8s between hits, wet: ~0.6s
+  const maxI = 2.0 + (1-precipIntensity)*3.5; // dry: ~5.5s, wet: ~2s
+  const pitch = 260 + precipIntensity*550 + rand(-40,40); // dry: lower/woodier, wet: higher/glassier
+  clicks.frequency.value = pitch;
+  clicks.triggerAttackRelease('16n', Tone.now());
   clickTimer = setTimeout(scheduleClicks, rand(minI,maxI)*1000);
 }
 
