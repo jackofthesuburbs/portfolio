@@ -34,7 +34,7 @@
   #topLeftStack{
     position:fixed;top:20px;left:20px;
     display:flex;flex-direction:column;gap:10px;
-    min-width:165px;
+    min-width:168px;
   }
 
   #weatherPanel{
@@ -78,7 +78,7 @@
   #infoBtn[aria-pressed="true"]{border-color:var(--yellow);}
 
   #infoPanel{
-    display:none;max-width:165px;
+    display:none;max-width:168px;
     padding:12px 16px;border:1px solid rgba(var(--fg-rgb),0.18);
     background:rgba(var(--bg-rgb),0.55);backdrop-filter:blur(6px);
     border-radius:2px;font-size:10px;font-style: italic; line-height:1.65;letter-spacing:0.03em;
@@ -350,6 +350,7 @@ async function getLocation(){
 /* ---------- clock / day-night ---------- */
 let locationTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 let sunriseHM = null, sunsetHM = null;
+let isDaytime = true;
 function extractHM(iso){ return iso.slice(11,16); }
 
 function updateClock(){
@@ -372,16 +373,38 @@ function updateClock(){
     const h = now.getHours();
     isDay = h>=6 && h<20;
   }
+  isDaytime = isDay;
   document.documentElement.classList.toggle('day', isDay);
   document.documentElement.classList.toggle('night', !isDay);
 }
 
 /* ---------- audio engine ---------- */
 let warmth=0.45, cloudiness=0.4, precipIntensity=0, windiness=0.2, humidityAmt=0.5;
-let padTimer, leadTimer, clickTimer, muted=false;
+let currentTempC = 15;
+let padTimer, leadTimer, clickTimer, stabTimer, pluckTimer, noiseSwellTimer, muted=false;
 let audioReady=false;
 
-let limiter, masterGain, reverb, chorus, padFilter, leadFilter, pad, lead, clickHPF, clickSend, clicks, noiseFilter, noiseGain, noise;
+let limiter, masterGain, reverb, chorus, padFilter, leadFilter, pad, lead,
+    clickFilter, clickSend, click,
+    stabFilter, stabSend, stab,
+    pluckFilter, pluckSend, pluck,
+    noiseAutoFilter, noiseComb, noiseWetGain, noiseDryGain, noiseGain, noise;
+
+/* six five-note scales, keyed to the same temperature categories the
+   weather panel already uses — dark/tense at the cold end, lifted/bright
+   at the hot end. pad and lead both read from this table, so they're
+   always tonally anchored to the same key. */
+const scalesByTemp = {
+  freezing: [0,1,5,7,8],   // tense, semitone-heavy — most melancholic
+  cold:     [0,3,5,7,10],  // minor pentatonic
+  cool:     [0,2,3,7,9],   // dorian-flavoured pentatonic
+  mild:     [0,2,5,7,9],   // suspended, neither major nor minor
+  warm:     [0,2,4,7,9],   // major pentatonic
+  hot:      [0,2,4,6,9],   // lydian-flavoured — brightest, most lifted
+};
+function currentScale(){
+  return scalesByTemp[describeTemp(currentTempC)] || scalesByTemp.mild;
+}
 
 function setupAudio(){
   limiter = new Tone.Limiter(-1).toDestination();
@@ -405,43 +428,148 @@ function setupAudio(){
   }).connect(leadFilter);
   lead.volume.value = -12;
 
-  clickHPF = new Tone.Filter({frequency:700, type:'highpass'}).connect(masterGain);
-  clickSend = new Tone.Gain(0.15).connect(reverb);
-  clicks = new Tone.MetalSynth({
-    envelope:{attack:0.001, decay:0.12, release:0.04},
-    harmonicity:5.1, modulationIndex:14, resonance:1800, octaves:0.7
+  // percussion voice 1 — wooden knock rather than metallic clang: a
+  // MembraneSynth with a triangle oscillator and a very short, tight
+  // pitch drop reads as a knock/woodblock instead of a ring. tuned to
+  // the same scale as the pluck voice — Lucky Dragons' tuned-percussion
+  // approach — with a bit more reverb send to give it some room
+  clickFilter = new Tone.Filter({frequency:3200, type:'lowpass'}).connect(masterGain);
+  clickSend = new Tone.Gain(0.2).connect(reverb);
+  click = new Tone.MembraneSynth({
+    pitchDecay:0.015, octaves:1.2,
+    oscillator:{type:'triangle'},
+    envelope:{attack:0.001, decay:0.09, sustain:0, release:0.05}
   });
-  clicks.connect(clickHPF);
-  clicks.connect(clickSend);
-  clicks.volume.value = -24;
+  click.connect(clickFilter);
+  click.connect(clickSend);
+  click.volume.value = -14;
 
-  noiseFilter = new Tone.Filter({frequency:850, type:'bandpass', Q:0.7}).connect(reverb);
-  noiseGain = new Tone.Gain(0.02).connect(noiseFilter);
+  // percussion voice 2 — textural noise stab, filter centre tracks precipitation
+  stabFilter = new Tone.Filter({frequency:1200, type:'bandpass', Q:1.4}).connect(masterGain);
+  stabSend = new Tone.Gain(0.18).connect(reverb);
+  stab = new Tone.NoiseSynth({
+    noise:{type:'pink'},
+    envelope:{attack:0.005, decay:0.12, sustain:0, release:0.1}
+  });
+  stab.connect(stabFilter);
+  stab.connect(stabSend);
+  stab.volume.value = -16;
+
+  // percussion voice 3 — plucked tonal stab, drawn from the same scale as
+  // the melody/chords (the toy-instrument, handmade-electronics voice)
+  pluckFilter = new Tone.Filter({frequency:2600, type:'lowpass'}).connect(masterGain);
+  pluckSend = new Tone.Gain(0.12).connect(reverb);
+  pluck = new Tone.PluckSynth({ attackNoise:1, dampening:3200, resonance:0.82 });
+  pluck.connect(pluckFilter);
+  pluck.connect(pluckSend);
+  pluck.volume.value = -13;
+
+  // pink noise now swept by an LFO-driven filter rather than sitting static —
+  // sweep rate tracks wind (calmer air = slower drift), tonal range tracks
+  // temperature (warmer = filter sweeps higher/brighter)
+  noiseAutoFilter = new Tone.AutoFilter({
+    frequency: 0.02, baseFrequency: 550, octaves: 1.6,
+    filter: {type:'bandpass', Q:0.5}
+  }).start();
+  // feedback comb filter tuned to the current key's root — this is what
+  // actually gives the noise musicality: a short resonant delay turns
+  // broadband noise into something ringing quietly at a specific pitch,
+  // the same principle behind physical-modelled string synthesis
+  noiseComb = new Tone.FeedbackCombFilter({ delayTime:0.02, resonance:0.8 }).connect(reverb);
+  noiseAutoFilter.connect(noiseComb);
+  // dry path runs in parallel, unprocessed, so the raw noise character
+  // still comes through rather than everything passing through the
+  // filter/comb chain
+  noiseWetGain = new Tone.Gain(0.6).connect(noiseAutoFilter);
+  noiseDryGain = new Tone.Gain(0.55).connect(reverb);
+  noiseGain = new Tone.Gain(0);
+  noiseGain.connect(noiseWetGain);
+  noiseGain.connect(noiseDryGain);
   noise = new Tone.Noise('pink').connect(noiseGain).start();
 
   audioReady = true;
 }
 
-function currentScale(){ return warmth<0.5 ? [0,3,5,7,10] : [0,2,4,7,9]; }
-
 function applyToAudio(){
   if(!audioReady) return;
   padFilter.frequency.rampTo(350 + warmth*2800, 5);
   leadFilter.frequency.rampTo(900 + warmth*3200, 5);
-  reverb.wet.rampTo(0.22 + cloudiness*0.45, 5);
-  chorus.depth = clamp01(0.1 + humidityAmt*0.6);
-  noiseGain.gain.rampTo(0.015 + cloudiness*0.07, 6);
+  reverb.wet.rampTo(0.22 + cloudiness*0.45, 5);       // cloud cover -> reverb wetness
+  chorus.depth = clamp01(0.1 + humidityAmt*0.6);       // humidity -> chorus/detune thickness
+  noiseAutoFilter.frequency.rampTo(0.005 + windiness*0.013, 4); // wind -> sweep rate; even at max wind, period stays ~50s+
+  noiseAutoFilter.baseFrequency = 550 + warmth*400;               // warmth -> tonal range, floor raised well clear of mud
+  const sweepWidth = (1.3 + cloudiness*1.1) * (1 - humidityAmt*0.92); // humidity flattens the sweep toward static
+  noiseAutoFilter.octaves = sweepWidth;                            // cloud sets base width, humidity collapses it
+  const rootOctave = 1 + Math.round(warmth*2);                    // same register logic as schedulePad
+  const rootFreq = Tone.Frequency('D'+rootOctave).toFrequency();
+  noiseComb.delayTime.rampTo(1/rootFreq, 3);                      // comb resonance tracks the current key's root
   paletteBias = warmth;
 }
 
-function scheduleClicks(){
+/* ---------- pink noise: humidity-driven presence ----------
+   at low humidity it's barely there — short, soft pops separated by long
+   near-silent gaps. at high humidity the pops lengthen and the gaps
+   shrink until it reads as a fuller, steadier presence — but the ceiling
+   itself is capped modestly so "fuller" never tips into overbearing. */
+function scheduleNoiseSwell(){
+  clearTimeout(noiseSwellTimer);
+  const ceiling = 0.02 + humidityAmt*0.11;           // fuller when humid — more present at the peak than before
+  const floor = ceiling * (0.12 + humidityAmt*0.88); // near-silent when dry; genuinely meets the ceiling when humid, so no gaps
+  const rampUp = rand(0.6, 1.8) + humidityAmt*6;      // quick soft pop when dry, slow swell when humid
+  const rampDown = rand(0.6, 2.0) + humidityAmt*6;
+  const gap = rand(2000, 8000) * (1 - humidityAmt*0.85); // long gaps when dry, short/near-continuous when humid
+  noiseGain.gain.rampTo(ceiling, rampUp);
+  noiseSwellTimer = setTimeout(()=>{
+    noiseGain.gain.rampTo(floor, rampDown);
+    noiseSwellTimer = setTimeout(scheduleNoiseSwell, rampDown*1000 + gap);
+  }, rampUp*1000);
+}
+
+/* ---------- percussion: 3 independent voices ----------
+   each voice has its own clock and its own per-hit probability of firing.
+   at zero precipitation the probabilities sit around even odds, so the
+   three voices land unevenly against each other — present, but irregular
+   and not synced. as precipitation rises the probabilities climb toward
+   certainty and the intervals tighten, so all three converge into a dense,
+   near-constant layer together. */
+function scheduleClick(){
   clearTimeout(clickTimer);
-  const minI = 0.6 + (1-precipIntensity)*2.2; // dry: ~2.8s between hits, wet: ~0.6s
-  const maxI = 2.0 + (1-precipIntensity)*3.5; // dry: ~5.5s, wet: ~2s
-  const pitch = 260 + precipIntensity*550 + rand(-40,40); // dry: lower/woodier, wet: higher/glassier
-  clicks.frequency.value = pitch;
-  clicks.triggerAttackRelease('16n', Tone.now());
-  clickTimer = setTimeout(scheduleClicks, rand(minI,maxI)*1000);
+  const minI = 0.5 + (1-precipIntensity)*1.6;
+  const maxI = 1.4 + (1-precipIntensity)*2.8;
+  if(Math.random() < 0.55 + precipIntensity*0.45){
+    const scale = currentScale();
+    const octaveBase = 5 + Math.round(warmth); // sits above the pluck voice's register
+    const semis = scale[Math.floor(Math.random()*scale.length)];
+    const note = Tone.Frequency('D'+octaveBase).transpose(semis).toNote();
+    click.triggerAttackRelease(note, '16n', Tone.now());
+  }
+  clickTimer = setTimeout(scheduleClick, rand(minI,maxI)*1000);
+}
+
+function scheduleStab(){
+  clearTimeout(stabTimer);
+  const minI = 0.35 + (1-precipIntensity)*1.3;
+  const maxI = 0.9 + (1-precipIntensity)*2.2;
+  if(Math.random() < 0.5 + precipIntensity*0.5){
+    const filtFreq = 500 + precipIntensity*1600 + rand(-80,80);
+    stabFilter.frequency.rampTo(filtFreq, 0.05);
+    stab.triggerAttackRelease(rand(0.06,0.16), Tone.now());
+  }
+  stabTimer = setTimeout(scheduleStab, rand(minI,maxI)*1000);
+}
+
+function schedulePluck(){
+  clearTimeout(pluckTimer);
+  const minI = 0.45 + (1-precipIntensity)*1.7;
+  const maxI = 1.2 + (1-precipIntensity)*3.0;
+  if(Math.random() < 0.5 + precipIntensity*0.5){
+    const scale = currentScale();
+    const octaveBase = 4 + Math.round(warmth*2);
+    const semis = scale[Math.floor(Math.random()*scale.length)];
+    const note = Tone.Frequency('D'+octaveBase).transpose(semis).toNote();
+    pluck.triggerAttack(note, Tone.now());
+  }
+  pluckTimer = setTimeout(schedulePluck, rand(minI,maxI)*1000);
 }
 
 function scheduleLead(){
@@ -451,9 +579,10 @@ function scheduleLead(){
   const semis = scale[Math.floor(Math.random()*scale.length)];
   const note = Tone.Frequency('D'+octaveBase).transpose(semis).toNote();
   lead.triggerAttackRelease(note, rand(1.5,4), Tone.now(), rand(0.25,0.6));
-  const minI = 2.5 - windiness*1.3;
-  const maxI = 11 - windiness*5.5;
-  leadTimer = setTimeout(scheduleLead, rand(Math.max(1.2,minI), Math.max(2.5,maxI))*1000);
+  const dayNightFactor = isDaytime ? 0.68 : 1.3; // fuller (more frequent) by day
+  const minI = (2.5 - windiness*1.3) * dayNightFactor;
+  const maxI = (11 - windiness*5.5) * dayNightFactor;
+  leadTimer = setTimeout(scheduleLead, rand(Math.max(1,minI), Math.max(2,maxI))*1000);
 }
 
 function schedulePad(){
@@ -461,26 +590,30 @@ function schedulePad(){
   const scale = currentScale();
   const octaveBase = 1 + Math.round(warmth*2);
   const rootMidi = Tone.Frequency('D'+octaveBase).toMidi();
-  const chordSize = 3 + Math.round(cloudiness*2);
+  const chordSize = 3 + Math.round(cloudiness*2); // cloud cover -> notes stacked
   const notes = [];
   for(let i=0;i<chordSize;i++){
     const semis = scale[Math.floor(Math.random()*scale.length)] + (Math.random()<0.3?12:0);
     notes.push(Tone.Frequency(rootMidi+semis, 'midi').toNote());
   }
-  const changeInterval = 22 - windiness*11;
+  const changeInterval = 22 - windiness*11; // wind -> pace of chord change
   pad.triggerAttackRelease(notes, changeInterval+rand(2,6), Tone.now(), 0.22+cloudiness*0.15);
   padTimer = setTimeout(schedulePad, Math.max(9,changeInterval)*1000);
 }
 
 function startAudioLoops(){
-  scheduleClicks();
+  scheduleClick();
+  scheduleStab();
+  schedulePluck();
   scheduleLead();
   schedulePad();
+  scheduleNoiseSwell();
 }
 
 function updateParamsFromWeather(c){
   const temp = c.temperature_2m, cloud = c.cloud_cover, precip = c.precipitation,
         wind = c.wind_speed_10m, humidity = c.relative_humidity_2m;
+  currentTempC = temp;
   warmth = clamp01((temp+5)/35);
   cloudiness = clamp01(cloud/100);
   precipIntensity = clamp01(precip/6);
