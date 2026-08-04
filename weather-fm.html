@@ -431,8 +431,7 @@ function setupAudio(){
   // percussion voice 1 — wooden knock rather than metallic clang: a
   // MembraneSynth with a triangle oscillator and a very short, tight
   // pitch drop reads as a knock/woodblock instead of a ring. tuned to
-  // the same scale as the pluck voice — Lucky Dragons' tuned-percussion
-  // approach — with a bit more reverb send to give it some room
+  // the same scale as the pluck voice
   clickFilter = new Tone.Filter({frequency:3200, type:'lowpass'}).connect(masterGain);
   clickSend = new Tone.Gain(0.2).connect(reverb);
   click = new Tone.MembraneSynth({
@@ -456,7 +455,7 @@ function setupAudio(){
   stab.volume.value = -16;
 
   // percussion voice 3 — plucked tonal stab, drawn from the same scale as
-  // the melody/chords (the toy-instrument, handmade-electronics voice)
+  // the melody/chords
   pluckFilter = new Tone.Filter({frequency:2600, type:'lowpass'}).connect(masterGain);
   pluckSend = new Tone.Gain(0.12).connect(reverb);
   pluck = new Tone.PluckSynth({ attackNoise:1, dampening:3200, resonance:0.82 });
@@ -464,26 +463,17 @@ function setupAudio(){
   pluck.connect(pluckSend);
   pluck.volume.value = -13;
 
-  // pink noise now swept by an LFO-driven filter rather than sitting static —
+  // pink noise swept by an LFO-driven filter —
   // sweep rate tracks wind (calmer air = slower drift), tonal range tracks
   // temperature (warmer = filter sweeps higher/brighter)
   noiseAutoFilter = new Tone.AutoFilter({
     frequency: 0.02, baseFrequency: 550, octaves: 1.6,
     filter: {type:'bandpass', Q:0.5}
   }).start();
-  // feedback comb filter tuned to the current key's root — this is what
-  // actually gives the noise musicality: a short resonant delay turns
-  // broadband noise into something ringing quietly at a specific pitch,
-  // the same principle behind physical-modelled string synthesis
-  // resonant filter tuned to the current key's root — a single gentle
-  // "hum" around one pitch, more like a body-cavity resonance than a
-  // struck string. (a feedback comb filter was tried here first, but at
-  // audio-rate delay times it stacks a full evenly-spaced harmonic
-  // ladder on top of the noise, which reads as metallic/robotic — this
-  // avoids that entirely: one resonant peak, no harmonic stacking)
+  // feedback tone filter tuned to the current key's root
   noiseTone = new Tone.Filter({ frequency:110, type:'bandpass', Q:4 }).connect(reverb);
   noiseAutoFilter.connect(noiseTone);
-  // dry path runs in parallel, unprocessed, so the raw noise character
+  // dry path runs in parallel, unprocessed, so raw noise character
   // still comes through rather than everything passing through the
   // filter/comb chain
   noiseWetGain = new Tone.Gain(0.42).connect(noiseAutoFilter);
@@ -515,8 +505,8 @@ function applyToAudio(){
 /* ---------- pink noise: humidity-driven presence ----------
    at low humidity it's barely there — short, soft pops separated by long
    near-silent gaps. at high humidity the pops lengthen and the gaps
-   shrink until it reads as a fuller, steadier presence — but the ceiling
-   itself is capped modestly so "fuller" never tips into overbearing. */
+   shrink until it reads as a fuller, steadier presence — but ceiling
+   is capped */
 function scheduleNoiseSwell(){
   clearTimeout(noiseSwellTimer);
   const ceiling = 0.02 + humidityAmt*0.11;           // fuller when humid — more present at the peak than before
