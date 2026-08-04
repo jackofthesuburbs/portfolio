@@ -65,6 +65,28 @@
   #muteBtn:focus-visible{outline:2px solid var(--yellow);outline-offset:2px;}
   #muteBtn svg{width:16px;height:16px;}
 
+  #infoBtn{
+    position:fixed;top:68px;right:20px;width:38px;height:38px;
+    border:1px solid rgba(var(--fg-rgb),0.22);background:rgba(var(--bg-rgb),0.55);
+    backdrop-filter:blur(6px);border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;transition:opacity 1s ease, border-color 0.3s ease, background 1.6s ease;
+    color:var(--fg);font-family:'Space Mono',monospace;font-size:13px;
+  }
+  #infoBtn.show{opacity:1;}
+  #infoBtn:focus-visible{outline:2px solid var(--yellow);outline-offset:2px;}
+  #infoBtn[aria-pressed="true"]{border-color:var(--yellow);}
+
+  #infoPanel{
+    display:none;max-width:158px;
+    padding:12px 16px;border:1px solid rgba(var(--fg-rgb),0.18);
+    background:rgba(var(--bg-rgb),0.55);backdrop-filter:blur(6px);
+    border-radius:2px;font-size:10px;line-height:1.65;letter-spacing:0.03em;
+    color:rgba(var(--fg-rgb),0.8);
+    transition:background 1.6s ease, border-color 1.6s ease;
+  }
+  #infoPanel.open{display:block;}
+
   #credit{
     position:fixed;right:20px;bottom:20px;font-size:10px;letter-spacing:0.05em;
     opacity:0;transition:opacity 1s ease, color 1.6s ease;
@@ -98,7 +120,7 @@
   #locNote{margin-top:16px;font-size:10px;color:rgba(233,228,214,0.62);opacity:0.8;min-height:14px;letter-spacing:0.05em;}
 
   @media (prefers-reduced-motion: reduce){
-    #wordmark, #weatherPanel, #muteBtn, #credit, #modal, html,body{transition:none;}
+    #wordmark, #weatherPanel, #muteBtn, #infoBtn, #infoPanel, #credit, #modal, html,body{transition:none;}
   }
 </style>
 </head>
@@ -119,6 +141,8 @@
     <div class="row"><span class="label">wind</span><span class="val" id="wWind">—</span></div>
   </div>
 
+  <div id="infoPanel">weather fm turns the weather at your location into a live ambient composition, with visuals emerging from your coordinates.</div>
+
 </div>
 
 <button id="muteBtn" aria-label="Mute audio" aria-pressed="false">
@@ -127,6 +151,10 @@
     <path d="M16 8.5a5 5 0 0 1 0 7"/>
     <path d="M19 6a9 9 0 0 1 0 12"/>
   </svg>
+</button>
+
+<button id="infoBtn" aria-label="About this project" aria-pressed="false">
+  <span id="infoIcon">?</span>
 </button>
 
 <div id="wordmark">weather fm</div>
@@ -478,6 +506,17 @@ muteBtn.addEventListener('click', ()=>{
   muteBtn.style.borderColor = muted ? 'var(--yellow)' : 'rgba(var(--fg-rgb),0.22)';
 });
 
+/* ---------- info toggle ---------- */
+const infoBtn = document.getElementById('infoBtn');
+const infoPanel = document.getElementById('infoPanel');
+const infoIcon = document.getElementById('infoIcon');
+infoBtn.addEventListener('click', ()=>{
+  const open = infoPanel.classList.toggle('open');
+  infoIcon.textContent = open ? '\u00d7' : '?';
+  infoBtn.setAttribute('aria-pressed', String(open));
+  infoBtn.setAttribute('aria-label', open ? 'Close project info' : 'About this project');
+});
+
 /* ---------- init flow ---------- */
 const modal = document.getElementById('modal');
 const beginBtn = document.getElementById('beginBtn');
@@ -517,6 +556,7 @@ beginBtn.addEventListener('click', async ()=>{
   document.getElementById('weatherPanel').classList.add('show');
   document.getElementById('credit').classList.add('show');
   muteBtn.classList.add('show');
+  infoBtn.classList.add('show');
 
   setInterval(async ()=>{
     try{ await loadWeatherAndClock(coords); }catch(e){}
