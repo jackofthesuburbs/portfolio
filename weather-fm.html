@@ -34,7 +34,7 @@
   #topLeftStack{
     position:fixed;top:20px;left:20px;
     display:flex;flex-direction:column;gap:10px;
-    min-width:170px;
+    min-width:158px;
   }
 
   #weatherPanel{
@@ -78,7 +78,7 @@
   #infoBtn[aria-pressed="true"]{border-color:var(--yellow);}
 
   #infoPanel{
-    display:none;max-width:170px;
+    display:none;max-width:158px;
     padding:12px 16px;border:1px solid rgba(var(--fg-rgb),0.18);
     background:rgba(var(--bg-rgb),0.55);backdrop-filter:blur(6px);
     border-radius:2px;font-size:10px;font-style: italic; line-height:1.65;letter-spacing:0.03em;
@@ -388,7 +388,7 @@ let limiter, masterGain, reverb, chorus, padFilter, leadFilter, pad, lead,
     clickFilter, clickSend, click,
     stabFilter, stabSend, stab,
     pluckFilter, pluckSend, pluck,
-    noiseAutoFilter, noiseComb, noiseWetGain, noiseDryGain, noiseGain, noise;
+    noiseAutoFilter, noiseTone, noiseWetGain, noiseDryGain, noiseGain, noise;
 
 /* six five-note scales, keyed to the same temperature categories the
    weather panel already uses — dark/tense at the cold end, lifted/bright
@@ -475,8 +475,14 @@ function setupAudio(){
   // actually gives the noise musicality: a short resonant delay turns
   // broadband noise into something ringing quietly at a specific pitch,
   // the same principle behind physical-modelled string synthesis
-  noiseComb = new Tone.FeedbackCombFilter({ delayTime:0.02, resonance:0.5 }).connect(reverb);
-  noiseAutoFilter.connect(noiseComb);
+  // resonant filter tuned to the current key's root — a single gentle
+  // "hum" around one pitch, more like a body-cavity resonance than a
+  // struck string. (a feedback comb filter was tried here first, but at
+  // audio-rate delay times it stacks a full evenly-spaced harmonic
+  // ladder on top of the noise, which reads as metallic/robotic — this
+  // avoids that entirely: one resonant peak, no harmonic stacking)
+  noiseTone = new Tone.Filter({ frequency:110, type:'bandpass', Q:4 }).connect(reverb);
+  noiseAutoFilter.connect(noiseTone);
   // dry path runs in parallel, unprocessed, so the raw noise character
   // still comes through rather than everything passing through the
   // filter/comb chain
@@ -502,7 +508,7 @@ function applyToAudio(){
   noiseAutoFilter.octaves = sweepWidth;                            // cloud sets base width, humidity collapses it
   const rootOctave = 1 + Math.round(warmth*2);                    // same register logic as schedulePad
   const rootFreq = Tone.Frequency('D'+rootOctave).toFrequency();
-  noiseComb.delayTime.rampTo(1/rootFreq, 3);                      // comb resonance tracks the current key's root
+  noiseTone.frequency.rampTo(rootFreq, 3);                        // resonance tracks the current key's root
   paletteBias = warmth;
 }
 
