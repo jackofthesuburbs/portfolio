@@ -1,3 +1,107 @@
+
+
+Saved memory
+Saved memory
+Both are worth taking seriously, and I think they resolve your "how does this tie in" doubt differently.
+
+The mic layer, reconsidered
+
+I think it ties in more directly than you're giving it credit for. Right now the piece listens to the atmosphere at a distance — an API's regional reading of temperature and cloud cover. A mic feed is the piece listening to the atmosphere right where you are: the actual room tone, the wind against a window, rain on a roof, traffic outside. It's not a competing idea to the weather-data layer, it's a scale change — regional data vs. immediate acoustic environment. That's a real conceptual pairing, not just "extra input."
+
+Where it gets interesting is how it enters the mix. A few options with very different characters:
+
+Direct-ish texture: heavily filtered/granular processing of the live signal, kept low and blended into the noise/reverb bed — closer to how field recording gets folded into ambient work generally.
+Envelope-only: don't feed the audio itself into the mix at all — just use the mic's amplitude as a modulation source. A gust or a loud passing car doesn't get heard directly, it nudges click density or reverb wetness for a moment. This sidesteps almost all privacy/aesthetic risk (no voice ever audible, ever) while still making the room present and reactive.
+Granular clouds: capture short buffers and smear/pitch-shift them into slowly evolving textures — closest to Lucky Dragons' own live-processing vocabulary, and distinct enough from raw mic pickup that it reads as instrument, not surveillance.
+I'd lean toward envelope-only or granular over direct pass-through — direct mic audio risks either dead silence (most rooms) or, if someone's nearby, an intelligibility problem you don't want (voices leaking into an ambient piece is a different kind of piece). Whichever you pick, it needs its own explicit opt-in toggle, separate from the initial location/audio prompt, with a visible "mic live" indicator — not bundled into "begin."
+
+The felt-experience layer
+
+I think this is the stronger idea, and it's doing something the mic can't: right now the entire piece is built from official readings — an API's number for temperature, an API's number for cloud cover. There's no channel for the fact that "cold" reads completely differently to someone who's just come in from outside versus someone who's been in a warm room all day, or that "overcast" can feel oppressive to one person and cosy to another. A qualitative input from the visitor would put a second, subjective reading alongside the objective one — and the sound (and maybe the visual) could reflect the gap between what the sky is doing and what it feels like to be under it.
+
+Concretely, I'd avoid a text box — it breaks the ambient, non-verbal mood and asks people to over-articulate. Better as something closer to a gesture than a form:
+
+a small vocabulary of felt-words (heavy / bright / restless / still / raw / soft) offered as quiet tap targets, not a dropdown
+or a single loose axis — something like "closed in ↔ open" — as a short drag, more feeling than measurement
+offered once near the start (a natural follow-on from "begin"), with a small always-available control to update it later without breaking immersion — same visual register as the mute button, so it doesn't read as a "settings" intrusion
+That reading could bias the same parameters the weather data already drives (a human offset layered on the API baseline — if someone says it feels heavier than the numbers suggest, push reverb/density further than temperature alone would). And visually, it's tempting to let it show up as a second, distinctly coloured isoline set overlaid on the "official" contour lines — literalizing the gap between the map and the territory, data versus experience.
+
+If I had to pick a starting point
+
+The qualitative layer is cheaper to build, has no permissions/privacy surface to manage, and does more thematically distinctive work — it's the piece that only exists because a person is standing in the weather, not just downloading a description of it. I'd prototype that first. The mic layer is the more ambitious, more sonically interesting build (and closer to Lucky Dragons' own methods), but I'd want the felt-experience layer's interaction pattern proven out first, since the two could genuinely coexist — data / place / person as three distinct sources feeding one composition.
+
+Want me to sketch out the interaction flow for the qualitative layer in more detail, or start prototyping it?
+
+let's try the granular clouds processing the mic idea first - add a small box underneath the existing weather data/category box for UI leading to mic permissions pop up. maybe a disclaimer that nothing gets recorded (if that is necessary/essential/appropriate, you menitoned surveillance concerns, i'm not capturing anything here and don't intend to)
+
+
+Architected mic input UI with granular processing chain and privacy disclaimer
+Architected mic input UI with granular processing chain and privacy disclaimer
+This is a good instinct on the disclaimer, and worth being precise rather than blanket-reassuring: a granular/smear effect on live input does have to hold a few hundred milliseconds of audio in short delay lines to do its job — so "nothing is captured, ever" wouldn't quite be true. What is true, and what I'll say in the UI: nothing is saved, stored, or sent anywhere — it's processed instant-to-instant in the browser and discarded as it plays. I'll also close the actual mic hardware (not just mute it) the moment it's toggled off, so the browser's own mic-in-use indicator reflects reality.
+
+I'll work from the version you pasted as the base. First, a checkpoint:
+
+
+Add granular-cloud mic layer on top of the user's current working version, saving a v0.2 checkpoint from before this change
+Add granular-cloud mic layer on top of the user's current working version, saving a v0.2 checkpoint from before this change
+the mix feed is quite quiet, but then the overall mix is quite after i have enabled the mic - so it's unclear if the mic feed is too quiet, or the whole mix is quiet, inlucding the mic feed, after turning the mic on, what's going on?
+
+
+Diagnosed mic-induced mix quieting through feedback loops and OS audio ducking
+Diagnosed mic-induced mix quieting through feedback loops and OS audio ducking
+A few things could be going on here — let's separate the two symptoms.
+
+"Mic feed is quiet" — likely the browser, not your gain staging. Tone.UserMedia opens the mic with the browser's default voice-call constraints: echo cancellation, noise suppression, and automatic gain control all on. That's tuned for making speech intelligible, and it actively suppresses anything that isn't speech-shaped — which is exactly your ambient room texture. That's a real bug in the current build, not just a levels question. Let me fix it by requesting the raw signal.
+
+"Everything gets quiet after mic is on" — two real suspects, and I need one detail from you to tell which:
+
+OS-level ducking. Windows in particular has a system setting that treats any live microphone capture as "communications activity" and automatically drops the volume of everything else playing — including the browser tab — while the mic is open. This is entirely outside the page's control; it lives in Sound settings → Communications.
+Acoustic feedback through the limiter. If you're on speakers rather than headphones, the mic is picking up the site's own output, feeding it back through the granular chain into the shared reverb bus, and the master limiter (which exists to stop clipping) clamps down harder to control those extra peaks — squashing the loudness of the whole mix, not just the mic layer.
+When you're testing, are you on speakers or headphones?
+phone mic and speakers
+
+Diagnosed mobile audio feedback and formulated headphone recommendation fix
+Diagnosed mobile audio feedback and formulated headphone recommendation fix
+That combination — phone mic and phone speaker, no headphones — points pretty clearly at both mechanisms at once, and on mobile it's worse than on desktop: iOS and Android both force the audio session into a voice-optimized "communications" mode the moment a page opens the mic without headphones connected, and that mode's echo cancellation ducks all page audio, not just what the mic is hearing — often regardless of what constraints the page requests. It's a platform behavior, not really something the page can fully override.
+
+Two things I can actually do from the code side:
+
+Stop requesting the browser's voice-call processing at all (the fix I mentioned) — currently Tone.UserMedia opens the mic with echo cancellation, noise suppression, and auto-gain all on by default, which is actively working against an ambient texture. I'll request the raw signal instead.
+Be upfront in the UI that headphones matter specifically for the mic layer, not just generally — since without them, the phone's own audio session may quietly duck everything while it's on.
+
+Viewed 3 files
+Viewed 3 files
+Now replacing the mic capture with a raw, unprocessed getUserMedia stream and a stronger send level:
+
+
+Edited 2 files
+Edited 2 files
+Now strengthening the headphones note specifically on the mic panel, since a general note in the opening modal isn't enough:
+
+
+Edited a file, ran a command, read a file
+Edited a file, ran a command, read a file
+Two changes:
+
+Mic capture now requests echoCancellation:false, noiseSuppression:false, autoGainControl:false directly via getUserMedia, instead of going through Tone.UserMedia's voice-call defaults — should make the captured texture noticeably louder/richer on its own. Send level into the mix is also bumped from 0.16 to 0.3.
+Mic note now explicitly flags phone speaker + mic as the combination that causes ducking/feedback, rather than a generic headphones suggestion.
+Worth knowing though: on iOS Safari especially, those false constraints are sometimes silently overridden by the OS once it detects speaker+mic running together without headphones — the platform decides you're in a "communications" context and applies its own processing regardless of what the page asks for. If it's still ducking after this, that's very likely what's happening, and the honest fix is headphones rather than more code — there isn't a reliable web API to detect or override it from the page side. Worth testing on headphones once to confirm the mic layer itself sounds right in isolation, which tells us whether it's the OS ducking or something still off in the chain.
+
+
+Weather fm
+Code · HTML 
+
+
+Usage limit reached ∙ Resets 7:40 PM ∙ limits shared with Claude Code
+Get more usage
+
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+
+
+Weather fm v0.2 · HTML
 <!DOCTYPE html>
 <html lang="en" class="night">
 <head>
@@ -21,7 +125,7 @@
     font-family:'Space Mono',monospace;
     transition:background 1.6s ease, color 1.6s ease;}
   #terrain{position:fixed;inset:0;width:100%;height:100%;display:block;}
-
+ 
   #wordmark{
     position:fixed;left:20px;bottom:20px;
     font-family:'Fraunces',serif;font-style:italic;font-weight:300;
@@ -30,13 +134,13 @@
     text-transform:lowercase;
   }
   #wordmark.show{opacity:1;}
-
+ 
   #topLeftStack{
     position:fixed;top:20px;left:20px;
     display:flex;flex-direction:column;gap:10px;
     min-width:158px;
   }
-
+ 
   #weatherPanel{
     padding:14px 16px;border:1px solid rgba(var(--fg-rgb),0.18);
     background:rgba(var(--bg-rgb),0.55);backdrop-filter:blur(6px);
@@ -52,7 +156,7 @@
   #clockBlock{padding-bottom:8px;margin-bottom:7px;border-bottom:1px solid rgba(var(--fg-rgb),0.15);}
   #wTime{font-size:16px;letter-spacing:0.08em;color:var(--fg);}
   #wDate{font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(var(--fg-rgb),0.55);margin-top:2px;}
-
+ 
   #micPanel{
     padding:12px 16px;border:1px solid rgba(var(--fg-rgb),0.18);
     background:rgba(var(--bg-rgb),0.55);backdrop-filter:blur(6px);
@@ -77,7 +181,7 @@
     margin-top:8px;font-size:9px;line-height:1.6;letter-spacing:0.02em;
     color:rgba(var(--fg-rgb),0.5);text-transform:none;
   }
-
+ 
   #muteBtn{
     position:fixed;top:20px;right:20px;width:38px;height:38px;
     border:1px solid rgba(var(--fg-rgb),0.22);background:rgba(var(--bg-rgb),0.55);
@@ -89,7 +193,7 @@
   #muteBtn.show{opacity:1;}
   #muteBtn:focus-visible{outline:2px solid var(--yellow);outline-offset:2px;}
   #muteBtn svg{width:16px;height:16px;}
-
+ 
   #credit{
     position:fixed;right:20px;bottom:20px;font-size:10px;letter-spacing:0.05em;
     opacity:0;transition:opacity 1s ease, color 1.6s ease;
@@ -98,7 +202,7 @@
   #credit a{color:rgba(var(--fg-rgb),0.55);text-decoration:none;border-bottom:1px solid rgba(var(--fg-rgb),0.3);
     transition:color 0.3s ease, border-color 0.3s ease;}
   #credit a:hover, #credit a:focus-visible{color:var(--fg);border-color:var(--fg);}
-
+ 
   #modal{
     position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
     background:rgba(6,8,9,0.72);backdrop-filter:blur(10px);
@@ -121,16 +225,16 @@
   #beginBtn:hover, #beginBtn:focus-visible{border-color:var(--yellow);background:rgba(217,178,92,0.08);}
   #beginBtn:disabled{opacity:0.5;cursor:default;}
   #locNote{margin-top:16px;font-size:10px;color:rgba(233,228,214,0.62);opacity:0.8;min-height:14px;letter-spacing:0.05em;}
-
+ 
   @media (prefers-reduced-motion: reduce){
     #wordmark, #weatherPanel, #micPanel, #muteBtn, #credit, #modal, html,body{transition:none;}
   }
 </style>
 </head>
 <body>
-
+ 
 <canvas id="terrain"></canvas>
-
+ 
 <div id="topLeftStack">
   <div id="weatherPanel">
     <div id="clockBlock">
@@ -143,14 +247,14 @@
     <div class="row"><span class="label">rain</span><span class="val" id="wPrecip">—</span></div>
     <div class="row"><span class="label">wind</span><span class="val" id="wWind">—</span></div>
   </div>
-
+ 
   <div id="micPanel">
     <div class="row"><span class="label">mic</span><span class="val" id="micStatus">off</span></div>
     <button id="micToggle" aria-pressed="false">enable mic</button>
-    <div id="micNote">live-.</div>
+    <div id="micNote">live-processing only.</div>
   </div>
 </div>
-
+ 
 <button id="muteBtn" aria-label="Mute audio" aria-pressed="false">
   <svg id="muteIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
     <path d="M3 9v6h4l5 5V4L7 9H3z"/>
@@ -158,11 +262,11 @@
     <path d="M19 6a9 9 0 0 1 0 12"/>
   </svg>
 </button>
-
+ 
 <div id="wordmark">weather-fm</div>
-
+ 
 <div id="credit">developed by <a href="https://gary-mart.in" target="_blank" rel="noopener">gary-martin</a></div>
-
+ 
 <div id="modal">
   <div id="modalCard">
     <h1>weather-fm</h1>
@@ -171,12 +275,12 @@
     <div id="locNote"></div>
   </div>
 </div>
-
+ 
 <script>
 /* ---------- utils ---------- */
 const clamp01 = v => Math.max(0, Math.min(1, v));
 const rand = (a,b) => a + Math.random()*(b-a);
-
+ 
 function mulberry32(a){
   return function(){
     a |= 0; a = a + 0x6D2B79F5 | 0;
@@ -188,7 +292,7 @@ function mulberry32(a){
 function seedFromCoords(lat, lon){
   return (Math.floor((lat+90)*10000) ^ Math.floor((lon+180)*10000)) >>> 0;
 }
-
+ 
 /* ---------- gradient noise (perlin-like) ---------- */
 function makeNoise(seed){
   const rnd = mulberry32(seed);
@@ -220,7 +324,7 @@ function fbm(nx, ny, octaves=5){
   }
   return sum/norm;
 }
-
+ 
 /* ---------- terrain rendering ---------- */
 const canvas = document.getElementById('terrain');
 const ctx = canvas.getContext('2d');
@@ -234,7 +338,7 @@ function resize(){
 }
 window.addEventListener('resize', resize);
 resize();
-
+ 
 let paletteBias = 0.4;
 function paletteColor(tPos){
   const biased = clamp01(tPos*(0.55+paletteBias*0.9));
@@ -265,21 +369,21 @@ function marchCell(h00,h10,h11,h01,x0,y0,x1,y1,threshold){
   }
   return pts;
 }
-
+ 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let driftT = 0;
 let lastDraw = 0;
-
+ 
 function drawTerrain(now){
   requestAnimationFrame(drawTerrain);
   if(now - lastDraw < 90) return;
   lastDraw = now;
   if(!reducedMotion) driftT += 0.045;
-
+ 
   const cols = 64, rows = 38;
   const cw = W/cols, ch = H/rows;
   const scale = 2.0;
-
+ 
   const heights = [];
   for(let j=0;j<=rows;j++){
     const row=[];
@@ -289,7 +393,7 @@ function drawTerrain(now){
     }
     heights.push(row);
   }
-
+ 
   ctx.clearRect(0,0,W,H);
   const levels = 10;
   for(let k=0;k<levels;k++){
@@ -314,21 +418,21 @@ function drawTerrain(now){
   ctx.globalAlpha = 1;
 }
 requestAnimationFrame(drawTerrain);
-
+ 
 /* ---------- weather ---------- */
 function describeTemp(t){ return t<0?'freezing':t<9?'cold':t<15?'cool':t<21?'mild':t<27?'warm':'hot'; }
 function describeSky(c){ return c<20?'clear':c<50?'partly cloudy':c<80?'cloudy':'overcast'; }
 function describePrecip(p){ return p<=0?'dry':p<0.5?'damp':p<4?'rain':'heavy rain'; }
 function describeWind(w){ return w<10?'calm':w<25?'breezy':w<45?'windy':'gale'; }
 function describeHumidity(h){ return h<30?'dry':h<60?'mild':h<80?'humid':'sticky'; }
-
+ 
 async function fetchWeather(lat, lon){
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,cloud_cover,precipitation,wind_speed_10m&daily=sunrise,sunset&timezone=auto`;
   const res = await fetch(url);
   if(!res.ok) throw new Error('weather fetch failed');
   return await res.json();
 }
-
+ 
 async function getLocation(){
   const ipFallback = async () => {
     try{
@@ -348,12 +452,12 @@ async function getLocation(){
     );
   });
 }
-
+ 
 /* ---------- clock / day-night ---------- */
 let locationTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 let sunriseHM = null, sunsetHM = null;
 function extractHM(iso){ return iso.slice(11,16); }
-
+ 
 function updateClock(){
   const now = new Date();
   let hm, dateStr;
@@ -366,7 +470,7 @@ function updateClock(){
   }
   document.getElementById('wTime').textContent = hm;
   document.getElementById('wDate').textContent = dateStr.toLowerCase();
-
+ 
   let isDay;
   if(sunriseHM && sunsetHM){
     isDay = hm >= sunriseHM && hm < sunsetHM;
@@ -377,14 +481,14 @@ function updateClock(){
   document.documentElement.classList.toggle('day', isDay);
   document.documentElement.classList.toggle('night', !isDay);
 }
-
+ 
 /* ---------- audio engine ---------- */
 let warmth=0.45, cloudiness=0.4, precipIntensity=0, windiness=0.2, humidityAmt=0.5;
 let padTimer, leadTimer, clickTimer, muted=false;
 let audioReady=false;
-
+ 
 let limiter, masterGain, reverb, chorus, padFilter, leadFilter, pad, lead, clickHPF, clickSend, clicks, noiseFilter, noiseGain, noise;
-
+ 
 function setupAudio(){
   limiter = new Tone.Limiter(-1).toDestination();
   masterGain = new Tone.Gain(0.85).connect(limiter);
@@ -393,20 +497,20 @@ function setupAudio(){
   chorus = new Tone.Chorus(3.3, 2, 0.25).start().connect(reverb);
   padFilter = new Tone.Filter({frequency:1100, type:'lowpass', rolloff:-24}).connect(chorus);
   leadFilter = new Tone.Filter({frequency:2400, type:'lowpass'}).connect(reverb);
-
+ 
   pad = new Tone.PolySynth(Tone.FMSynth, {
     harmonicity:1.5, modulationIndex:3,
     envelope:{attack:4, decay:2, sustain:0.55, release:8},
     modulationEnvelope:{attack:4, decay:2, sustain:0.4, release:8}
   }).connect(padFilter);
   pad.volume.value = -17;
-
+ 
   lead = new Tone.Synth({
     oscillator:{type:'sine'},
     envelope:{attack:0.6, decay:1.2, sustain:0.15, release:3.2}
   }).connect(leadFilter);
   lead.volume.value = -12;
-
+ 
   clickHPF = new Tone.Filter({frequency:700, type:'highpass'}).connect(masterGain);
   clickSend = new Tone.Gain(0.15).connect(reverb);
   clicks = new Tone.MetalSynth({
@@ -416,16 +520,16 @@ function setupAudio(){
   clicks.connect(clickHPF);
   clicks.connect(clickSend);
   clicks.volume.value = -24;
-
+ 
   noiseFilter = new Tone.Filter({frequency:850, type:'bandpass', Q:0.7}).connect(reverb);
   noiseGain = new Tone.Gain(0.02).connect(noiseFilter);
   noise = new Tone.Noise('pink').connect(noiseGain).start();
-
+ 
   audioReady = true;
 }
-
+ 
 function currentScale(){ return warmth<0.5 ? [0,3,5,7,10] : [0,2,4,7,9]; }
-
+ 
 function applyToAudio(){
   if(!audioReady) return;
   padFilter.frequency.rampTo(350 + warmth*2800, 5);
@@ -435,7 +539,7 @@ function applyToAudio(){
   noiseGain.gain.rampTo(0.015 + cloudiness*0.07, 6);
   paletteBias = warmth;
 }
-
+ 
 function scheduleClicks(){
   clearTimeout(clickTimer);
   const minI = 0.4 + (1-precipIntensity)*4.2;
@@ -447,7 +551,7 @@ function scheduleClicks(){
   }
   clickTimer = setTimeout(scheduleClicks, rand(minI,maxI)*1000);
 }
-
+ 
 function scheduleLead(){
   clearTimeout(leadTimer);
   const scale = currentScale();
@@ -459,7 +563,7 @@ function scheduleLead(){
   const maxI = 11 - windiness*5.5;
   leadTimer = setTimeout(scheduleLead, rand(Math.max(1.2,minI), Math.max(2.5,maxI))*1000);
 }
-
+ 
 function schedulePad(){
   clearTimeout(padTimer);
   const scale = currentScale();
@@ -475,13 +579,13 @@ function schedulePad(){
   pad.triggerAttackRelease(notes, changeInterval+rand(2,6), Tone.now(), 0.22+cloudiness*0.15);
   padTimer = setTimeout(schedulePad, Math.max(9,changeInterval)*1000);
 }
-
+ 
 function startAudioLoops(){
   scheduleClicks();
   scheduleLead();
   schedulePad();
 }
-
+ 
 function updateParamsFromWeather(c){
   const temp = c.temperature_2m, cloud = c.cloud_cover, precip = c.precipitation,
         wind = c.wind_speed_10m, humidity = c.relative_humidity_2m;
@@ -490,16 +594,16 @@ function updateParamsFromWeather(c){
   precipIntensity = clamp01(precip/6);
   windiness = clamp01(wind/50);
   humidityAmt = clamp01(humidity/100);
-
+ 
   document.getElementById('wSky').textContent = describeSky(cloud);
   document.getElementById('wTemp').textContent = describeTemp(temp);
   document.getElementById('wHumidity').textContent = describeHumidity(humidity);
   document.getElementById('wPrecip').textContent = describePrecip(precip);
   document.getElementById('wWind').textContent = describeWind(wind);
-
+ 
   applyToAudio();
 }
-
+ 
 /* ---------- mic: granular-cloud processing of live input ----------
    Signal path per voice: mic -> FeedbackDelay (time slowly modulated by
    an LFO, which is what gives the smeared, grain-like motion) -> PitchShift
@@ -510,7 +614,7 @@ function updateParamsFromWeather(c){
    Nothing is written to a buffer or file at any point; it's a live,
    continuously-flowing DSP chain that discards audio as it processes it. */
 let mic, micBus, micVoices = [], micChainBuilt = false, micEnabled = false;
-
+ 
 function buildMicChain(){
   micBus = new Tone.Gain(0).connect(reverb);
   const pitches = [-7, -3, 4, 7];
@@ -526,7 +630,7 @@ function buildMicChain(){
   }
   micChainBuilt = true;
 }
-
+ 
 async function enableMic(){
   if(!navigator.mediaDevices || typeof Tone.UserMedia !== 'function'){
     throw new Error('mic not supported');
@@ -537,12 +641,12 @@ async function enableMic(){
   micVoices.forEach(v => mic.connect(v.delay));
   micBus.gain.rampTo(0.16, 3);
 }
-
+ 
 function disableMic(){
   if(micBus) micBus.gain.rampTo(0, 1.2);
   if(mic) mic.close();
 }
-
+ 
 /* ---------- mute ---------- */
 const muteBtn = document.getElementById('muteBtn');
 muteBtn.addEventListener('click', ()=>{
@@ -552,11 +656,11 @@ muteBtn.addEventListener('click', ()=>{
   muteBtn.setAttribute('aria-label', muted?'Unmute audio':'Mute audio');
   muteBtn.style.borderColor = muted ? 'var(--yellow)' : 'rgba(var(--fg-rgb),0.22)';
 });
-
+ 
 /* ---------- mic UI ---------- */
 const micToggle = document.getElementById('micToggle');
 const micStatusEl = document.getElementById('micStatus');
-
+ 
 micToggle.addEventListener('click', async ()=>{
   if(!micEnabled){
     micToggle.disabled = true;
@@ -579,12 +683,12 @@ micToggle.addEventListener('click', async ()=>{
     micToggle.setAttribute('aria-pressed','false');
   }
 });
-
+ 
 /* ---------- init flow ---------- */
 const modal = document.getElementById('modal');
 const beginBtn = document.getElementById('beginBtn');
 const locNote = document.getElementById('locNote');
-
+ 
 async function loadWeatherAndClock(coords){
   const data = await fetchWeather(coords.lat, coords.lon);
   locationTz = data.timezone || locationTz;
@@ -595,16 +699,16 @@ async function loadWeatherAndClock(coords){
   updateParamsFromWeather(data.current);
   updateClock();
 }
-
+ 
 beginBtn.addEventListener('click', async ()=>{
   beginBtn.disabled = true;
   locNote.textContent = 'finding you…';
   await Tone.start();
   setupAudio();
-
+ 
   const coords = await getLocation();
   noise2D = makeNoise(seedFromCoords(coords.lat, coords.lon));
-
+ 
   try{
     await loadWeatherAndClock(coords);
   }catch(e){
@@ -613,14 +717,14 @@ beginBtn.addEventListener('click', async ()=>{
   }
   startAudioLoops();
   setInterval(updateClock, 1000);
-
+ 
   modal.classList.add('hidden');
   document.getElementById('wordmark').classList.add('show');
   document.getElementById('weatherPanel').classList.add('show');
   document.getElementById('micPanel').classList.add('show');
   document.getElementById('credit').classList.add('show');
   muteBtn.classList.add('show');
-
+ 
   setInterval(async ()=>{
     try{ await loadWeatherAndClock(coords); }catch(e){}
   }, 10*60*1000);
@@ -628,3 +732,4 @@ beginBtn.addEventListener('click', async ()=>{
 </script>
 </body>
 </html>
+ 
