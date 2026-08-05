@@ -388,7 +388,7 @@ let limiter, masterGain, reverb, chorus, padFilter, leadFilter, pad, lead,
     clickFilter, clickSend, click,
     stabFilter, stabSend, stab,
     pluckFilter, pluckSend, pluck,
-    noiseAutoFilter, noiseTone, noisePanner, noiseWetGain, noiseDryGain, noiseGain, noise;
+    noiseAutoFilter, noiseTone, noiseWetGain, noiseDryGain, noiseGain, noise;
 
 /* six five-note scales, keyed to the same temperature categories the
    weather panel already uses — dark/tense at the cold end, lifted/bright
@@ -428,8 +428,10 @@ function setupAudio(){
   }).connect(leadFilter);
   lead.volume.value = -12;
 
-  // percussion voice 1 — wooden knock: MembraneSynth, triangle oscillator,
-  // very short tight pitch drop. tuned to the same scale as the pluck voice
+  // percussion voice 1 — wooden knock rather than metallic clang: a
+  // MembraneSynth with a triangle oscillator and a very short, tight
+  // pitch drop reads as a knock/woodblock instead of a ring. tuned to
+  // the same scale as the pluck voice
   clickFilter = new Tone.Filter({frequency:3200, type:'lowpass'}).connect(masterGain);
   clickSend = new Tone.Gain(0.2).connect(reverb);
   click = new Tone.MembraneSynth({
@@ -461,24 +463,24 @@ function setupAudio(){
   pluck.connect(pluckSend);
   pluck.volume.value = -13;
 
-  // pink noise: swept by an LFO-driven filter (rate -> wind, tonal range ->
-  // warmth), coloured by a resonant tone filter tuned to the current key's
-  // root, and now panned by wind too — an AutoPanner sits before the
-  // wet/dry split so both paths move together. calm air barely moves;
-  // windy air sweeps the noise layer widely left-right.
+  // pink noise swept by an LFO-driven filter —
+  // sweep rate tracks wind (calmer air = slower drift), tonal range tracks
+  // temperature (warmer = filter sweeps higher/brighter)
   noiseAutoFilter = new Tone.AutoFilter({
     frequency: 0.02, baseFrequency: 550, octaves: 1.6,
     filter: {type:'bandpass', Q:0.5}
   }).start();
+  // feedback tone filter tuned to the current key's root
   noiseTone = new Tone.Filter({ frequency:110, type:'bandpass', Q:4 }).connect(reverb);
   noiseAutoFilter.connect(noiseTone);
-
-  noisePanner = new Tone.AutoPanner({ frequency:0.015, depth:0.25 }).start();
+  // dry path runs in parallel, unprocessed, so raw noise character
+  // still comes through rather than everything passing through the
+  // filter/comb chain
   noiseWetGain = new Tone.Gain(0.42).connect(noiseAutoFilter);
   noiseDryGain = new Tone.Gain(0.65).connect(reverb);
-  noisePanner.connect(noiseWetGain);
-  noisePanner.connect(noiseDryGain);
-  noiseGain = new Tone.Gain(0).connect(noisePanner);
+  noiseGain = new Tone.Gain(0);
+  noiseGain.connect(noiseWetGain);
+  noiseGain.connect(noiseDryGain);
   noise = new Tone.Noise('pink').connect(noiseGain).start();
 
   audioReady = true;
@@ -494,26 +496,24 @@ function applyToAudio(){
   noiseAutoFilter.baseFrequency = 550 + warmth*400;               // warmth -> tonal range, floor raised well clear of mud
   const sweepWidth = (1.3 + cloudiness*1.1) * (1 - humidityAmt*0.8); // humidity flattens the sweep, but never fully to static
   noiseAutoFilter.octaves = sweepWidth;                            // cloud sets base width, humidity collapses it
-  const rootOctave = 1 + Math.round(warmth*3);                    // widened — matches schedulePad's register below
+  const rootOctave = 1 + Math.round(warmth*2);                    // same register logic as schedulePad
   const rootFreq = Tone.Frequency('D'+rootOctave).toFrequency();
   noiseTone.frequency.rampTo(rootFreq, 3);                        // resonance tracks the current key's root
-  noisePanner.frequency.rampTo(0.015 + windiness*0.12, 4);        // wind -> pan sweep rate: calm barely moves, windy sweeps faster
-  noisePanner.depth.rampTo(0.22 + windiness*0.55, 4);             // wind -> pan width: calm stays near-centred, windy swings wide
   paletteBias = warmth;
 }
 
 /* ---------- pink noise: humidity-driven presence ----------
    at low humidity it's barely there — short, soft pops separated by long
    near-silent gaps. at high humidity the pops lengthen and the gaps
-   shrink until it reads as a fuller, steadier presence — but the ceiling
-   itself is capped modestly. */
+   shrink until it reads as a fuller, steadier presence — but ceiling
+   is capped */
 function scheduleNoiseSwell(){
   clearTimeout(noiseSwellTimer);
-  const ceiling = 0.02 + humidityAmt*0.11;
-  const floor = ceiling * (0.12 + humidityAmt*0.88);
-  const rampUp = rand(0.6, 1.8) + humidityAmt*6;
+  const ceiling = 0.02 + humidityAmt*0.11;           // fuller when humid — more present at the peak than before
+  const floor = ceiling * (0.12 + humidityAmt*0.88); // near-silent when dry; genuinely meets the ceiling when humid, so no gaps
+  const rampUp = rand(0.6, 1.8) + humidityAmt*6;      // quick soft pop when dry, slow swell when humid
   const rampDown = rand(0.6, 2.0) + humidityAmt*6;
-  const gap = rand(2000, 8000) * (1 - humidityAmt*0.85);
+  const gap = rand(2000, 8000) * (1 - humidityAmt*0.85); // long gaps when dry, short/near-continuous when humid
   noiseGain.gain.rampTo(ceiling, rampUp);
   noiseSwellTimer = setTimeout(()=>{
     noiseGain.gain.rampTo(floor, rampDown);
@@ -527,19 +527,14 @@ function scheduleNoiseSwell(){
    three voices land unevenly against each other — present, but irregular
    and not synced. as precipitation rises the probabilities climb toward
    certainty and the intervals tighten, so all three converge into a dense,
-   near-constant layer together.
-
-   storminess (precipitation x wind, both high at once) additionally
-   unlocks a texture none of the individual dials reach alone: the stab
-   voice occasionally fires a fast double-hit "flutter" only when it's
-   genuinely stormy, not just wet or just windy. */
+   near-constant layer together. */
 function scheduleClick(){
   clearTimeout(clickTimer);
   const minI = 0.5 + (1-precipIntensity)*1.6;
   const maxI = 1.4 + (1-precipIntensity)*2.8;
   if(Math.random() < 0.55 + precipIntensity*0.45){
     const scale = currentScale();
-    const octaveBase = 5 + Math.round(warmth*3); // widened — was 5+round(warmth), span 1 -> now span 3
+    const octaveBase = 5 + Math.round(warmth); // sits above the pluck voice's register
     const semis = scale[Math.floor(Math.random()*scale.length)];
     const note = Tone.Frequency('D'+octaveBase).transpose(semis).toNote();
     click.triggerAttackRelease(note, '16n', Tone.now());
@@ -555,10 +550,6 @@ function scheduleStab(){
     const filtFreq = 500 + precipIntensity*1600 + rand(-80,80);
     stabFilter.frequency.rampTo(filtFreq, 0.05);
     stab.triggerAttackRelease(rand(0.06,0.16), Tone.now());
-    const storminess = precipIntensity * windiness;
-    if(storminess > 0.5 && Math.random() < 0.4){
-      setTimeout(()=>{ stab.triggerAttackRelease(rand(0.05,0.1), Tone.now()); }, rand(60,110));
-    }
   }
   stabTimer = setTimeout(scheduleStab, rand(minI,maxI)*1000);
 }
@@ -569,7 +560,7 @@ function schedulePluck(){
   const maxI = 1.2 + (1-precipIntensity)*3.0;
   if(Math.random() < 0.5 + precipIntensity*0.5){
     const scale = currentScale();
-    const octaveBase = 3 + Math.round(warmth*3); // widened — was 4+round(warmth*2), span 2 -> now span 3
+    const octaveBase = 4 + Math.round(warmth*2);
     const semis = scale[Math.floor(Math.random()*scale.length)];
     const note = Tone.Frequency('D'+octaveBase).transpose(semis).toNote();
     pluck.triggerAttack(note, Tone.now());
@@ -580,7 +571,7 @@ function schedulePluck(){
 function scheduleLead(){
   clearTimeout(leadTimer);
   const scale = currentScale();
-  const octaveBase = 1 + Math.round(warmth*4); // widened — was 2+round(warmth*3), span 3 -> now span 4
+  const octaveBase = 2 + Math.round(warmth*3);
   const semis = scale[Math.floor(Math.random()*scale.length)];
   const note = Tone.Frequency('D'+octaveBase).transpose(semis).toNote();
   lead.triggerAttackRelease(note, rand(1.5,4), Tone.now(), rand(0.25,0.6));
@@ -593,24 +584,13 @@ function scheduleLead(){
 function schedulePad(){
   clearTimeout(padTimer);
   const scale = currentScale();
-  const octaveBase = 1 + Math.round(warmth*3); // widened — was 1+round(warmth*2), span 2 -> now span 3
+  const octaveBase = 1 + Math.round(warmth*2);
   const rootMidi = Tone.Frequency('D'+octaveBase).toMidi();
   const chordSize = 3 + Math.round(cloudiness*2); // cloud cover -> notes stacked
   const notes = [];
-  // voicing shape now also depends on cloud cover: clear skies have a
-  // chance of throwing a note up an octave or two (open/spread voicing);
-  // overcast skies keep every note clustered near the root (tight voicing)
-  const spreadChance = (1 - cloudiness) * 0.6;
   for(let i=0;i<chordSize;i++){
-    const semis = scale[Math.floor(Math.random()*scale.length)];
-    const octaveJump = Math.random() < spreadChance ? (Math.random()<0.5?12:24) : 0;
-    notes.push(Tone.Frequency(rootMidi+semis+octaveJump, 'midi').toNote());
-  }
-  // storminess (rain x wind, both high at once) adds a sub-octave doubling
-  // note for real low-end weight — a texture no single weather dial reaches
-  const storminess = precipIntensity * windiness;
-  if(storminess > 0.45){
-    notes.push(Tone.Frequency(rootMidi-12, 'midi').toNote());
+    const semis = scale[Math.floor(Math.random()*scale.length)] + (Math.random()<0.3?12:0);
+    notes.push(Tone.Frequency(rootMidi+semis, 'midi').toNote());
   }
   const changeInterval = 22 - windiness*11; // wind -> pace of chord change
   pad.triggerAttackRelease(notes, changeInterval+rand(2,6), Tone.now(), 0.22+cloudiness*0.15);
