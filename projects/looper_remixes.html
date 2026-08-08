@@ -1,0 +1,295 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="/images/hands.png">
+    <title>looper remixes</title>
+    <style>
+        *, *:before, *:after { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "helvetica neue", helvetica, arial, sans-serif;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-text-size-adjust: none;
+            color: #000;
+            line-height: 1.2;
+            padding: 20px 80px 20px 20px;
+            font-size: 12px;
+            background-color: #fff8e7;
+        }
+        a {
+            color: #1506f9;
+            text-decoration: none;
+        }
+        a:hover { font-style: italic; }
+        
+        p {
+            max-width: 750px;
+        }
+        
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+        
+        ul li a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            width: max-content;
+        }
+        
+        ul li a::after {
+            display: inline-block;
+            text-decoration: none;
+            margin-left: 5px;
+            content: '→';
+        }
+        
+        .small {
+            font-size: 12px;
+            margin-top: -2px;
+        }
+        
+        /* back link at top */
+        .back-link {
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .back-link a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            width: max-content;
+        }
+        
+        .back-link a::before {
+            display: inline-block;
+            margin-right: 5px;
+            content: '←';
+        }
+        
+        /* ---- top section: hero image | key info | description ---- */
+        .project-top {
+            display: flex;
+            flex-flow: row wrap;
+            align-items: flex-start;
+            gap: 10px;
+            max-width: 1600px;
+        }
+        
+        .project-hero {
+            flex: 2 1 400px;
+            max-width: 700px;
+            min-width: 0;
+            margin-right: 10px;
+        }
+        
+        .project-hero figure {
+            margin: 0;
+            display: flex;
+            flex-flow: column nowrap;
+            gap: 4px;
+        }
+        
+        .project-hero img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            display: block;
+            border-radius: 12px;
+        }
+        
+        .project-hero figcaption {
+            font-size: 10px;
+            color: #666;
+        }
+        
+        .key-info {
+            flex: 1 1 180px;
+            text-decoration: none;
+            max-width: 250px;
+            min-width: 0;
+            color: #666;
+            font-size: 12px;
+            line-height: 1;
+        }
+        
+        .key-info dl {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .key-info dt {
+            font-weight: bold;
+            margin-top: 14px;
+        }
+        
+        .key-info dt:first-child {
+            margin-top: 0;
+        }
+        
+        .key-info dd {
+            margin: 2px 0 0 0;
+        }
+        
+        .project-description {
+            flex: 2 1 350px;
+            max-width: 750px;
+            min-width: 0;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .project-description p {
+            max-width: none;
+            overflow-wrap: break-word;
+        }
+        
+        /* ---- media section ---- */
+        .media-grid {
+            display: flex;
+            flex-flow: row wrap;
+            gap: 10px;
+            max-width: 1600px;
+        }
+        
+        .media-grid figure {
+            margin: 0;
+            display: flex;
+            flex-flow: column nowrap;
+            gap: 4px;
+        }
+        
+        .media-grid img,
+        .media-grid video {
+            width: 300px;
+            max-width: 100%;
+            height: 210px;
+            object-fit: cover;
+            display: block;
+            border-radius: 12px;
+            background: #000;
+        }
+        
+        .media-grid audio {
+            width: 300px;
+            max-width: 100%;
+        }
+        
+        .media-grid figcaption {
+            font-size: 10px;
+            color: #666;
+        }
+        
+        /* ---- footer ---- */
+        .site-footer {
+            margin-top: 60px;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        @media (max-width: 900px) {
+            body {
+                padding: 20px;
+            }
+            .project-top {
+                flex-flow: column nowrap;
+            }
+            .project-hero,
+            .key-info,
+            .project-description {
+                max-width: 100%;
+                flex-basis: auto;
+                margin-right: 0;
+            }
+            .project-hero img {
+                height: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="back-link">
+        <a href="/">spotlight</a>
+    </div>
+
+    <br>
+
+    <!-- ============ TOP SECTION: hero image / key info / description ============ -->
+    <div class="project-top">
+        
+        <!-- column 1: hero image -->
+        <div class="project-hero">
+            <figure>
+                <img src="../images/looper_remixes/looper_remixes_hero.jpg" alt="">
+                <figcaption>London Symphony Orchestra</figcaption>
+            </figure>
+        </div>
+        
+        <!-- column 2: key info -->
+        <div class="key-info">
+            <dl>
+                <dt>looper remixes</dt><br>
+                <dd>environmental sound remixes</dd>
+                <dd>2014-2022</dd><br>
+                <dd>music producer, facilitator</dd>
+                <dd>with <a href="https://www.pyka.wales">pyka</a></dd><br>
+                <dd><a href="https://on.soundcloud.com/Ympv2bC4ozHg02tAwv" target="_blank">selected remixes ↗</a></dd>
+            </dl>
+        </div>
+        
+        <!-- column 3: project description -->
+        <div class="project-description">
+            <p>
+                looper remixes were produced as an output for creative engagements with young people in schools and various cultural institutions, including Tate Britain, London Symphony Orchestra, and Chester Zoo. the creative engagements focused on environmental listening and material experimentation, encouraging participants to use pyka_loop as a lens to explore the world around them. participants captured and manipulated found sound to produce looping audio collages, whihch were later remixed together to produce short electronic compositions reflecting the cohort and project.
+            </p>
+        </div>
+    </div>
+    
+    <!-- ============ MEDIA ============ -->
+    <br>
+    <div class="media-grid">
+        
+        <!-- image -->
+        <figure>
+            <img src="../images/looper_remixes/looper_remixes_live.jpg" alt="">
+            <figcaption>Chapter Arts Centre, Cardif</figcaption>
+        </figure>
+        
+        <!-- image -->
+        <figure>
+            <img src="../images/looper_remixes/looper_remixes_ChesterZoo.jpg" alt="">
+            <figcaption>Chester Zoo</figcaption>
+        </figure>
+        
+        <!-- image -->
+        <figure>
+            <img src="../images/looper_remixes/looper_remixes_school.jpg" alt="">
+            <figcaption>Crwys Primary School, Swansea</figcaption>
+        </figure>
+        
+        <!-- image -->
+        <figure>
+            <img src="../images/looper_remixes/looper_remixes_NorthWales.jpg" alt="">
+            <figcaption>Mostyn Gallery, Llandudno</figcaption>
+        </figure>
+    </div>
+    <br>
+    
+    <!-- ============ FOOTER ============ -->
+    <footer class="site-footer">
+        <a href="/">gary-martin</a> · <span id="footer-date"></span>
+    </footer>
+    <script>
+        document.getElementById('footer-date').textContent =
+            new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toLowerCase();
+    </script>
+</body></html>
