@@ -18,6 +18,14 @@
             padding: 20px;
             font-size: 12px;
             background-color: #fff8e7;
+            /* pins the footer to the bottom of the screen on short pages,
+               same as the project pages */
+            display: flex;
+            flex-flow: column nowrap;
+            min-height: 100vh;
+        }
+        .page-content {
+            flex: 1 0 auto;
         }
         a {
             color: #1506f9;
@@ -37,8 +45,9 @@
             text-decoration: none;
         }
         .projects a img {
-            width: 300px;
-            height: 210px;
+            width: 400px;
+            max-width: 100%;
+            height: auto;
             object-fit: cover;
             display: block;
             border-radius: 12px;
@@ -73,14 +82,27 @@
             font-size: 14px;
             margin-top: 40px;
         }
+        h2:first-child {
+            margin-top: 0;
+        }
         .small {
             font-size: 10px;
             margin-top: -2px;
         }
+        /* ---- footer ---- */
+        .site-footer {
+            margin-top: 60px;
+            flex-shrink: 0;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
     </style>
 </head>
 <body>
-    <p style="margin-top: 0;">🪨</p>
+    <div class="page-content">
     <h2>selected projects</h2>
     <div class="projects">
         <a href="">
@@ -114,4 +136,14 @@
 
     </div>
     <br>
+    </div>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="site-footer">
+        <a href="/">gary-martin</a> · <span id="footer-date"></span>
+    </footer>
+    <script>
+        document.getElementById('footer-date').textContent =
+            new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toLowerCase();
+    </script>
 </body></html>
