@@ -23,56 +23,56 @@
             text-decoration: none;
         }
         a:hover { font-style: italic; }
-        
+
         p {
             max-width: 750px;
         }
-        
+
         ul {
             margin: 0;
             padding: 0;
             list-style-type: none;
         }
-        
+
         ul li a {
             display: flex;
             align-items: center;
             text-decoration: none;
             width: max-content;
         }
-        
+
         ul li a::after {
             display: inline-block;
             text-decoration: none;
             margin-left: 5px;
             content: '→';
         }
-        
+
         .small {
             font-size: 12px;
             margin-top: -2px;
         }
-        
+
         /* back link at top */
         .back-link {
             font-size: 14px;
             display: inline-block;
             margin-bottom: 30px;
         }
-        
+
         .back-link a {
             display: flex;
             align-items: center;
             text-decoration: none;
             width: max-content;
         }
-        
+
         .back-link a::before {
             display: inline-block;
             margin-right: 5px;
             content: '←';
         }
-        
+
         /* ---- top section: hero image | key info | description ---- */
         .project-top {
             display: flex;
@@ -81,34 +81,35 @@
             gap: 10px;
             max-width: 1600px;
         }
-        
+
         .project-hero {
             flex: 2 1 400px;
             max-width: 700px;
             min-width: 0;
             margin-right: 10px;
         }
-        
+
         .project-hero figure {
             margin: 0;
             display: flex;
             flex-flow: column nowrap;
             gap: 4px;
         }
-        
+
         .project-hero img {
+            /* full image, uncropped, at its own natural aspect ratio —
+               same on every screen size, just scaled to the column width */
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
             display: block;
             border-radius: 12px;
         }
-        
+
         .project-hero figcaption {
             font-size: 10px;
             color: #666;
         }
-        
+
         .key-info {
             flex: 1 1 180px;
             text-decoration: none;
@@ -118,25 +119,25 @@
             font-size: 12px;
             line-height: 1;
         }
-        
+
         .key-info dl {
             margin: 0;
             padding: 0;
         }
-        
+
         .key-info dt {
             font-weight: bold;
             margin-top: 14px;
         }
-        
+
         .key-info dt:first-child {
             margin-top: 0;
         }
-        
+
         .key-info dd {
             margin: 2px 0 0 0;
         }
-        
+
         .project-description {
             flex: 2 1 350px;
             max-width: 750px;
@@ -144,12 +145,12 @@
             font-size: 12px;
             line-height: 1.4;
         }
-        
+
         .project-description p {
             max-width: none;
             overflow-wrap: break-word;
         }
-        
+
         /* ---- media section ---- */
         .media-grid {
             display: flex;
@@ -157,35 +158,41 @@
             gap: 10px;
             max-width: 1600px;
         }
-        
+
         .media-grid figure {
             margin: 0;
             display: flex;
             flex-flow: column nowrap;
             gap: 4px;
+            /* a definite flex-basis so the img's width:100% below has
+               something to resolve against, and so a single figure fills
+               the whole row (i.e. the whole screen width) once it no
+               longer fits next to another one — same behaviour on mobile
+               as on desktop, just fewer columns */
+            flex: 1 1 260px;
+            min-width: 0;
         }
-        
+
         .media-grid img,
         .media-grid video {
+            /* full image, uncropped, at its own natural aspect ratio */
             width: 100%;
-            height: 100%;
-            max-height: 210px;
-            object-fit: cover;
+            height: auto;
             display: block;
             border-radius: 12px;
             background: #000;
         }
-        
+
         .media-grid audio {
             width: 300px;
             max-width: 100%;
         }
-        
+
         .media-grid figcaption {
             font-size: 10px;
             color: #666;
         }
-        
+
         /* ---- footer ---- */
         .site-footer {
             margin-top: 60px;
@@ -195,7 +202,7 @@
             align-items: center;
             gap: 6px;
         }
-        
+
         @media (max-width: 900px) {
             body {
                 padding: 20px;
@@ -210,9 +217,8 @@
                 flex-basis: auto;
                 margin-right: 0;
             }
-            .project-hero img {
-                height: 320px;
-            }
+            /* no hero-image height override here anymore — it keeps the
+               exact same width:100%; height:auto treatment as desktop */
         }
     </style>
 </head>
@@ -220,18 +226,17 @@
     <div class="back-link">
         <a href="/">back</a>
     </div>
-
     <!-- ============ TOP SECTION: hero image / key info / description ============ -->
     <div class="project-top">
-        
+
         <!-- column 1: hero image -->
         <div class="project-hero">
             <figure>
-                <img src="../images/weatherfm/weatherfm_live_night.jpg" alt="">
-                <figcaption>weather fm night</figcaption>
+                <img src="../images/weatherfm/weatherfm_icon.jpg" alt="">
+                <figcaption>weather fm icon</figcaption>
             </figure>
         </div>
-        
+
         <!-- column 2: key info -->
         <div class="key-info">
             <dl>
@@ -242,31 +247,31 @@
                 <dd><a href="https://weatherfm.gary-mart.in" target="_blank">weather fm ↗</a></dd>
             </dl>
         </div>
-        
+
         <!-- column 3: project description -->
         <div class="project-description">
             <p>
-                weather fm is an experiment in listening as a method for tuning into the weather. it turns your local meteorological data into a generative ambient composition, with visuals emerging from your coordinates. 
+                weather fm is an experiment in listening as a method for tuning into the weather. it turns your local meteorological data into a generative ambient composition, with visuals emerging from your coordinates.
             </p>
         </div>
     </div>
-    
+
     <!-- ============ MEDIA ============ -->
     <br>
     <div class="media-grid">
-        
+
         <!-- image -->
         <figure>
-            <img src="../images/weatherfm/weatherfm_icon.jpg" alt="">
-            <figcaption>weather fm icon</figcaption>
+            <img src="../images/weatherfm/weatherfm_live_night.jpg" alt="">
+            <figcaption>weather fm night</figcaption>
         </figure>
-        
+
         <!-- image -->
         <figure>
             <img src="../images/weatherfm/weatherfm_live.jpg" alt="">
             <figcaption>weather fm day</figcaption>
         </figure>
-        
+
         <!-- image -->
         <figure>
             <img src="../images/weatherfm/weatherfm_load.jpg" alt="">
@@ -274,7 +279,7 @@
         </figure>
     </div>
     <br>
-    
+
     <!-- ============ FOOTER ============ -->
     <footer class="site-footer">
         <a href="/">gary-martin</a> · <span id="footer-date"></span>
