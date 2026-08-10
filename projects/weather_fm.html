@@ -17,62 +17,65 @@
             padding: 20px 80px 20px 20px;
             font-size: 12px;
             background-color: #fff8e7;
+            /* pins the footer to the bottom of the screen on short pages,
+               without taking it out of normal flow — on long pages it just
+               stays where it naturally falls after the content */
+            display: flex;
+            flex-flow: column nowrap;
+            min-height: 100vh;
+        }
+        .page-content {
+            /* grows to fill any leftover vertical space, pushing the
+               footer down to the bottom of the viewport when the page's
+               own content doesn't reach that far */
+            flex: 1 0 auto;
         }
         a {
             color: #1506f9;
             text-decoration: none;
         }
         a:hover { font-style: italic; }
-
         p {
             max-width: 750px;
         }
-
         ul {
             margin: 0;
             padding: 0;
             list-style-type: none;
         }
-
         ul li a {
             display: flex;
             align-items: center;
             text-decoration: none;
             width: max-content;
         }
-
         ul li a::after {
             display: inline-block;
             text-decoration: none;
             margin-left: 5px;
             content: '→';
         }
-
         .small {
             font-size: 12px;
             margin-top: -2px;
         }
-
         /* back link at top */
         .back-link {
             font-size: 14px;
             display: inline-block;
             margin-bottom: 30px;
         }
-
         .back-link a {
             display: flex;
             align-items: center;
             text-decoration: none;
             width: max-content;
         }
-
         .back-link a::before {
             display: inline-block;
             margin-right: 5px;
             content: '←';
         }
-
         /* ---- top section: hero image | key info | description ---- */
         .project-top {
             display: flex;
@@ -81,21 +84,18 @@
             gap: 10px;
             max-width: 1600px;
         }
-
         .project-hero {
             flex: 2 1 400px;
             max-width: 700px;
             min-width: 0;
             margin-right: 10px;
         }
-
         .project-hero figure {
             margin: 0;
             display: flex;
             flex-flow: column nowrap;
             gap: 4px;
         }
-
         .project-hero img {
             /* full image, uncropped, at its own natural aspect ratio —
                same on every screen size, just scaled to the column width */
@@ -104,12 +104,10 @@
             display: block;
             border-radius: 12px;
         }
-
         .project-hero figcaption {
             font-size: 10px;
             color: #666;
         }
-
         .key-info {
             flex: 1 1 180px;
             text-decoration: none;
@@ -119,25 +117,20 @@
             font-size: 12px;
             line-height: 1;
         }
-
         .key-info dl {
             margin: 0;
             padding: 0;
         }
-
         .key-info dt {
             font-weight: bold;
             margin-top: 14px;
         }
-
         .key-info dt:first-child {
             margin-top: 0;
         }
-
         .key-info dd {
             margin: 2px 0 0 0;
         }
-
         .project-description {
             flex: 2 1 350px;
             max-width: 750px;
@@ -145,12 +138,10 @@
             font-size: 12px;
             line-height: 1.4;
         }
-
         .project-description p {
             max-width: none;
             overflow-wrap: break-word;
         }
-
         /* ---- media section ---- */
         .media-grid {
             display: flex;
@@ -158,7 +149,6 @@
             gap: 10px;
             max-width: 1600px;
         }
-
         .media-grid figure {
             margin: 0;
             display: flex;
@@ -172,7 +162,6 @@
             flex: 1 1 260px;
             min-width: 0;
         }
-
         .media-grid img,
         .media-grid video {
             /* full image, uncropped, at its own natural aspect ratio */
@@ -182,27 +171,24 @@
             border-radius: 12px;
             background: #000;
         }
-
         .media-grid audio {
             width: 300px;
             max-width: 100%;
         }
-
         .media-grid figcaption {
             font-size: 10px;
             color: #666;
         }
-
         /* ---- footer ---- */
         .site-footer {
-            margin-top: 60px;
+            margin-top: 60px; /* the "good gap" — this is the minimum, even on long pages */
+            flex-shrink: 0;
             font-size: 12px;
             color: #666;
             display: flex;
             align-items: center;
             gap: 6px;
         }
-
         @media (max-width: 900px) {
             body {
                 padding: 20px;
@@ -223,12 +209,12 @@
     </style>
 </head>
 <body>
+    <div class="page-content">
     <div class="back-link">
         <a href="/">back</a>
     </div>
     <!-- ============ TOP SECTION: hero image / key info / description ============ -->
     <div class="project-top">
-
         <!-- column 1: hero image -->
         <div class="project-hero">
             <figure>
@@ -236,7 +222,6 @@
                 <figcaption>weather fm icon</figcaption>
             </figure>
         </div>
-
         <!-- column 2: key info -->
         <div class="key-info">
             <dl>
@@ -247,7 +232,6 @@
                 <dd><a href="https://weatherfm.gary-mart.in" target="_blank">weather fm ↗</a></dd>
             </dl>
         </div>
-
         <!-- column 3: project description -->
         <div class="project-description">
             <p>
@@ -255,23 +239,19 @@
             </p>
         </div>
     </div>
-
     <!-- ============ MEDIA ============ -->
     <br>
     <div class="media-grid">
-
         <!-- image -->
         <figure>
             <img src="../images/weatherfm/weatherfm_live_night.jpg" alt="">
             <figcaption>weather fm night</figcaption>
         </figure>
-
         <!-- image -->
         <figure>
             <img src="../images/weatherfm/weatherfm_live.jpg" alt="">
             <figcaption>weather fm day</figcaption>
         </figure>
-
         <!-- image -->
         <figure>
             <img src="../images/weatherfm/weatherfm_load.jpg" alt="">
@@ -279,6 +259,7 @@
         </figure>
     </div>
     <br>
+    </div>
 
     <!-- ============ FOOTER ============ -->
     <footer class="site-footer">
