@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="images/hand.png" />
+<title>gary-martin</title>
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "helvetica neue", helvetica, arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #000;
+  background-color: #fff8e7;
+
+  margin: 0;
+  padding: 20px 20px;
+}
+p {max-width: 400px;}
+a { color: #1506f9; text-decoration: none;  }
+a:hover { font-style: italic; }
+img {
+  width: 400px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+.projects {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  max-width: 400px;
+}
+.projects a {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 4px;
+  text-decoration: none;
+}
+.projects a img {
+  width: 200px;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+  border-radius: 12px;
+}
+ul { margin: 0; padding: 0; list-style-type: none; }
+ul li a { display: flex; align-items: center; text-decoration: none; width: max-content; }
+ul li a::after { display: inline-block; margin-left: 5px; content: '↗'; }
+/*ul li a::after { display: inline-block; margin-left: 5px; content: '→'; } */
+/* the "selected projects" toggle link isn't an outbound link, so it
+   doesn't get the ↗ arrow the other list items get */
+ul li a.toggle-link::after { content: ''; margin-left: 0; }
+.small {
+  font-size: 11px;
+  margin-top: -2px;
+}
+/* ---- projects reveal section ---- */
+#projects-section {
+  display: none;
+  max-width: 400px;
+}
+.close-projects-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  font: inherit;
+  color: #1506f9;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.close-projects-btn:hover { font-style: italic; }
+</style>
+</head>
+<body>
+  <p style="margin-top: 0;">🪨</p>
+  <p><b>gary-martin</b> is an artist, designer, and researcher. he is interested in systems of production and consumption, and their ecological entanglement. his social practice spans participatory art, speculative tools, and audio-visual composition.</p>
+  <p>for over a decade he has facilitated creative projects with thousands of young people across Wales, and partners like <i>Cadw</i>,<i>The King's Trust</i>, <i>Shakespeare's Globe</i>, and <i>Tate Britain</i>.</p>
+  <p>he is a Pervasive Media Studio resident <a href="https://www.watershed.co.uk/studio/residents/gary-martin">↗</a>, and designer with pyka <a href="https://www.pyka.wales" target="_blank">↗</a> where he develops alternative platforms for music interaction. he is a lecturer at the University of Gloucestershire <a href="https://instagram.com/uogmusic" target="_blank">↗</a> where he manages releases on Parkland Records <a href="https://instagram.com/parklandrecords/" target="_blank">↗</a> and his teaching focuses on critical practice in relation to networked cultures and political ecology.</p>
+  <br>
+  <img src="images/gm26.png" alt="hi there">
+  <br><br>
+  <ul>
+    <li><a href="https://gary-martin.montaigne.io" target="_blank">blog</a></li>
+    <li><a href="https://are.na/gary-martin" target="_blank">are.na</a></li>
+    <li><a href="https://www.instagram.com/gary_mart.in" target="_blank">instagram</a></li>
+    <li><a href="https://drive.proton.me/urls/AW0CAJY42M#Zl4eQpcsy13b" target="_blank">cv + projects</a></li>
+    <li><a href="https://www.chess.com/member/jackofthesuburbs" target="_blank">&#9815; &#9822; &#9814; &#9819; &#9812;</a></li>
+    <li><a href="#" id="toggle-projects-link" class="toggle-link">selected projects</a></li>
+  </ul>
+  <p>
+    he / they<br>
+    📍 y fenni, cymru<br>
+    <a href="mailto:grmrtn@proton.me">email me</a>
+  </p>
+  <br>
+
+  <!-- ============ SELECTED PROJECTS (hidden until "selected projects" is clicked) ============ -->
+  <div id="projects-section">
+    <button type="button" class="close-projects-btn" id="close-projects-btn">✕ close</button>
+    <div class="projects">
+      <a href="projects/weather_fm.html">
+          <img src="../images/weatherfm/weatherfm_icon.jpg" alt="">
+          weather fm
+      </a>
+      <a href="projects/practicingscales.html">
+            <img src="../images/practicingscales.jpg" alt="">
+            Practicing Scales
+        </a>
+      <a href="projects/soundbites.html">
+            <img src="../images/soundbites.jpg" alt="">
+            Soundbites
+            <span class="small">with <b>pyka</b></span>
+        </a>
+
+      <a href="projects.tnr.html">
+          <img src="../images/thirdnature.png" alt="">
+          Third Nature Recordings
+      </a>
+        <a href="projects/looper_remixes.html">
+            <img src="../images/looper_remixes/looper_remixes_hero.jpg" alt="">
+            looper remixes
+            <span class="small">with <b>pyka</b></span>
+        </a>
+        <a href="projects/expression_orchestra.html">
+            <img src="../images/theeo.jpg" alt="">
+            The Expression Orchestra
+            <span class="small">with <b>pyka</b></span>
+        </a>
+
+    </div>
+  </div>
+
+  <script>
+    var toggleLink = document.getElementById('toggle-projects-link');
+    var closeBtn = document.getElementById('close-projects-btn');
+    var projectsSection = document.getElementById('projects-section');
+
+    toggleLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      projectsSection.style.display = 'block';
+      projectsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    closeBtn.addEventListener('click', function () {
+      projectsSection.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
