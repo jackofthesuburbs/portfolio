@@ -1,149 +1,426 @@
-<!DOCTYPE html><html lang="en"><head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/x-icon" href="/images/hands.png">
-    <title>gary-martin</title>
-    <style>
-        *, *:before, *:after { box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "helvetica neue", helvetica, arial, sans-serif;
-            margin: 0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            -webkit-text-size-adjust: none;
-            color: #000;
-            line-height: 1.2;
-            max-width: 400px;
-            padding: 20px;
-            font-size: 12px;
-            background-color: #fff8e7;
-            /* pins the footer to the bottom of the screen on short pages,
-               same as the project pages */
-            display: flex;
-            flex-flow: column nowrap;
-            min-height: 100vh;
-        }
-        .page-content {
-            flex: 1 0 auto;
-        }
-        a {
-            color: #1506f9;
-            text-decoration: none;
-        }
-        a:hover { font-style: italic; }
-        .projects {
-            display: flex;
-            flex-flow: row wrap;
-            gap: 10px;
-            max-width: 400px;
-        }
-        .projects a {
-            display: flex;
-            flex-flow: column nowrap;
-            gap: 4px;
-            text-decoration: none;
-        }
-        .projects a img {
-            width: 400px;
-            max-width: 100%;
-            height: auto;
-            object-fit: cover;
-            display: block;
-            border-radius: 12px;
-        }
-        .avatar {
-            display: inline-block;
-            margin-right: 5px;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-        p {
-            max-width: 750px;
-        }
-        ul {
-            margin: 0;
-            padding: 0;
-            list-style-type: none;
-        }
-        ul li a {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            width: max-content;
-        }
-        ul li a::after {
-            display: inline-block;
-            margin-left: 5px;
-            content: '→';
-        }
-        h2 {
-            font-size: 14px;
-            margin-top: 40px;
-        }
-        h2:first-child {
-            margin-top: 0;
-        }
-        .small {
-            font-size: 10px;
-            margin-top: -2px;
-        }
-        /* ---- footer ---- */
-        .site-footer {
-            margin-top: 60px;
-            flex-shrink: 0;
-            font-size: 12px;
-            color: #666;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-    </style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/images/hand.png" />
+<title>projects — gary-martin</title>
+<style>
+/* ===================================================================
+   shared with index.html — same colours, base type, links, image
+   double-border and fixed footer, so this page reads as the same site
+   =================================================================== */
+:root {
+  --ink: #000000;
+  --paper: #ffffff;
+  --accent: #1506f9;
+  --grey: #888888;
+}
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  background-color: var(--paper);
+  margin: 0;
+  padding: 20px 20px 70px; /* extra bottom padding so content can't sit under the fixed footer */
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-decoration-style: dotted; }
+img {
+  width: 400px;
+  max-width: 100%;
+  height: auto;
+  border: 6px solid var(--paper);
+  outline: 1px solid var(--accent);
+  box-sizing: border-box;
+}
+ul { margin: 0; padding: 0; list-style-type: none; }
+.site-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background-color: var(--paper);
+  border-top: 1px solid #eeeeee;
+  font-size: 12px;
+}
+.footer-time {
+  color: var(--grey);
+}
+
+/* ===================================================================
+   page-specific: back link + title, the two-pane list/detail layout
+   =================================================================== */
+.page-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+.page-head .back-link::before {
+  content: '←';
+  margin-right: 5px;
+}
+.page-head h1 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+}
+.projects-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 60px;
+  max-width: 1400px;
+}
+.project-list-pane {
+  flex: 1 1 480px;
+  min-width: 0;
+}
+.project-detail-pane {
+  flex: 1 1 480px;
+  min-width: 0;
+}
+
+/* ---- the list: a 4-column grid (name / year / summary / external
+   link), each row repeating the same column widths so everything
+   lines up. Each row is its own little grid rather than one grid
+   spanning every row — simpler, and hover/active states stay scoped
+   to a single row. ---- */
+.project-list-headings,
+.project-row {
+  display: grid;
+  grid-template-columns: minmax(110px, auto) 56px minmax(140px, 1fr) 24px;
+  gap: 10px;
+  align-items: baseline;
+}
+.project-list-headings {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--grey);
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eeeeee;
+}
+.project-row {
+  padding: 10px 0;
+  border-bottom: 1px solid #eeeeee;
+  cursor: pointer;
+}
+.project-row:last-child {
+  border-bottom: none;
+}
+.project-row:hover .cell-name,
+.project-row.is-active .cell-name {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+.project-row.is-active {
+  background-color: #f5f5ff;
+}
+.cell-name {
+  color: var(--accent);
+}
+.cell-year {
+  color: var(--grey);
+}
+.cell-summary {
+  font-size: 13px;
+}
+.cell-link a {
+  display: inline-block;
+}
+
+/* ---- the detail pane: name top-left, description, images underneath ---- */
+.project-detail-empty {
+  color: var(--grey);
+  max-width: 400px;
+}
+.project-detail-name {
+  font-size: 16px;
+  margin: 0 0 4px;
+}
+.project-detail-link {
+  margin: 0 0 16px;
+  font-size: 13px;
+}
+.project-detail-description {
+  max-width: 600px;
+  line-height: 1.5;
+}
+.detail-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+}
+.detail-images figure {
+  margin: 0;
+}
+.detail-images figcaption {
+  font-size: 11px;
+  color: var(--grey);
+  margin-top: 4px;
+}
+
+@media screen and (max-width: 900px) {
+  .projects-layout {
+    flex-direction: column;
+    gap: 40px;
+  }
+}
+</style>
 </head>
 <body>
-    <div class="page-content">
-    <h2>selected projects</h2>
-    <div class="projects">
-        <a href="weather_fm.html">
-          <img src="../images/weatherfm/weatherfm_icon.jpg" alt="">
-          weather fm
-      </a>
-      <a href="practicing_scales.html">
-            <img src="../images/practicingscales.jpg" alt="">
-            Practicing Scales
-        </a>
-      <a href="soundbites.html">
-            <img src="../images/soundbites.jpg" alt="">
-            Soundbites
-            <span class="small">with <b>pyka</b></span>
-        </a>
+  <div class="page-head">
+    <a href="/" class="back-link">back</a>
+    <h1>projects</h1>
+  </div>
 
-      <a href="third_nature.html">
-          <img src="../images/thirdnature.png" alt="">
-          Third Nature Recordings
-      </a>
-        <a href="looper_remixes.html">
-            <img src="../images/looper_remixes/looper_remixes_hero.jpg" alt="">
-            looper remixes
-            <span class="small">with <b>pyka</b></span>
-        </a>
-        <a href="the_expression_orchestra.html">
-            <img src="../images/theeo.jpg" alt="">
-            The Expression Orchestra
-            <span class="small">with <b>pyka</b></span>
-        </a>
-
-    </div>
-    <br>
+  <div class="projects-layout">
+    <div class="project-list-pane">
+      <div class="project-list-headings">
+        <span>name</span>
+        <span>year</span>
+        <span>about</span>
+        <span></span>
+      </div>
+      <div class="project-list" id="project-list"></div>
     </div>
 
-    <!-- ============ FOOTER ============ -->
-    <footer class="site-footer">
-        <a href="/">gary-martin</a> · <span id="footer-date"></span>
-    </footer>
-    <script>
-        document.getElementById('footer-date').textContent =
-            new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toLowerCase();
-    </script>
-</body></html>
+    <div class="project-detail-pane" id="project-detail">
+      <p class="project-detail-empty">select a project from the list to see more.</p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <span>this website was handmade by <a href="/">gary-martin</a>.</span>
+    <span class="footer-time" id="footer-time"></span>
+  </footer>
+
+  <script>
+    (function () {
+      // ---- EDIT THIS: one object per project. `link` is the external
+      // project-page URL for the little "↗" in the list (leave it
+      // `null` if there isn't one). `images` are shown underneath the
+      // description in the detail pane, in order. ----
+      var PROJECTS = [
+        {
+          slug: 'looper-remixes',
+          name: 'looper remixes',
+          year: '2014–2022',
+          summary: 'environmental sound remixes made with young people',
+          link: { href: 'https://on.soundcloud.com/Ympv2bC4ozHg02tAwv', label: 'selected remixes' },
+          description: 'looper remixes were produced as an output for creative engagements with young people in schools and various cultural institutions, including Tate Britain, London Symphony Orchestra, and Chester Zoo. the creative engagements focused on environmental listening and material experimentation, encouraging participants to use pyka_loop as a lens to explore the world around them. participants captured and manipulated found sound to produce looping audio collages, which were later remixed together to produce short electronic compositions reflecting the cohort and project.',
+          images: [
+            { src: '../images/looper_remixes/looper_remixes_hero.jpg', caption: 'London Symphony Orchestra' },
+            { src: '../images/looper_remixes/looper_remixes_live.jpg', caption: 'Chapter Arts Centre, Cardiff' },
+            { src: '../images/looper_remixes/looper_remixes_ChesterZoo.jpg', caption: 'Chester Zoo' },
+            { src: '../images/looper_remixes/looper_remixes_school.jpg', caption: 'Crwys Primary School, Swansea' },
+            { src: '../images/looper_remixes/looper_remixes_NorthWales.jpg', caption: 'Mostyn Gallery, Llandudno' }
+          ]
+        },
+        {
+          slug: 'weather-fm',
+          name: 'weather fm',
+          year: '2026',
+          summary: 'generative ambient music tuned to live local weather',
+          link: { href: 'https://weatherfm.gary-mart.in', label: 'weather fm' },
+          description: 'weather fm is an experiment in listening as a method for tuning into the weather. it turns your local meteorological data into a generative ambient composition, with visuals emerging from your coordinates.',
+          images: [
+            { src: '../images/weatherfm/weatherfm_live_night.jpg', caption: 'weather fm night' },
+            { src: '../images/weatherfm/weatherfm_live.jpg', caption: 'weather fm day' },
+            { src: '../images/weatherfm/weatherfm_load.jpg', caption: 'weather fm home' }
+          ]
+        },
+        // ---- the four below are carried over from the old
+        // selected-projects page as placeholders — name and image
+        // only. fill in year / summary / description / images the
+        // same way as the two projects above whenever you're ready. ----
+        {
+          slug: 'practicing-scales',
+          name: 'Practicing Scales',
+          year: '',
+          summary: '',
+          link: null,
+          description: '',
+          images: [
+            { src: '../images/practicingscales.jpg', caption: '' }
+          ]
+        },
+        {
+          slug: 'soundbites',
+          name: 'Soundbites',
+          year: '',
+          summary: 'with pyka',
+          link: null,
+          description: '',
+          images: [
+            { src: '../images/soundbites.jpg', caption: '' }
+          ]
+        },
+        {
+          slug: 'third-nature-recordings',
+          name: 'Third Nature Recordings',
+          year: '',
+          summary: '',
+          link: null,
+          description: '',
+          images: [
+            { src: '../images/thirdnature.png', caption: '' }
+          ]
+        },
+        {
+          slug: 'the-expression-orchestra',
+          name: 'The Expression Orchestra',
+          year: '',
+          summary: 'with pyka',
+          link: null,
+          description: '',
+          images: [
+            { src: '../images/theeo.jpg', caption: '' }
+          ]
+        }
+      ];
+
+      var listEl = document.getElementById('project-list');
+      var detailEl = document.getElementById('project-detail');
+
+      function findProject(slug) {
+        for (var i = 0; i < PROJECTS.length; i++) {
+          if (PROJECTS[i].slug === slug) return PROJECTS[i];
+        }
+        return null;
+      }
+
+      function renderList() {
+        listEl.innerHTML = '';
+        PROJECTS.forEach(function (project) {
+          var row = document.createElement('div');
+          row.className = 'project-row';
+          row.dataset.slug = project.slug;
+          row.setAttribute('role', 'link');
+          row.setAttribute('tabindex', '0');
+
+          var name = document.createElement('span');
+          name.className = 'cell cell-name';
+          name.textContent = project.name;
+
+          var year = document.createElement('span');
+          year.className = 'cell cell-year';
+          year.textContent = project.year || '—';
+
+          var summary = document.createElement('span');
+          summary.className = 'cell cell-summary';
+          summary.textContent = project.summary;
+
+          var linkCell = document.createElement('span');
+          linkCell.className = 'cell cell-link';
+          if (project.link) {
+            var a = document.createElement('a');
+            a.href = project.link.href;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.textContent = '↗';
+            a.setAttribute('aria-label', project.name + ' — ' + project.link.label);
+            // the external link is its own destination — don't also
+            // select the row (and change the URL hash) when it's clicked
+            a.addEventListener('click', function (e) { e.stopPropagation(); });
+            linkCell.appendChild(a);
+          }
+
+          row.appendChild(name);
+          row.appendChild(year);
+          row.appendChild(summary);
+          row.appendChild(linkCell);
+
+          row.addEventListener('click', function () {
+            location.hash = project.slug;
+          });
+          row.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              location.hash = project.slug;
+            }
+          });
+
+          listEl.appendChild(row);
+        });
+      }
+
+      function renderDetail(slug, scrollToIt) {
+        var project = findProject(slug);
+
+        [].forEach.call(listEl.querySelectorAll('.project-row'), function (row) {
+          var isActive = row.dataset.slug === slug;
+          row.classList.toggle('is-active', isActive);
+          row.setAttribute('aria-current', isActive ? 'true' : 'false');
+        });
+
+        if (!project) {
+          detailEl.innerHTML = '<p class="project-detail-empty">select a project from the list to see more.</p>';
+          return;
+        }
+
+        var html = '<h2 class="project-detail-name">' + project.name + '</h2>';
+        if (project.link) {
+          html += '<p class="project-detail-link"><a href="' + project.link.href + '" target="_blank" rel="noopener">' + project.link.label + ' ↗</a></p>';
+        }
+        html += '<p class="project-detail-description">' + (project.description || 'more on this project soon.') + '</p>';
+        if (project.images && project.images.length) {
+          html += '<div class="detail-images">';
+          project.images.forEach(function (image) {
+            html += '<figure><img src="' + image.src + '" alt="' + (image.caption || project.name) + '">';
+            if (image.caption) html += '<figcaption>' + image.caption + '</figcaption>';
+            html += '</figure>';
+          });
+          html += '</div>';
+        }
+        detailEl.innerHTML = html;
+
+        // on mobile the detail pane sits below the list rather than
+        // beside it, so scroll to it — otherwise picking a project
+        // wouldn't look like anything happened
+        if (scrollToIt && window.innerWidth <= 900) {
+          detailEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      function renderFromHash(scrollToIt) {
+        renderDetail(location.hash.replace('#', ''), scrollToIt);
+      }
+
+      renderList();
+      renderFromHash(false); // respects a direct link straight to a project, e.g. projects.html#weather-fm
+      window.addEventListener('hashchange', function () { renderFromHash(true); });
+
+      // ---- footer clock: identical to the home page ----
+      var timeEl = document.getElementById('footer-time');
+      function updateFooterTime() {
+        var now = new Date();
+        var datePart = now.toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+        var timePart = now.toLocaleTimeString('en-GB', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+        timeEl.textContent = datePart.toLowerCase() + ' · ' + timePart;
+      }
+      updateFooterTime();
+      setInterval(updateFooterTime, 1000);
+    })();
+  </script>
+</body>
+</html>
