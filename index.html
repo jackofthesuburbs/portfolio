@@ -54,7 +54,6 @@ ul { margin: 0; padding: 0; list-style-type: none; }
 .footer-time {
   color: #888888;
 }
-
 /* ---- audio player: same width + double-border styling as the image ---- */
 .audio-player {
   width: 400px;
@@ -64,6 +63,13 @@ ul { margin: 0; padding: 0; list-style-type: none; }
   outline: 1px solid #1506f9;
   background-color: #ffffff;
   padding: 14px;
+}
+.audio-player .ap-filename {
+  font-size: 12px;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .audio-player .ap-controls {
   display: flex;
@@ -110,7 +116,6 @@ ul { margin: 0; padding: 0; list-style-type: none; }
   text-align: right;
   flex-shrink: 0;
 }
-
 /* ---- desktop: image + player float free of the normal document flow,
    so the links list sits directly under the bio; JS below picks a
    random spot for each that never overlaps the text, the other
@@ -162,15 +167,15 @@ ul { margin: 0; padding: 0; list-style-type: none; }
 </head>
 <body>
   <p class="bio">
-    Gary-Martin (he/they) is an artist, designer, and educator based in <a href="https://en.wikipedia.org/wiki/Clydach,_Monmouthshire" target="_blank">Y Fenni</a>. He is interested in systems of production and consumption, and their ecological entanglement. His work spans participatory art, speculative tools, and new musical interfaces, and has delivered projects with Cadw, The King’s Trust, Shakespeare’s Globe, and Tate Britain. He is a member of <a href="https://www.pyka.wales" target="_blank">pyka</a>, resident at <a href="https://www.watershed.co.uk/studio/residents/gary-martin" target="_blank">Pervasive Media Studio</a>, and a lecturer at the <a href="https://www.glos.ac.uk/staff/profile/gary-rolinson/" target="_blank">University of Gloucestershire</a> where his teaching focuses on critical practice in relation to networked cultures and political ecology.
+    Gary-Martin (he/they) is an artist, designer, and educator based in <a href="https://en.wikipedia.org/wiki/Clydach,_Monmouthshire" target="_blank">Y Fenni</a>. He is interested in systems of production and consumption, and their ecological entanglement. His work spans participatory art, speculative tools, and new musical interfaces, and has included work with Cadw, The King’s Trust, Shakespeare’s Globe, and Tate Britain. He is a member of <a href="https://www.pyka.wales" target="_blank">pyka</a>, resident at <a href="https://www.watershed.co.uk/studio/residents/gary-martin" target="_blank">Pervasive Media Studio</a>, and a lecturer at the <a href="https://www.glos.ac.uk/staff/profile/gary-rolinson/" target="_blank">University of Gloucestershire</a> where his teaching focuses on critical practice in relation to networked cultures and political ecology.
   </p>
   <img id="float-img" src="images/gm26wide.jpg" alt="hi there" draggable="false">
-
   <!-- ============ AUDIO PLAYER ============
        Loads one track at random from AUDIO_FILES (edit that list below
        to match whatever's in your /audio folder) — prev/next step
        through the rest of the list from there. -->
   <div id="float-player" class="audio-player">
+    <div class="ap-filename" id="ap-filename"></div>
     <div class="ap-controls">
       <button id="ap-prev" aria-label="Previous track">⏮</button>
       <button id="ap-play" aria-label="Play">▶</button>
@@ -182,7 +187,6 @@ ul { margin: 0; padding: 0; list-style-type: none; }
     </div>
     <audio id="ap-audio" preload="metadata"></audio>
   </div>
-
   <ul class="links">
     <li><a href="https://gary-martin.montaigne.io" target="_blank">blog</a></li>
     <li><a href="https://are.na/gary-martin" target="_blank">are.na</a></li>
@@ -206,11 +210,9 @@ ul { margin: 0; padding: 0; list-style-type: none; }
       var EDGE_MARGIN = 40;   // never sits snug against the side of the page
       var TEXT_BUFFER = 24;   // never hovers over/right up against text
       var resizeTimer;
-
       function footerHeight() {
         return footer ? footer.offsetHeight : 0;
       }
-
       function rectsClear(a, b, buffer) {
         return (
           a.right + buffer < b.left ||
@@ -219,39 +221,31 @@ ul { margin: 0; padding: 0; list-style-type: none; }
           a.top - buffer > b.bottom
         );
       }
-
       // finds a random on-screen spot for an element of size w×h that
       // clears every rect in `exclusions` (with TEXT_BUFFER of breathing
       // room) and stays EDGE_MARGIN clear of the viewport/footer edges
       function findPosition(w, h, exclusions) {
         var maxX = window.innerWidth - w - EDGE_MARGIN;
         var maxY = window.innerHeight - footerHeight() - h - EDGE_MARGIN;
-
         if (maxX <= EDGE_MARGIN || maxY <= EDGE_MARGIN) return null;
-
         var x, y, candidate, tries = 0;
         var found = false;
-
         while (tries < 80 && !found) {
           x = EDGE_MARGIN + Math.random() * (maxX - EDGE_MARGIN);
           y = EDGE_MARGIN + Math.random() * (maxY - EDGE_MARGIN);
           candidate = { left: x, right: x + w, top: y, bottom: y + h };
-
           found = exclusions.every(function (rect) {
             return rectsClear(candidate, rect, TEXT_BUFFER);
           });
           tries++;
         }
-
         if (!found) {
           // fallback: far right of the text column, still inset from the edge
           x = maxX;
           y = EDGE_MARGIN;
         }
-
         return { x: x, y: y };
       }
-
       function placeFloating() {
         if (window.innerWidth <= 900) {
           // mobile: both are inline in normal flow, nothing to position
@@ -261,17 +255,14 @@ ul { margin: 0; padding: 0; list-style-type: none; }
           });
           return;
         }
-
         var bioRect = bio.getBoundingClientRect();
         var linksRect = links.getBoundingClientRect();
-
         var imgPos = findPosition(img.offsetWidth, img.offsetHeight, [bioRect, linksRect]);
         if (imgPos) {
           img.style.left = imgPos.x + 'px';
           img.style.top = imgPos.y + 'px';
           img.classList.add('is-positioned');
         }
-
         // the player also avoids the image, wherever it just landed
         var imgRect = img.getBoundingClientRect();
         var playerPos = findPosition(player.offsetWidth, player.offsetHeight, [bioRect, linksRect, imgRect]);
@@ -281,7 +272,6 @@ ul { margin: 0; padding: 0; list-style-type: none; }
           player.classList.add('is-positioned');
         }
       }
-
       // run as soon as the image itself has loaded (so offsetWidth/Height
       // are correct), rather than waiting on window 'load' for the whole
       // page — the image may already be cached/complete by the time this
@@ -291,12 +281,10 @@ ul { margin: 0; padding: 0; list-style-type: none; }
       } else {
         img.addEventListener('load', placeFloating);
       }
-
       window.addEventListener('resize', function () {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(placeFloating, 150);
       });
-
       // ---- dragging (desktop only — on mobile both are inline, not
       // floating, so there's nothing to drag). Shared between the image
       // and the player; the player's own controls are excluded so
@@ -304,42 +292,33 @@ ul { margin: 0; padding: 0; list-style-type: none; }
       function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
       }
-
       function makeDraggable(el, ignoreSelector) {
         var dragging = false;
         var offsetX = 0;
         var offsetY = 0;
-
         el.addEventListener('pointerdown', function (e) {
           if (window.innerWidth <= 900) return; // inline on mobile, not draggable
           if (ignoreSelector && e.target.closest(ignoreSelector)) return;
-
           // stops the browser's native text-selection drag from also
           // starting underneath the cursor as it moves — setPointerCapture
           // alone only redirects events to `el`, it doesn't suppress that
           e.preventDefault();
-
           dragging = true;
           el.classList.add('is-dragging');
           el.setPointerCapture(e.pointerId);
-
           var rect = el.getBoundingClientRect();
           offsetX = e.clientX - rect.left;
           offsetY = e.clientY - rect.top;
         });
-
         el.addEventListener('pointermove', function (e) {
           if (!dragging) return;
-
           var w = el.offsetWidth;
           var h = el.offsetHeight;
           var x = clamp(e.clientX - offsetX, 0, window.innerWidth - w);
           var y = clamp(e.clientY - offsetY, 0, window.innerHeight - footerHeight() - h);
-
           el.style.left = x + 'px';
           el.style.top = y + 'px';
         });
-
         function stopDragging(e) {
           if (!dragging) return;
           dragging = false;
@@ -348,17 +327,13 @@ ul { margin: 0; padding: 0; list-style-type: none; }
             el.releasePointerCapture(e.pointerId);
           }
         }
-
         el.addEventListener('pointerup', stopDragging);
         el.addEventListener('pointercancel', stopDragging);
       }
-
       makeDraggable(img);
       makeDraggable(player, 'button, .ap-scrub');
-
       // ---- footer clock: current date and time, ticking live ----
       var timeEl = document.getElementById('footer-time');
-
       function updateFooterTime() {
         var now = new Date();
         var datePart = now.toLocaleDateString('en-GB', {
@@ -373,10 +348,8 @@ ul { margin: 0; padding: 0; list-style-type: none; }
         });
         timeEl.textContent = datePart.toLowerCase() + ' · ' + timePart;
       }
-
       updateFooterTime();
       setInterval(updateFooterTime, 1000);
-
       // ---- audio player ----
       // EDIT THIS: paths to whatever's actually in your /audio folder
       var AUDIO_FILES = [
@@ -384,7 +357,6 @@ ul { margin: 0; padding: 0; list-style-type: none; }
         'audio/track-2.mp3',
         'audio/track-3.mp3'
       ];
-
       var audioEl = document.getElementById('ap-audio');
       var playBtn = document.getElementById('ap-play');
       var prevBtn = document.getElementById('ap-prev');
@@ -392,28 +364,29 @@ ul { margin: 0; padding: 0; list-style-type: none; }
       var scrubBar = document.getElementById('ap-scrub');
       var scrubFill = document.getElementById('ap-scrub-fill');
       var apTimeEl = document.getElementById('ap-time');
-
+      var filenameEl = document.getElementById('ap-filename');
       var currentTrack = Math.floor(Math.random() * AUDIO_FILES.length);
-
       function formatTime(seconds) {
         if (!isFinite(seconds) || seconds < 0) return '0:00';
         var m = Math.floor(seconds / 60);
         var s = Math.floor(seconds % 60).toString().padStart(2, '0');
         return m + ':' + s;
       }
-
       function updateApTime() {
         apTimeEl.textContent = formatTime(audioEl.currentTime) + ' / ' + formatTime(audioEl.duration);
       }
-
+      function updateFilenameLabel() {
+        // just the filename itself, not the full "audio/" path
+        filenameEl.textContent = AUDIO_FILES[currentTrack].split('/').pop();
+      }
       function loadTrack(index, autoplay) {
         currentTrack = (index + AUDIO_FILES.length) % AUDIO_FILES.length;
         audioEl.src = AUDIO_FILES[currentTrack];
         scrubFill.style.width = '0%';
         updateApTime();
+        updateFilenameLabel();
         if (autoplay) audioEl.play();
       }
-
       playBtn.addEventListener('click', function () {
         if (audioEl.paused) {
           audioEl.play();
@@ -423,7 +396,6 @@ ul { margin: 0; padding: 0; list-style-type: none; }
       });
       prevBtn.addEventListener('click', function () { loadTrack(currentTrack - 1, true); });
       nextBtn.addEventListener('click', function () { loadTrack(currentTrack + 1, true); });
-
       audioEl.addEventListener('play', function () { playBtn.textContent = '❚❚'; });
       audioEl.addEventListener('pause', function () { playBtn.textContent = '▶'; });
       audioEl.addEventListener('ended', function () { loadTrack(currentTrack + 1, true); });
@@ -434,13 +406,11 @@ ul { margin: 0; padding: 0; list-style-type: none; }
           scrubFill.style.width = (audioEl.currentTime / audioEl.duration) * 100 + '%';
         }
       });
-
       scrubBar.addEventListener('click', function (e) {
         var rect = scrubBar.getBoundingClientRect();
         var ratio = (e.clientX - rect.left) / rect.width;
         if (audioEl.duration) audioEl.currentTime = ratio * audioEl.duration;
       });
-
       // load a random starting track, paused (browsers block autoplay
       // with sound before any user interaction anyway)
       loadTrack(currentTrack, false);
