@@ -6,14 +6,14 @@
 <link rel="icon" type="image/png" href="images/hand.png" />
 <title>gary-martin</title>
 <style>
-/* shared colours — reused across the image border, footer text, and
-   audio player, kept in one place so a re-theme is a one-line change */
+
 :root {
   --ink: #000000;
   --paper: #ffffff;
   --accent: #1506f9;
   --grey: #888888;
 }
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
@@ -24,26 +24,28 @@ body {
   margin: 0;
   padding: 20px 20px 70px; /* extra bottom padding so content can't sit under the fixed footer */
 }
+
 .bio {
-  margin: 0; /* browsers give <p> a default ~1em top/bottom margin —
-                this is what was pushing the bio down from the top */
+  margin: 0;
 }
+
 p {max-width: 400px;}
+
 a { color: var(--accent); text-decoration: none;  }
+
 a:hover { text-decoration: underline; text-decoration-style: dotted;}
+
 img {
   width: 400px;
   max-width: 100%;
   height: auto;
-  /* white 6px border, with a 1px blue border just outside it —
-     outline sits right on the edge of the border without adding to
-     the box's layout size, so this reads as two nested borders */
   border: 6px solid var(--paper);
   outline: 1px solid var(--accent);
   box-sizing: border-box;
 }
+
 ul { margin: 0; padding: 0; list-style-type: none; }
-/* ---- footer: fixed to the bottom of the screen ---- */
+
 .site-footer {
   position: fixed;
   left: 0;
@@ -59,10 +61,11 @@ ul { margin: 0; padding: 0; list-style-type: none; }
   border-top: 1px solid #eeeeee;
   font-size: 12px;
 }
+
 .footer-time {
   color: var(--grey);
 }
-/* ---- audio player: same width + double-border styling as the image ---- */
+
 .audio-player {
   width: 400px;
   max-width: 100%;
@@ -72,6 +75,7 @@ ul { margin: 0; padding: 0; list-style-type: none; }
   background-color: var(--paper);
   padding: 14px;
 }
+
 .audio-player .ap-filename {
   font-size: 12px;
   margin-bottom: 8px;
@@ -79,11 +83,13 @@ ul { margin: 0; padding: 0; list-style-type: none; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .audio-player .ap-controls {
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 .audio-player button {
   appearance: none;
   border: none;
@@ -97,9 +103,11 @@ ul { margin: 0; padding: 0; list-style-type: none; }
   line-height: 1;
   flex-shrink: 0;
 }
+
 .audio-player button:hover {
   opacity: 0.6;
 }
+
 .audio-player .ap-scrub {
   position: relative;
   flex: 1;
@@ -108,6 +116,7 @@ ul { margin: 0; padding: 0; list-style-type: none; }
   background: rgba(0, 0, 0, 0.15);
   cursor: pointer;
 }
+
 .audio-player .ap-scrub-fill {
   position: absolute;
   top: 0;
@@ -117,6 +126,7 @@ ul { margin: 0; padding: 0; list-style-type: none; }
   border-radius: 2px;
   background: var(--accent);
 }
+
 .audio-player .ap-time {
   font-size: 11px;
   color: var(--grey);
@@ -124,12 +134,10 @@ ul { margin: 0; padding: 0; list-style-type: none; }
   text-align: right;
   flex-shrink: 0;
 }
-/* ---- desktop: image + player float free of the normal document flow,
-   so the links list sits directly under the bio; JS below picks a
-   random spot for each that never overlaps the text, the other
-   floating element, or the viewport/footer edges. Mobile keeps them
-   inline, image first, player right after it. ---- */
+
+
 @media screen and (min-width: 901px) {
+  
   #float-img,
   #float-player {
     position: fixed;
@@ -145,55 +153,56 @@ ul { margin: 0; padding: 0; list-style-type: none; }
        which flashes briefly on load */
     opacity: 0;
   }
+  
   #float-img.is-positioned,
   #float-player.is-positioned {
     opacity: 1;
   }
+  
   #float-img.is-dragging,
   #float-player.is-dragging {
     cursor: grabbing;
   }
+  
   .links {
     margin-top: 12px;
   }
 }
-/* ---- mobile: image stays inline where it sits, player right after it ---- */
+
 @media screen and (max-width: 900px) {
+  
   #float-img {
     display: block;
     margin: 24px 0;
   }
+  
   #float-player {
     display: block;
     margin: 0 0 24px;
   }
+  
   .links {
     margin-top: 0;
   }
 }
-/* ---- phone: bio text fills the available width instead of capping
-   at 400px. The image/player stay left-aligned like everything else
-   (no explicit centring) — but since they're capped at 400px too,
-   on phone-width screens there's little to no leftover space beside
-   them, so they end up reading as centred anyway. Anything from here
-   up to the 900px "tablet" breakpoint above keeps the original
-   max-width: 400px + left-aligned, with visible space to the right. ---- */
+
 @media screen and (max-width: 450px) {
+  
   .bio {
     max-width: none;
   }
 }
 </style>
 </head>
+
 <body>
+  
   <p class="bio">
     Gary-Martin (he/they) is an artist, designer, and educator based in <a href="https://en.wikipedia.org/wiki/Clydach,_Monmouthshire" target="_blank">Y Fenni</a>. He is interested in systems of production and consumption, and their ecological entanglement. His work spans participatory art, speculative tools, and new musical interfaces, and has included projects with Cadw, The King’s Trust, Shakespeare’s Globe, and Tate Britain. He is a member of <a href="https://www.pyka.wales" target="_blank">pyka</a>, resident at <a href="https://www.watershed.co.uk/studio/residents/gary-martin" target="_blank">Pervasive Media Studio</a>, and a lecturer at the <a href="https://www.glos.ac.uk/staff/profile/gary-rolinson/" target="_blank">University of Gloucestershire</a>, where his teaching focuses on critical practice in relation to networked cultures and political ecology.
   </p>
+  
   <img id="float-img" src="images/gm26wide.jpg" alt="hi there" draggable="false">
-  <!-- ============ AUDIO PLAYER ============
-       Loads one track at random from AUDIO_FILES (edit that list below
-       to match whatever's in your /audio folder) — prev/next step
-       through the rest of the list from there. -->
+  
   <div id="float-player" class="audio-player">
     <div class="ap-filename" id="ap-filename"></div>
     <div class="ap-controls">
@@ -207,6 +216,7 @@ ul { margin: 0; padding: 0; list-style-type: none; }
     </div>
     <audio id="ap-audio" preload="metadata"></audio>
   </div>
+  
   <ul class="links">
     <li><a href="https://gary-martin.montaigne.io" target="_blank">blog</a></li>
     <li><a href="https://are.na/gary-martin" target="_blank">are.na</a></li>
@@ -216,10 +226,12 @@ ul { margin: 0; padding: 0; list-style-type: none; }
     <li><a href="https://drive.proton.me/urls/AW0CAJY42M#Zl4eQpcsy13b" target="_blank">cv</a></li>
     <li><a href="mailto:grmrtn@proton.me">email</a></li>
   </ul>
+  
   <footer class="site-footer">
     <span>this website was handmade by <a href="/">gary-martin</a>.</span>
     <span class="footer-time" id="footer-time"></span>
   </footer>
+  
   <script>
     (function () {
       var img = document.getElementById('float-img');
@@ -227,12 +239,13 @@ ul { margin: 0; padding: 0; list-style-type: none; }
       var bio = document.querySelector('.bio');
       var links = document.querySelector('.links');
       var footer = document.querySelector('.site-footer');
-      var EDGE_MARGIN = 40;   // never sits snug against the side of the page
-      var TEXT_BUFFER = 24;   // never hovers over/right up against text
+      var EDGE_MARGIN = 40;   
+      var TEXT_BUFFER = 24;
       var resizeTimer;
       function footerHeight() {
         return footer ? footer.offsetHeight : 0;
       }
+      
       function rectsClear(a, b, buffer) {
         return (
           a.right + buffer < b.left ||
@@ -241,9 +254,7 @@ ul { margin: 0; padding: 0; list-style-type: none; }
           a.top - buffer > b.bottom
         );
       }
-      // finds a random on-screen spot for an element of size w×h that
-      // clears every rect in `exclusions` (with TEXT_BUFFER of breathing
-      // room) and stays EDGE_MARGIN clear of the viewport/footer edges
+      
       function findPosition(w, h, exclusions) {
         var maxX = window.innerWidth - w - EDGE_MARGIN;
         var maxY = window.innerHeight - footerHeight() - h - EDGE_MARGIN;
@@ -259,16 +270,16 @@ ul { margin: 0; padding: 0; list-style-type: none; }
           });
           tries++;
         }
+        
         if (!found) {
-          // fallback: far right of the text column, still inset from the edge
           x = maxX;
           y = EDGE_MARGIN;
         }
         return { x: x, y: y };
       }
+      
       function placeFloating() {
         if (window.innerWidth <= 900) {
-          // mobile: both are inline in normal flow, nothing to position
           [img, player].forEach(function (el) {
             el.style.left = '';
             el.style.top = '';
@@ -283,7 +294,7 @@ ul { margin: 0; padding: 0; list-style-type: none; }
           img.style.top = imgPos.y + 'px';
           img.classList.add('is-positioned');
         }
-        // the player also avoids the image, wherever it just landed
+
         var imgRect = img.getBoundingClientRect();
         var playerPos = findPosition(player.offsetWidth, player.offsetHeight, [bioRect, linksRect, imgRect]);
         if (playerPos) {
@@ -292,10 +303,7 @@ ul { margin: 0; padding: 0; list-style-type: none; }
           player.classList.add('is-positioned');
         }
       }
-      // run as soon as the image itself has loaded (so offsetWidth/Height
-      // are correct), rather than waiting on window 'load' for the whole
-      // page — the image may already be cached/complete by the time this
-      // script runs, so check for that too
+
       if (img.complete) {
         placeFloating();
       } else {
@@ -305,23 +313,19 @@ ul { margin: 0; padding: 0; list-style-type: none; }
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(placeFloating, 150);
       });
-      // ---- dragging (desktop only — on mobile both are inline, not
-      // floating, so there's nothing to drag). Shared between the image
-      // and the player; the player's own controls are excluded so
-      // clicking play/prev/next/scrub doesn't start a drag instead. ----
+
       function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
       }
+      
       function makeDraggable(el, ignoreSelector) {
         var dragging = false;
         var offsetX = 0;
         var offsetY = 0;
         el.addEventListener('pointerdown', function (e) {
-          if (window.innerWidth <= 900) return; // inline on mobile, not draggable
+          if (window.innerWidth <= 900) return;
           if (ignoreSelector && e.target.closest(ignoreSelector)) return;
-          // stops the browser's native text-selection drag from also
-          // starting underneath the cursor as it moves — setPointerCapture
-          // alone only redirects events to `el`, it doesn't suppress that
+          
           e.preventDefault();
           dragging = true;
           el.classList.add('is-dragging');
@@ -352,7 +356,8 @@ ul { margin: 0; padding: 0; list-style-type: none; }
       }
       makeDraggable(img);
       makeDraggable(player, 'button, .ap-scrub');
-      // ---- footer clock: current date and time, ticking live ----
+
+
       var timeEl = document.getElementById('footer-time');
       function updateFooterTime() {
         var now = new Date();
@@ -370,13 +375,14 @@ ul { margin: 0; padding: 0; list-style-type: none; }
       }
       updateFooterTime();
       setInterval(updateFooterTime, 1000);
-      // ---- audio player ----
-      // EDIT THIS: paths to whatever's actually in your /audio folder
+      
+
       var AUDIO_FILES = [
         'audio/track-1.mp3',
         'audio/track-2.mp3',
         'audio/track-3.mp3'
       ];
+      
       var audioEl = document.getElementById('ap-audio');
       var playBtn = document.getElementById('ap-play');
       var prevBtn = document.getElementById('ap-prev');
@@ -392,13 +398,16 @@ ul { margin: 0; padding: 0; list-style-type: none; }
         var s = Math.floor(seconds % 60).toString().padStart(2, '0');
         return m + ':' + s;
       }
+      
       function updateApTime() {
         apTimeEl.textContent = formatTime(audioEl.currentTime) + ' / ' + formatTime(audioEl.duration);
       }
+      
       function updateFilenameLabel() {
         // just the filename itself, not the full "audio/" path
         filenameEl.textContent = AUDIO_FILES[currentTrack].split('/').pop();
       }
+      
       function loadTrack(index, autoplay) {
         currentTrack = (index + AUDIO_FILES.length) % AUDIO_FILES.length;
         audioEl.src = AUDIO_FILES[currentTrack];
