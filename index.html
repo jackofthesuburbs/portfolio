@@ -391,7 +391,7 @@ ul { margin: 0; padding: 0; list-style-type: none; }
       var scrubFill = document.getElementById('ap-scrub-fill');
       var apTimeEl = document.getElementById('ap-time');
       var filenameEl = document.getElementById('ap-filename');
-      var currentTrack; // set below, once, when the starting track loads
+      var currentTrack;
       function formatTime(seconds) {
         if (!isFinite(seconds) || seconds < 0) return '0:00';
         var m = Math.floor(seconds / 60);
@@ -404,7 +404,6 @@ ul { margin: 0; padding: 0; list-style-type: none; }
       }
       
       function updateFilenameLabel() {
-        // just the filename itself, not the full "audio/" path
         filenameEl.textContent = AUDIO_FILES[currentTrack].split('/').pop();
       }
       
@@ -440,8 +439,7 @@ ul { margin: 0; padding: 0; list-style-type: none; }
         var ratio = (e.clientX - rect.left) / rect.width;
         if (audioEl.duration) audioEl.currentTime = ratio * audioEl.duration;
       });
-      // load a random starting track, paused (browsers block autoplay
-      // with sound before any user interaction anyway)
+
       loadTrack(Math.floor(Math.random() * AUDIO_FILES.length), false);
     })();
   </script>
