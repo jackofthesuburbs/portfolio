@@ -76,31 +76,38 @@ ul { margin: 0; padding: 0; list-style-type: none; }
 }
 .projects-layout {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: flex-start;
   gap: 60px;
-  max-width: 1400px;
 }
 .project-list-pane {
-  flex: 1 1 480px;
+  /* stretches to fill whatever space is left beside the fixed-width
+     detail pane */
+  flex: 1 1 auto;
   min-width: 0;
 }
 .project-detail-pane {
-  flex: 1 1 480px;
+  /* pinned to a max of 400px, snug against the page's own right-hand
+     padding (same padding the rest of the site uses) rather than
+     growing with the window */
+  flex: 0 0 400px;
+  max-width: 400px;
   min-width: 0;
 }
 
 /* ---- the list: a 4-column grid (name / year / summary / external
-   link), each row repeating the same column widths so everything
-   lines up. Each row is its own little grid rather than one grid
-   spanning every row — simpler, and hover/active states stay scoped
-   to a single row. ---- */
+   link). Fixed-width columns (rather than sizing to each row's own
+   content) so every row lines up: a set width for the name, a small
+   one for the year, most of the room going to the description, and
+   just enough for the link icon. Each row is its own little grid
+   rather than one grid spanning every row — simpler, and hover/active
+   states stay scoped to a single row. ---- */
 .project-list-headings,
 .project-row {
   display: grid;
-  grid-template-columns: minmax(110px, auto) 56px minmax(140px, 1fr) 24px;
+  grid-template-columns: 220px 80px 1fr 24px;
   gap: 10px;
-  align-items: baseline;
+  align-items: start;
 }
 .project-list-headings {
   font-size: 11px;
@@ -133,7 +140,7 @@ ul { margin: 0; padding: 0; list-style-type: none; }
   color: var(--grey);
 }
 .cell-summary {
-  font-size: 13px;
+  font-size: 14px;
 }
 .cell-link a {
   display: inline-block;
