@@ -5,145 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="../images/hand.png" />
 <title>gary-martin — Third Nature Recordings</title>
-<style>
-
-/*
-  TEMPLATE — duplicate this file per project.
-  Things to swap for each project:
-    - <title>
-    - .project-name text
-    - .description text
-    - .role text (keep the "Role:" label if you like the convention)
-    - .link href + text
-    - the three <img> src/alt paths near the bottom
-    - the back-link href, if this file doesn't live in the same folder as projects.html
-*/
-
-:root {
-  --ink: #000000;
-  --paper: #ffffff;
-  --accent: #1506f9;
-  --grey: #888888;
-}
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  line-height: 1.3;
-  letter-spacing: 0.01em;
-  color: var(--ink);
-  background-color: var(--paper);
-  margin: 0;
-  padding: 20px 20px 70px;
-}
-
-p { max-width: 400px; }
-
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; text-decoration-style: dotted; }
-
-img {
-  width: 400px;
-  max-width: 100%;
-  height: auto;
-  /* white 6px border, with a 1px blue border just outside it, same as the homepage photo */
-  border: 6px solid var(--paper);
-  outline: 1px solid var(--accent);
-  box-sizing: border-box;
-}
-
-.back-link {
-  margin: 0 0 24px;
-}
-
-.project-name {
-  font-style: italic;
-  font-weight: normal;
-  font-size: 21px;
-  margin: 0 0 14px;
-}
-
-.description {
-  margin: 0 0 16px;
-}
-
-.role {
-  color: var(--grey);
-  margin: 0 0 6px;
-}
-
-.link {
-  margin: 0;
-}
-
-.link-tbd {
-  color: var(--accent);
-  border-bottom: 1px dotted var(--accent);
-}
-
-/* ---- the three project photos float and can be dragged, same mechanic as the homepage photo ---- */
-@media screen and (min-width: 901px) {
-  .float-img {
-    position: fixed;
-    margin: 0;
-    z-index: 1;
-    cursor: grab;
-    touch-action: none;
-    user-select: none;
-    -webkit-user-drag: none;
-    opacity: 0; /* stays invisible until JS has placed it, to avoid a flash at its static position */
-  }
-  .float-img.is-positioned { opacity: 1; }
-  .float-img.is-dragging { cursor: grabbing; }
-}
-
-@media screen and (max-width: 900px) {
-  .float-img {
-    display: block;
-    margin: 24px 0;
-  }
-}
-
-/* ---- footer: fixed to the bottom of the screen, same as the homepage ---- */
-.site-footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 5;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 20px;
-  background-color: var(--paper);
-  border-top: 1px solid #eeeeee;
-  font-size: 12px;
-}
-
-.footer-time { color: var(--grey); }
-
-</style>
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/projects.css">
 </head>
-
+ 
 <body>
-
-  <p class="back-link"><a href="projects.html">← back to projects</a></p>
-
+ 
+  <p class="back-link"><a href="index.html">← back to projects</a></p>
+ 
   <div class="page-content">
     <h1 class="project-name">Third Nature Recordings</h1>
-
+ 
     <p class="description">Third Nature Recordings was a co-operative record label - a year long R&D project investigating alternative ownership and economic models for record labels. Through collaboration with other artists based in South Wales, existing label structures were critiqued and reimagined by experimenting with resource sharing, time-banking, and democratic decision-making.</p>
-
+ 
     <p class="description">Over the course of the year, five releases were produced and distributed, Third Nature was featured in a <a href="https://www.beacons.cymru">Beacons Cymru</a> series about indpendepent record labels in Wales, and learning from the project was consolidated into a guide which was later adapted to feature in <a href="https://www.metalabel.com">Metalabel</a>’s online ‘<a href="https://www.collaborationcookbook.com">Collaboration Cookbook</a>’. </p>
-
+ 
     <p class="role">artist-member, research, identity design, music producer.</p>
     <p class="link">
       <a href="https://gary-mart.in/files/tnrunningacooplabel.pdf">A Zine About Running a Co-operative Record Label</a><br>
       <a href="https://www.collaborationcookbook.com/recipes/44">How to Run a Co-op Music Label</a>
     </p>
   </div>
-
+ 
   <img id="float-img-1" class="float-img" src="../images/tnr/thirdnature.png" alt="Third Nature Recordings" draggable="false">
   <img id="float-img-2" class="float-img" src="../images/tnr/tnr_meeting.jpg" alt="Third Nature Recordings" draggable="false">
   <img id="float-img-3" class="float-img" src="../images/tnr/tnr_beacons.jpg" alt="Third Nature Recordings" draggable="false">
@@ -152,161 +35,8 @@ img {
     <span>this website was handmade by <a href="../index.html">gary-martin</a>.</span>
     <span class="footer-time" id="footer-time"></span>
   </footer>
-
-  <script>
-    (function () {
-      var floats = Array.prototype.slice.call(document.querySelectorAll('.float-img'));
-      var content = document.querySelector('.page-content');
-      var backLink = document.querySelector('.back-link');
-      var footer = document.querySelector('.site-footer');
-      var EDGE_MARGIN = 40;   // never sits snug against the side of the page
-      var TEXT_BUFFER = 24;   // never hovers over/right up against text
-      var resizeTimer;
-
-      function footerHeight() {
-        return footer ? footer.offsetHeight : 0;
-      }
-
-      function rectsClear(a, b, buffer) {
-        return (
-          a.right + buffer < b.left ||
-          a.left - buffer > b.right ||
-          a.bottom + buffer < b.top ||
-          a.top - buffer > b.bottom
-        );
-      }
-
-      function findPosition(w, h, exclusions) {
-        var maxX = window.innerWidth - w - EDGE_MARGIN;
-        var maxY = window.innerHeight - footerHeight() - h - EDGE_MARGIN;
-        if (maxX <= EDGE_MARGIN || maxY <= EDGE_MARGIN) return null;
-        var x, y, candidate, tries = 0;
-        var found = false;
-        while (tries < 80 && !found) {
-          x = EDGE_MARGIN + Math.random() * (maxX - EDGE_MARGIN);
-          y = EDGE_MARGIN + Math.random() * (maxY - EDGE_MARGIN);
-          candidate = { left: x, right: x + w, top: y, bottom: y + h };
-          found = exclusions.every(function (rect) {
-            return rectsClear(candidate, rect, TEXT_BUFFER);
-          });
-          tries++;
-        }
-        if (!found) {
-          // fall back to a lane down the right edge, offset per-image so they don't stack exactly
-          x = maxX;
-          y = EDGE_MARGIN + (exclusions.length * 30) % Math.max(maxY - EDGE_MARGIN, 1);
-        }
-        return { x: x, y: y };
-      }
-
-      function placeFloating() {
-        if (window.innerWidth <= 900) {
-          floats.forEach(function (el) {
-            el.style.left = '';
-            el.style.top = '';
-            el.classList.remove('is-positioned');
-          });
-          return;
-        }
-        var exclusions = [];
-        if (content) exclusions.push(content.getBoundingClientRect());
-        if (backLink) exclusions.push(backLink.getBoundingClientRect());
-
-        floats.forEach(function (el) {
-          if (!(el.offsetWidth && el.offsetHeight)) return;
-          var pos = findPosition(el.offsetWidth, el.offsetHeight, exclusions);
-          if (pos) {
-            el.style.left = pos.x + 'px';
-            el.style.top = pos.y + 'px';
-            el.classList.add('is-positioned');
-            exclusions.push(el.getBoundingClientRect());
-          }
-        });
-      }
-
-      var loadedCount = 0;
-      floats.forEach(function (el) {
-        if (el.complete) {
-          loadedCount++;
-        } else {
-          el.addEventListener('load', function () {
-            loadedCount++;
-            if (loadedCount === floats.length) placeFloating();
-          });
-        }
-      });
-      placeFloating();
-
-      window.addEventListener('resize', function () {
-        if (document.hidden) return;
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(placeFloating, 150);
-      });
-      document.addEventListener('visibilitychange', function () {
-        if (document.visibilityState === 'visible') placeFloating();
-      });
-
-      function clamp(value, min, max) {
-        return Math.min(Math.max(value, min), max);
-      }
-
-      function makeDraggable(el) {
-        var dragging = false;
-        var offsetX = 0;
-        var offsetY = 0;
-        el.addEventListener('pointerdown', function (e) {
-          if (window.innerWidth <= 900) return;
-          e.preventDefault();
-          dragging = true;
-          el.classList.add('is-dragging');
-          el.style.zIndex = 2;
-          el.setPointerCapture(e.pointerId);
-          var rect = el.getBoundingClientRect();
-          offsetX = e.clientX - rect.left;
-          offsetY = e.clientY - rect.top;
-        });
-        el.addEventListener('pointermove', function (e) {
-          if (!dragging) return;
-          var w = el.offsetWidth;
-          var h = el.offsetHeight;
-          var x = clamp(e.clientX - offsetX, 0, window.innerWidth - w);
-          var y = clamp(e.clientY - offsetY, 0, window.innerHeight - footerHeight() - h);
-          el.style.left = x + 'px';
-          el.style.top = y + 'px';
-        });
-        function stopDragging(e) {
-          if (!dragging) return;
-          dragging = false;
-          el.classList.remove('is-dragging');
-          el.style.zIndex = 1;
-          if (el.hasPointerCapture(e.pointerId)) {
-            el.releasePointerCapture(e.pointerId);
-          }
-        }
-        el.addEventListener('pointerup', stopDragging);
-        el.addEventListener('pointercancel', stopDragging);
-      }
-
-      floats.forEach(makeDraggable);
-
-      // ---- footer clock, same as homepage ----
-      var timeEl = document.getElementById('footer-time');
-      function updateFooterTime() {
-        var now = new Date();
-        var datePart = now.toLocaleDateString('en-GB', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        });
-        var timePart = now.toLocaleTimeString('en-GB', {
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-        timeEl.textContent = datePart.toLowerCase() + ' · ' + timePart;
-      }
-      updateFooterTime();
-      setInterval(updateFooterTime, 1000);
-    })();
-  </script>
+ 
+  <script src="../js/project-float.js"></script>
+  <script src="../js/footer-clock.js"></script>
 </body>
 </html>

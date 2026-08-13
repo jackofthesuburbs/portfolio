@@ -1,0 +1,78 @@
+/* ============================================================
+   projects.css — shared by the projects listing page
+   (projects.html) and every individual project page
+   ============================================================ */
+ 
+.back-link {
+  margin: 0 0 24px;
+}
+ 
+.page-content {
+  /* keeps the wrapper's real footprint matched to its (narrow) contents —
+     without this, an unconstrained <div> silently claims the full page
+     width as its hitbox, which throws off the image-placement math below */
+  max-width: 400px;
+}
+ 
+.project-name {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 21px;
+  margin: 0 0 14px;
+}
+ 
+/* description paragraphs, role line, and link(s) all share the same
+   bottom gap so the rhythm between them reads as consistent */
+.description,
+.role,
+.link {
+  margin: 0 0 16px;
+}
+ 
+.role {
+  color: var(--grey);
+}
+ 
+.link-tbd {
+  color: var(--accent);
+  border-bottom: 1px dotted var(--accent);
+}
+ 
+.links {
+  margin: 0;
+}
+ 
+/* ---- floating project photos: float and can be dragged, same mechanic
+   as the homepage photo ---- */
+@media screen and (min-width: 901px) {
+  .float-img {
+    position: fixed;
+    margin: 0;
+    z-index: 1;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    opacity: 0; /* stays invisible until JS has placed it, to avoid a flash at its static position */
+  }
+  .float-img.is-positioned { opacity: 1; }
+  .float-img.is-dragging { cursor: grabbing; }
+}
+ 
+/* individual project pages: images drop into normal flow and stack,
+   stays fully off the text and footer */
+@media screen and (max-width: 900px) {
+  .float-img {
+    display: block;
+    margin: 24px 0;
+  }
+}
+ 
+/* the projects listing page instead drops its preview photos entirely
+   below the desktop breakpoint — never shown, never stacked underneath
+   the text */
+@media screen and (max-width: 900px) {
+  .projects-list .float-img {
+    display: none;
+  }
+}
