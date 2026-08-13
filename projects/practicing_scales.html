@@ -46,7 +46,6 @@ img {
   width: 400px;
   max-width: 100%;
   height: auto;
-  /* white 6px border, with a 1px blue border just outside it, same as the homepage photo */
   border: 6px solid var(--paper);
   outline: 1px solid var(--accent);
   box-sizing: border-box;
@@ -70,16 +69,14 @@ img {
 .role {
   color: var(--grey);
   margin: 0 0 6px;
+  font-style: italic;
 }
 
 .link {
   margin: 0;
 }
 
-.link-tbd {
-  color: var(--accent);
-  border-bottom: 1px dotted var(--accent);
-}
+
 
 /* ---- the three project photos float and can be dragged, same mechanic as the homepage photo ---- */
 @media screen and (min-width: 901px) {
@@ -137,8 +134,8 @@ img {
 
     <p class="description">The project is an experiment in listening as a method for tuning into the weather, and stems from my interest in deep listening and developing methods for increasing ecological awareness.</p>
 
-    <p class="role">Role: sound design, programming, visual design.</p>
-    <p class="link">Link: <!-- TODO: add link URL for Weather FM --><span class="link-tbd">Weather FM</span></p>
+    <p class="role">sound design, programming, visual design.</p>
+    <p><a href ="https://weatherfm.gary-mart.in">Weather FM</a></p>
   </div>
 
   <img id="float-img-1" class="float-img" src="../images/projects/weather-fm-1.jpg" alt="Weather FM — image placeholder 1" draggable="false">
