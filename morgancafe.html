@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Morgan Cafe</title>
+<title>The Morgans' Cafe</title>
 <style>
   :root {
     --bg: #faf7f2;
@@ -39,23 +39,12 @@
   }
   .subtitle {
     color: var(--muted);
-    margin: 0 0 32px;
+    margin: 0 0 24px;
     font-size: 0.95rem;
     text-align: center;
   }
-  .group {
-    margin-bottom: 32px;
-  }
-  .group-title {
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin: 0 0 10px;
-    padding-bottom: 6px;
-    border-bottom: 2px solid var(--accent-soft);
-    text-align: center;
+  #mealList {
+    margin-top: 8px;
   }
   .meal {
     background: var(--card-bg);
@@ -99,7 +88,7 @@
     transition: max-height 0.25s ease;
   }
   .meal.open .meal-body {
-    max-height: 400px;
+    max-height: 500px;
   }
   .meal-body-inner {
     padding: 2px 18px 16px 18px;
@@ -422,13 +411,13 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Morgan Cafe</h1>
-  <p class="subtitle">Tap a meal to see what's in it.</p>
-  <div id="groups"></div>
+  <h1>The Morgans' Cafe</h1>
+  <p class="subtitle">"what we havin' for tea?"</p>
+  <div id="mealList"></div>
 
   <div class="picker-section">
-    <h2>Build a Shopping List</h2>
-    <p class="picker-count">Tick any meals above — <strong id="pickerCount">0</strong> selected</p>
+    <h2>The Shopping List</h2>
+    <p class="picker-count">how many meals? — <strong id="pickerCount">0</strong> selected</p>
     <div class="shopping-list-box" id="shoppingList">
       <p class="empty-note">Select some meals to generate your ingredient list.</p>
     </div>
@@ -453,6 +442,11 @@
     <div class="receipt-section-title">Ingredients</div>
     <div class="receipt-lines" id="receiptIngredients"></div>
   </div>
+  <div class="receipt-section" id="receiptPantrySection">
+    <div class="receipt-divider"></div>
+    <div class="receipt-section-title">Already Have</div>
+    <div class="receipt-lines" id="receiptPantry"></div>
+  </div>
   <div class="receipt-section" id="receiptOptionalSection">
     <div class="receipt-divider"></div>
     <div class="receipt-section-title">Optional Extras</div>
@@ -463,258 +457,336 @@
 </div>
 
 <script>
-const data = [
+const meals = [
   {
-    group: "On Toast",
-    meals: [
-      { name: "Peas on Toast", main: ["Garden peas", "Mint sauce", "Bread"], optional: [] },
-      { name: "Beans on Toast", main: ["Baked beans", "Bread"], optional: [] }
-    ]
+    name: "Brunch",
+    main: ["Toast [Bread*]"],
+    optional: ["Avocado", "Eggs", "Tomatoes", "Beans"]
   },
   {
-    group: "Jacket Potatoes",
-    meals: [
-      { name: "Jacket Potato", main: ["Sweet potato / white potato", "Coleslaw", "Baked beans / coronation chickpea / chilli"], optional: [] }
-    ]
+    name: "Lindas in a Bun",
+    main: ["Muffin", "Sausage"],
+    optional: ["Avocado"]
   },
   {
-    group: "Put It In A Wrap",
-    meals: [
-      { name: "Fajitas", main: ["Wraps", "Red pepper / chickpeas / sweet potato / cauliflower / black beans"], optional: ["Guacamole", "Salsa"] },
-      { name: "Naanwich", main: ["Naan", "Falafel / cauliflower / carrot / chickpeas / sweet potato", "Mango chutney / sun-dried tomato paste", "Hummus"], optional: [] }
-    ]
+    name: "Shakshuka",
+    main: ["Tomatoes", "Red Pepper", "Eggs", "Chunky Bread"],
+    optional: []
   },
   {
-    group: "Primary School",
-    meals: [
-      { name: "Primary School Dinner", main: ["Sausage / burger", "Chips", "Baked beans / garden peas"], optional: [] }
-    ]
+    name: "Sandwich",
+    main: ["Ciabatta", "Rocket / Lamb's Lettuce", "Tomatoes", "Cucumber", "Chutney* / Hummus / Raita [Cucumber, Mint, Yoghurt]", "Cheese* / Chicken / Fish Fingers / Falafel"],
+    optional: []
   },
   {
-    group: "One Pot",
-    meals: [
-      { name: "Chilli", main: ["Beans / chickpeas / sweet potato / red pepper", "Tomatoes", "Rice"], optional: ["Coriander", "Cinnamon", "Salsa", "Tortilla chips"] },
-      { name: "Moqueca", main: ["Beans", "Red pepper", "Tomatoes", "Coconut milk", "Coriander", "Rice"], optional: [] },
-      { name: "Curry", main: ["Tomatoes", "Chickpeas / beans / cauliflower / potato / red lentils", "Rice"], optional: ["Naan", "Mango chutney", "Raita", "Coconut milk"] }
-    ]
+    name: "Beans on Toast",
+    main: ["Baked Beans", "Bread*"],
+    optional: []
   },
   {
-    group: "Sandwiches",
-    meals: [
-      { name: "Sandwich", main: ["Bread", "Rocket / lamb's lettuce", "Tomatoes", "Cucumber", "Chutney / hummus / raita", "Cheese / chicken / fish fingers / falafel"], optional: [] }
-    ]
+    name: "Peas on Toast",
+    main: ["Garden Peas", "Mint Sauce", "Bread*"],
+    optional: []
   },
   {
-    group: "Pasta",
-    meals: [
-      { name: "Pesto Pasta", main: ["Pasta", "Pesto", "Creme fraiche", "Peas"], optional: ["Salmon", "Chicken"] },
-      { name: "Tomato Pasta", main: ["Pasta", "Tomatoes", "Red pepper", "Courgette", "Aubergine"], optional: [] },
-      { name: "Sue's Spaghetti", main: ["Pasta", "Tomato puree"], optional: [] }
-    ]
+    name: "Carrot + Coriander Soup",
+    main: ["Carrot", "Coriander", "Potato", "Vegetable Stock*"],
+    optional: []
   },
   {
-    group: "Brunch",
-    meals: [
-      { name: "Brunch", main: ["Toast"], optional: ["Avocado", "Eggs", "Tomatoes", "Beans"] },
-      { name: "Sausage Sandwich", main: ["Muffins / bread", "Sausage"], optional: ["Avocado"] }
-    ]
+    name: "Tomato Soup",
+    main: ["Tomatoes"],
+    optional: ["Red Pepper", "Balsamic Vinegar*"]
   },
   {
-    group: "Soups",
-    meals: [
-      { name: "Carrot + Coriander", main: ["Carrot", "Coriander", "Potato", "Vegetable stock"], optional: [] },
-      { name: "Tomato + Red Pepper", main: ["Tomatoes", "Red pepper"], optional: ["Balsamic vinegar"] },
-      { name: "Pea + Mint", main: ["Garden peas", "Mint", "Potato"], optional: ["Cream"] },
-      { name: "Vegetable", main: ["Potato", "Parsnip", "Carrot", "Sage"], optional: ["Swede", "Chicken"] }
-    ]
+    name: "Pea + Mint Soup",
+    main: ["Peas", "Mint", "Potato"],
+    optional: ["Cream"]
+  },
+  {
+    name: "Chris' Vegetable Soup",
+    main: ["Potato", "Parsnip", "Carrot", "Sage*"],
+    optional: ["Swede", "Chicken"]
+  },
+  {
+    name: "Jacket Potato",
+    main: ["Sweet Potato / White Potato", "Baked Beans / Coronation Chickpea [Chickpeas, Mango Chutney] / Chilli [Beans, Tomatoes]", "Cheese*"],
+    optional: []
+  },
+  {
+    name: "Sue's Spaghetti",
+    main: ["Pasta*", "Tomato Puree"],
+    optional: []
+  },
+  {
+    name: "Hidden Veg Pasta",
+    main: ["Pasta*", "Tomatoes", "Red Pepper", "Courgette", "Aubergine"],
+    optional: []
+  },
+  {
+    name: "Pesto Pasta",
+    main: ["Pasta", "Pesto", "Creme Fraiche", "Peas"],
+    optional: ["Salmon", "Chicken"]
+  },
+  {
+    name: "Fajitas",
+    main: ["Wraps", "Red Pepper / Chickpeas / Sweet Potato / Cauliflower / Beans"],
+    optional: ["Guacamole [Avocado, Lime]", "Salsa [Tomatoes, Red Onion*, Coriander, Lime]"]
+  },
+  {
+    name: "Naanwich",
+    main: ["Naan", "Falafel / Cauliflower / Carrot / Chickpeas / Sweet Potato", "Mango Chutney / Sun-Dried Tomato Paste", "Hummus"],
+    optional: []
+  },
+  {
+    name: "Pizza",
+    main: ["Frozen Dough", "Pizza Sauce / Tomatoes"],
+    optional: ["Mozzarella"]
+  },
+  {
+    name: "Year 5 Tea",
+    main: ["Sausage / Burger [Burgers, Burger Buns] / Nuggets", "Chips", "Baked Beans / Peas"],
+    optional: []
+  },
+  {
+    name: "Chilli",
+    main: ["Beans / Chickpeas / Sweet Potato / Red Pepper", "Tomatoes", "Rice*"],
+    optional: ["Coriander", "Cinnamon", "Salsa [Tomatoes, Red Onion*, Coriander, Lime]", "Tortilla Chips"]
+  },
+  {
+    name: "Moqueca",
+    main: ["Beans", "Red Pepper", "Tomatoes", "Coconut Milk", "Coriander", "Rice*"],
+    optional: []
+  },
+  {
+    name: "Curry",
+    main: ["Tomatoes", "Chickpeas / Beans / Cauliflower / Potato / Red Lentils", "Rice*"],
+    optional: ["Naan", "Mango Chutney", "Raita [Cucumber, Mint, Yoghurt]", "Coconut Milk"]
   }
 ];
 
-const container = document.getElementById('groups');
-const selected = new Map(); // key -> meal (with groupName)
-const mealElsByKey = new Map();
-// choiceState: key -> array parallel to meal.main; each entry is null (fixed line) or { options, chosen } for choice lines
-const choiceState = new Map();
-// optionalChoiceState: key -> array parallel to meal.optional; each entry is { item, chosen }
-const optionalChoiceState = new Map();
-
-function parseMainLine(item) {
-  const options = item.split(/\s*\/\s*/).map(s => s.trim()).filter(Boolean);
-  return options.length > 1 ? options : null;
+// ---- Ingredient-string parsing helpers ----
+// Splits on "/" but ignores any "/" that happens to sit inside [ ... ] brackets.
+function splitTopLevel(str) {
+  const parts = [];
+  let depth = 0;
+  let current = '';
+  for (const ch of str) {
+    if (ch === '[') depth++;
+    if (ch === ']') depth--;
+    if (ch === '/' && depth === 0) {
+      parts.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  parts.push(current);
+  return parts.map(s => s.trim()).filter(Boolean);
 }
+
+// "Bread*" -> { name: "Bread", pantry: true }
+function parseStar(s) {
+  s = s.trim();
+  if (s.endsWith('*')) {
+    return { name: s.slice(0, -1).trim(), pantry: true };
+  }
+  return { name: s, pantry: false };
+}
+
+// Parses a single ingredient token, e.g. "Coronation Chickpea [Chickpeas, Mango Chutney]"
+// -> { label: "Coronation Chickpea", shoppingItems: [{name:"Chickpeas",pantry:false}, {name:"Mango Chutney",pantry:false}] }
+// A token with no brackets, e.g. "Bread*", resolves to a single shopping item.
+function parseIngredientToken(raw) {
+  const trimmed = raw.trim();
+  const bracketMatch = trimmed.match(/^(.*?)\s*\[(.+)\]\s*$/);
+  if (bracketMatch) {
+    const label = bracketMatch[1].trim();
+    const inner = bracketMatch[2];
+    const shoppingItems = inner.split(',').map(parseStar);
+    return { label, shoppingItems };
+  }
+  const parsed = parseStar(trimmed);
+  return { label: parsed.name, shoppingItems: [parsed] };
+}
+
+// Parses one main-ingredient line. If it contains top-level "/" it's a multi-select choice line.
+function parseMainLine(raw) {
+  const rawOptions = splitTopLevel(raw);
+  if (rawOptions.length > 1) {
+    return { isChoice: true, options: rawOptions.map(parseIngredientToken) };
+  }
+  const token = parseIngredientToken(raw);
+  return { isChoice: false, label: token.label, shoppingItems: token.shoppingItems };
+}
+
+const mealListEl = document.getElementById('mealList');
+const selected = new Map(); // key -> meal object
+const choiceState = new Map(); // key -> array parallel to meal.mainParsed; null or {chosen:[indexes]} for choice lines
+const optionalChoiceState = new Map(); // key -> array of {label, shoppingItems, chosen}
 
 function mealNeedsChoice(key) {
   const state = choiceState.get(key);
   return state.some(entry => entry && entry.chosen.length === 0);
 }
 
-data.forEach(group => {
-  const groupEl = document.createElement('div');
-  groupEl.className = 'group';
+function getChosenOptionalLabels(key) {
+  return optionalChoiceState.get(key).filter(o => o.chosen).map(o => o.label);
+}
 
-  const title = document.createElement('h2');
-  title.className = 'group-title';
-  title.textContent = group.group;
-  groupEl.appendChild(title);
+meals.forEach(meal => {
+  const key = meal.name;
+  const safeKey = key.replace(/[^a-zA-Z0-9]/g, '_');
 
-  group.meals.forEach(meal => {
-    const mealEl = document.createElement('div');
-    mealEl.className = 'meal';
-    const key = group.group + '|||' + meal.name;
-    const safeKey = key.replace(/[^a-zA-Z0-9]/g, '_');
-    mealElsByKey.set(key, mealEl);
+  meal.key = key;
+  meal.mainParsed = meal.main.map(parseMainLine);
+  const lineState = meal.mainParsed.map(line => line.isChoice ? { chosen: [] } : null);
+  choiceState.set(key, lineState);
 
-    // set up choice state for this meal's main ingredient lines
-    const lineState = meal.main.map(item => {
-      const options = parseMainLine(item);
-      return options ? { options, chosen: [] } : null;
-    });
-    choiceState.set(key, lineState);
+  const optionalParsed = meal.optional.map(raw => {
+    const token = parseIngredientToken(raw);
+    return { label: token.label, shoppingItems: token.shoppingItems, chosen: false };
+  });
+  optionalChoiceState.set(key, optionalParsed);
 
-    // set up optional-extra selection state (never required)
-    const optionalState = meal.optional.map(item => ({ item, chosen: false }));
-    optionalChoiceState.set(key, optionalState);
+  const mealEl = document.createElement('div');
+  mealEl.className = 'meal';
 
-    const header = document.createElement('div');
-    header.className = 'meal-header';
+  const header = document.createElement('div');
+  header.className = 'meal-header';
 
-    const labelWrap = document.createElement('button');
-    labelWrap.className = 'meal-header-label';
-    labelWrap.style.cssText = 'background:none;border:none;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer;flex:1;display:flex;align-items:center;gap:10px;';
-    const nameSpan = document.createElement('span');
-    nameSpan.textContent = meal.name;
-    labelWrap.appendChild(nameSpan);
-    const badge = document.createElement('span');
-    badge.className = 'needs-choice-badge';
-    badge.textContent = 'Choose options';
-    badge.style.display = 'none';
-    labelWrap.appendChild(badge);
-    labelWrap.addEventListener('click', () => {
-      mealEl.classList.toggle('open');
-    });
+  const labelWrap = document.createElement('button');
+  labelWrap.className = 'meal-header-label';
+  labelWrap.style.cssText = 'background:none;border:none;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer;flex:1;display:flex;align-items:center;gap:10px;';
+  const nameSpan = document.createElement('span');
+  nameSpan.textContent = meal.name;
+  labelWrap.appendChild(nameSpan);
+  const badge = document.createElement('span');
+  badge.className = 'needs-choice-badge';
+  badge.textContent = 'Choose options';
+  badge.style.display = 'none';
+  labelWrap.appendChild(badge);
+  labelWrap.addEventListener('click', () => {
+    mealEl.classList.toggle('open');
+  });
+  header.appendChild(labelWrap);
 
-    header.appendChild(labelWrap);
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.className = 'meal-select';
-    checkbox.setAttribute('aria-label', `Select ${meal.name} for shopping list`);
-    checkbox.addEventListener('click', (e) => e.stopPropagation());
-    checkbox.addEventListener('change', () => {
-      if (checkbox.checked) {
-        selected.set(key, { ...meal, groupName: group.group, key });
-        mealEl.classList.add('selected');
-        if (mealNeedsChoice(key)) {
-          mealEl.classList.add('open');
-        }
-      } else {
-        selected.delete(key);
-        mealEl.classList.remove('selected');
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.className = 'meal-select';
+  checkbox.setAttribute('aria-label', `Select ${meal.name} for shopping list`);
+  checkbox.addEventListener('click', (e) => e.stopPropagation());
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      selected.set(key, meal);
+      mealEl.classList.add('selected');
+      if (mealNeedsChoice(key)) {
+        mealEl.classList.add('open');
       }
-      refreshBadge(key);
-      updatePickerState();
-    });
-    header.appendChild(checkbox);
+    } else {
+      selected.delete(key);
+      mealEl.classList.remove('selected');
+    }
+    refreshBadge();
+    updatePickerState();
+  });
+  header.appendChild(checkbox);
 
-    const chevron = document.createElement('span');
-    chevron.innerHTML = `<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
-    chevron.style.cssText = 'display:flex;cursor:pointer;';
-    chevron.addEventListener('click', () => {
-      mealEl.classList.toggle('open');
-    });
-    header.appendChild(chevron);
+  const chevron = document.createElement('span');
+  chevron.innerHTML = `<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+  chevron.style.cssText = 'display:flex;cursor:pointer;';
+  chevron.addEventListener('click', () => {
+    mealEl.classList.toggle('open');
+  });
+  header.appendChild(chevron);
 
-    const body = document.createElement('div');
-    body.className = 'meal-body';
+  const body = document.createElement('div');
+  body.className = 'meal-body';
 
-    const inner = document.createElement('div');
-    inner.className = 'meal-body-inner';
+  const inner = document.createElement('div');
+  inner.className = 'meal-body-inner';
 
-    const ul = document.createElement('ul');
-    ul.className = 'ingredient-list';
-    meal.main.forEach((item, idx) => {
-      const li = document.createElement('li');
-      const options = lineState[idx] ? lineState[idx].options : null;
+  const ul = document.createElement('ul');
+  ul.className = 'ingredient-list';
+  meal.mainParsed.forEach((line, idx) => {
+    const li = document.createElement('li');
 
-      if (options) {
-        li.className = 'choice-item';
-        const labelEl = document.createElement('span');
-        labelEl.className = 'choice-label';
-        labelEl.textContent = 'Select any that apply:';
-        li.appendChild(labelEl);
-
-        const optWrap = document.createElement('div');
-        optWrap.className = 'choice-options';
-        options.forEach(opt => {
-          const pill = document.createElement('label');
-          pill.className = 'choice-pill';
-          const checkboxOpt = document.createElement('input');
-          checkboxOpt.type = 'checkbox';
-          checkboxOpt.name = `choice_${safeKey}_${idx}`;
-          checkboxOpt.value = opt;
-          checkboxOpt.addEventListener('change', () => {
-            const chosen = lineState[idx].chosen;
-            if (checkboxOpt.checked) {
-              if (!chosen.includes(opt)) chosen.push(opt);
-            } else {
-              const i = chosen.indexOf(opt);
-              if (i > -1) chosen.splice(i, 1);
-            }
-            refreshBadge(key);
-            if (selected.has(key)) renderShoppingList();
-          });
-          pill.appendChild(checkboxOpt);
-          pill.appendChild(document.createTextNode(opt));
-          optWrap.appendChild(pill);
-        });
-        li.appendChild(optWrap);
-      } else {
-        li.textContent = item;
-      }
-      ul.appendChild(li);
-    });
-    inner.appendChild(ul);
-
-    if (meal.optional.length) {
-      const opt = document.createElement('div');
-      opt.className = 'optional-block';
-      const strongLabel = document.createElement('strong');
-      strongLabel.textContent = 'Optional extras (tick any you fancy)';
-      opt.appendChild(strongLabel);
+    if (line.isChoice) {
+      li.className = 'choice-item';
+      const labelEl = document.createElement('span');
+      labelEl.className = 'choice-label';
+      labelEl.textContent = 'Select any that apply:';
+      li.appendChild(labelEl);
 
       const optWrap = document.createElement('div');
       optWrap.className = 'choice-options';
-      meal.optional.forEach((item, oIdx) => {
+      line.options.forEach((opt, optIdx) => {
         const pill = document.createElement('label');
-        pill.className = 'choice-pill optional-pill';
-        const checkboxOpt = document.createElement('input');
-        checkboxOpt.type = 'checkbox';
-        checkboxOpt.value = item;
-        checkboxOpt.addEventListener('change', () => {
-          optionalState[oIdx].chosen = checkboxOpt.checked;
+        pill.className = 'choice-pill';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.name = `choice_${safeKey}_${idx}`;
+        cb.value = opt.label;
+        cb.addEventListener('change', () => {
+          const chosen = lineState[idx].chosen;
+          if (cb.checked) {
+            if (!chosen.includes(optIdx)) chosen.push(optIdx);
+          } else {
+            const i = chosen.indexOf(optIdx);
+            if (i > -1) chosen.splice(i, 1);
+          }
+          refreshBadge();
           if (selected.has(key)) renderShoppingList();
         });
-        pill.appendChild(checkboxOpt);
-        pill.appendChild(document.createTextNode(item));
+        pill.appendChild(cb);
+        pill.appendChild(document.createTextNode(opt.label));
         optWrap.appendChild(pill);
       });
-      opt.appendChild(optWrap);
-      inner.appendChild(opt);
+      li.appendChild(optWrap);
+    } else {
+      li.textContent = line.label;
     }
-
-    body.appendChild(inner);
-    mealEl.appendChild(header);
-    mealEl.appendChild(body);
-    groupEl.appendChild(mealEl);
-
-    function refreshBadge(k) {
-      const needs = mealNeedsChoice(k) && selected.has(k);
-      badge.style.display = needs ? 'inline-flex' : 'none';
-      mealEl.classList.toggle('needs-choice', needs);
-    }
+    ul.appendChild(li);
   });
+  inner.appendChild(ul);
 
-  container.appendChild(groupEl);
+  if (optionalParsed.length) {
+    const optBlock = document.createElement('div');
+    optBlock.className = 'optional-block';
+    const strongLabel = document.createElement('strong');
+    strongLabel.textContent = 'Optional extras (tick any you fancy)';
+    optBlock.appendChild(strongLabel);
+
+    const optWrap = document.createElement('div');
+    optWrap.className = 'choice-options';
+    optionalParsed.forEach(o => {
+      const pill = document.createElement('label');
+      pill.className = 'choice-pill optional-pill';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = o.label;
+      cb.addEventListener('change', () => {
+        o.chosen = cb.checked;
+        if (selected.has(key)) renderShoppingList();
+      });
+      pill.appendChild(cb);
+      pill.appendChild(document.createTextNode(o.label));
+      optWrap.appendChild(pill);
+    });
+    optBlock.appendChild(optWrap);
+    inner.appendChild(optBlock);
+  }
+
+  body.appendChild(inner);
+  mealEl.appendChild(header);
+  mealEl.appendChild(body);
+  mealListEl.appendChild(mealEl);
+
+  function refreshBadge() {
+    const needs = mealNeedsChoice(key) && selected.has(key);
+    badge.style.display = needs ? 'inline-flex' : 'none';
+    mealEl.classList.toggle('needs-choice', needs);
+  }
 });
 
 const pickerCountEl = document.getElementById('pickerCount');
@@ -724,6 +796,8 @@ const exportNoteEl = document.getElementById('exportNote');
 const receiptDateEl = document.getElementById('receiptDate');
 const receiptMealsEl = document.getElementById('receiptMeals');
 const receiptIngredientsEl = document.getElementById('receiptIngredients');
+const receiptPantrySectionEl = document.getElementById('receiptPantrySection');
+const receiptPantryEl = document.getElementById('receiptPantry');
 const receiptOptionalSectionEl = document.getElementById('receiptOptionalSection');
 const receiptOptionalEl = document.getElementById('receiptOptional');
 
@@ -733,47 +807,65 @@ function updatePickerState() {
 }
 
 // Gathers the resolved ingredient data shared by the on-screen list and the printable receipt.
+// Ingredients marked with * always land in "pantryItems", regardless of whether they came from
+// a required or optional line. Everything else required (non-pantry) lands in "mainItems" and
+// takes priority over the same ingredient appearing elsewhere as optional or pantry.
 function computeShoppingListData() {
-  const mainSet = new Map(); // lowercase -> original text
+  const mainSet = new Map();
+  const pantrySet = new Map();
   const optionalSet = new Map();
-  const pending = []; // { mealName, options }
+  const pending = [];
 
-  // Pass 1: collect every required ingredient first, so an item that's optional
-  // in one meal but required in another always lands under "Ingredients needed".
+  function addRequired(si) {
+    const k = si.name.trim().toLowerCase();
+    if (si.pantry) {
+      if (!pantrySet.has(k)) pantrySet.set(k, si.name.trim());
+    } else {
+      mainSet.set(k, si.name.trim());
+      if (pantrySet.has(k)) pantrySet.delete(k);
+    }
+  }
+
+  // Pass 1: required ingredients (fixed lines + chosen options)
   selected.forEach(meal => {
     const lineState = choiceState.get(meal.key);
-    meal.main.forEach((item, idx) => {
-      const entry = lineState[idx];
-      if (entry) {
+    meal.mainParsed.forEach((line, idx) => {
+      if (line.isChoice) {
+        const entry = lineState[idx];
         if (entry.chosen.length > 0) {
-          entry.chosen.forEach(choice => {
-            const k = choice.trim().toLowerCase();
-            if (!mainSet.has(k)) mainSet.set(k, choice.trim());
+          entry.chosen.forEach(optIdx => {
+            line.options[optIdx].shoppingItems.forEach(addRequired);
           });
         } else {
-          pending.push({ mealName: meal.name, options: entry.options.join(' / ') });
+          pending.push({ mealName: meal.name, options: line.options.map(o => o.label).join(' / ') });
         }
       } else {
-        const k = item.trim().toLowerCase();
-        if (!mainSet.has(k)) mainSet.set(k, item.trim());
+        line.shoppingItems.forEach(addRequired);
       }
     });
   });
 
-  // Pass 2: collect selected optional extras, skipping anything already required.
+  // Pass 2: selected optional extras (skip anything already required)
   selected.forEach(meal => {
     const optState = optionalChoiceState.get(meal.key);
     optState.forEach(o => {
-      if (o.chosen) {
-        const k = o.item.trim().toLowerCase();
-        if (!mainSet.has(k) && !optionalSet.has(k)) optionalSet.set(k, o.item.trim());
-      }
+      if (!o.chosen) return;
+      o.shoppingItems.forEach(si => {
+        const k = si.name.trim().toLowerCase();
+        if (mainSet.has(k)) return;
+        if (si.pantry) {
+          if (!pantrySet.has(k)) pantrySet.set(k, si.name.trim());
+        } else {
+          if (!pantrySet.has(k) && !optionalSet.has(k)) optionalSet.set(k, si.name.trim());
+        }
+      });
     });
   });
 
   return {
     meals: [...selected.values()],
     mainItems: [...mainSet.values()].sort((a, b) => a.localeCompare(b)),
+    pantryItems: [...pantrySet.values()].sort((a, b) => a.localeCompare(b)),
     optionalItems: [...optionalSet.values()].sort((a, b) => a.localeCompare(b)),
     pending
   };
@@ -786,7 +878,7 @@ function renderShoppingList() {
     return;
   }
 
-  const { meals, mainItems, optionalItems, pending } = computeShoppingListData();
+  const { meals: selMeals, mainItems, pantryItems, optionalItems, pending } = computeShoppingListData();
 
   let html = '';
 
@@ -797,11 +889,21 @@ function renderShoppingList() {
   }
 
   html += '<h3>Selected meals</h3><ul>' +
-    meals.map(m => `<li>${m.name} <span style="color:var(--muted);">(${m.groupName})</span></li>`).join('') +
+    selMeals.map(m => {
+      const withLabels = getChosenOptionalLabels(m.key);
+      const withText = withLabels.length ? ` <span style="color:var(--muted);">(with ${withLabels.join(', ')})</span>` : '';
+      return `<li>${m.name}${withText}</li>`;
+    }).join('') +
     '</ul>';
 
   html += '<h3>Ingredients needed</h3>' +
     (mainItems.length ? '<ul>' + mainItems.map(item => `<li>${item}</li>`).join('') + '</ul>' : '<p class="empty-note">Make your choices above to fill this in.</p>');
+
+  if (pantryItems.length) {
+    html += '<h3>Store items you should already have</h3><ul>' +
+      pantryItems.map(item => `<li>${item}</li>`).join('') +
+      '</ul>';
+  }
 
   if (optionalItems.length) {
     html += '<h3>Optional extras</h3><ul>' +
@@ -811,8 +913,8 @@ function renderShoppingList() {
 
   shoppingListEl.innerHTML = html;
 
-  updateExportState({ meals, mainItems, optionalItems, pending });
-  updateReceipt({ meals, mainItems, optionalItems });
+  updateExportState({ meals: selMeals, pending });
+  updateReceipt({ meals: selMeals, mainItems, pantryItems, optionalItems });
 }
 
 function updateExportState(listData) {
@@ -830,16 +932,28 @@ function updateExportState(listData) {
   }
 }
 
-function updateReceipt({ meals, mainItems, optionalItems }) {
+function updateReceipt({ meals: selMeals, mainItems, pantryItems, optionalItems }) {
   receiptDateEl.textContent = new Date().toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
 
-  receiptMealsEl.innerHTML = meals.map(m =>
-    `<div class="receipt-line"><span class="name">${m.name}</span></div><div class="receipt-line"><span class="meta">${m.groupName}</span></div>`
-  ).join('');
+  receiptMealsEl.innerHTML = selMeals.map(m => {
+    const withLabels = getChosenOptionalLabels(m.key);
+    const withLine = withLabels.length ? `<div class="receipt-line"><span class="meta">with ${withLabels.join(', ')}</span></div>` : '';
+    return `<div class="receipt-line"><span class="name">${m.name}</span></div>${withLine}`;
+  }).join('');
 
   receiptIngredientsEl.innerHTML = mainItems.map(item =>
     `<div class="receipt-line"><span class="name">${item}</span><span class="box">[ ]</span></div>`
   ).join('');
+
+  if (pantryItems.length) {
+    receiptPantrySectionEl.style.display = '';
+    receiptPantryEl.innerHTML = pantryItems.map(item =>
+      `<div class="receipt-line"><span class="name">${item}</span><span class="box">[ ]</span></div>`
+    ).join('');
+  } else {
+    receiptPantrySectionEl.style.display = 'none';
+    receiptPantryEl.innerHTML = '';
+  }
 
   if (optionalItems.length) {
     receiptOptionalSectionEl.style.display = '';
