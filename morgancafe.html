@@ -896,17 +896,17 @@ function renderShoppingList() {
     }).join('') +
     '</ul>';
 
-  html += '<h3>Ingredients needed</h3>' +
+  html += '<h3>Ingredients to get</h3>' +
     (mainItems.length ? '<ul>' + mainItems.map(item => `<li>${item}</li>`).join('') + '</ul>' : '<p class="empty-note">Make your choices above to fill this in.</p>');
 
   if (pantryItems.length) {
-    html += '<h3>Store items you should already have</h3><ul>' +
+    html += '<h3>Should have already?</h3><ul>' +
       pantryItems.map(item => `<li>${item}</li>`).join('') +
       '</ul>';
   }
 
   if (optionalItems.length) {
-    html += '<h3>Optional extras</h3><ul>' +
+    html += '<h3>Extras to get</h3><ul>' +
       optionalItems.map(item => `<li>${item}</li>`).join('') +
       '</ul>';
   }
