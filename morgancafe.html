@@ -316,12 +316,10 @@
     font-size: 0.78rem;
     margin: 8px 0 0;
   }
-
   /* ---- Printable receipt ---- */
   .receipt {
     display: none;
   }
-
   @media print {
     body * {
       visibility: hidden;
@@ -341,7 +339,6 @@
       background: #fff;
     }
   }
-
   .receipt {
     font-family: "Courier New", Courier, monospace;
     width: 280px;
@@ -414,7 +411,6 @@
   <h1>The Morgans' Cafe</h1>
   <p class="subtitle">"what we havin' for tea?"</p>
   <div id="mealList"></div>
-
   <div class="picker-section">
     <h2>The Shopping List</h2>
     <p class="picker-count">how many meals? — <strong id="pickerCount">0</strong> selected</p>
@@ -425,7 +421,6 @@
     <p class="export-note" id="exportNote"></p>
   </div>
 </div>
-
 <div id="receipt" class="receipt">
   <div class="receipt-header">
     <div class="receipt-title">MORGAN CAFE</div>
@@ -455,7 +450,6 @@
   <div class="receipt-divider dashed"></div>
   <div class="receipt-footer">Happy cooking!<br>Morgan Cafe</div>
 </div>
-
 <script>
 const meals = [
   {
@@ -525,7 +519,7 @@ const meals = [
   },
   {
     name: "Pesto Pasta",
-    main: ["Pasta", "Pesto", "Creme Fraiche", "Peas"],
+    main: ["Pasta*", "Pesto", "Creme Fraiche", "Peas"],
     optional: ["Salmon", "Chicken"]
   },
   {
@@ -564,7 +558,6 @@ const meals = [
     optional: ["Naan", "Mango Chutney", "Raita [Cucumber, Mint, Yoghurt]", "Coconut Milk"]
   }
 ];
-
 // ---- Ingredient-string parsing helpers ----
 // Splits on "/" but ignores any "/" that happens to sit inside [ ... ] brackets.
 function splitTopLevel(str) {
@@ -584,7 +577,6 @@ function splitTopLevel(str) {
   parts.push(current);
   return parts.map(s => s.trim()).filter(Boolean);
 }
-
 // "Bread*" -> { name: "Bread", pantry: true }
 function parseStar(s) {
   s = s.trim();
@@ -593,7 +585,6 @@ function parseStar(s) {
   }
   return { name: s, pantry: false };
 }
-
 // Parses a single ingredient token, e.g. "Coronation Chickpea [Chickpeas, Mango Chutney]"
 // -> { label: "Coronation Chickpea", shoppingItems: [{name:"Chickpeas",pantry:false}, {name:"Mango Chutney",pantry:false}] }
 // A token with no brackets, e.g. "Bread*", resolves to a single shopping item.
@@ -609,7 +600,6 @@ function parseIngredientToken(raw) {
   const parsed = parseStar(trimmed);
   return { label: parsed.name, shoppingItems: [parsed] };
 }
-
 // Parses one main-ingredient line. If it contains top-level "/" it's a multi-select choice line.
 function parseMainLine(raw) {
   const rawOptions = splitTopLevel(raw);
@@ -619,42 +609,33 @@ function parseMainLine(raw) {
   const token = parseIngredientToken(raw);
   return { isChoice: false, label: token.label, shoppingItems: token.shoppingItems };
 }
-
 const mealListEl = document.getElementById('mealList');
 const selected = new Map(); // key -> meal object
 const choiceState = new Map(); // key -> array parallel to meal.mainParsed; null or {chosen:[indexes]} for choice lines
 const optionalChoiceState = new Map(); // key -> array of {label, shoppingItems, chosen}
-
 function mealNeedsChoice(key) {
   const state = choiceState.get(key);
   return state.some(entry => entry && entry.chosen.length === 0);
 }
-
 function getChosenOptionalLabels(key) {
   return optionalChoiceState.get(key).filter(o => o.chosen).map(o => o.label);
 }
-
 meals.forEach(meal => {
   const key = meal.name;
   const safeKey = key.replace(/[^a-zA-Z0-9]/g, '_');
-
   meal.key = key;
   meal.mainParsed = meal.main.map(parseMainLine);
   const lineState = meal.mainParsed.map(line => line.isChoice ? { chosen: [] } : null);
   choiceState.set(key, lineState);
-
   const optionalParsed = meal.optional.map(raw => {
     const token = parseIngredientToken(raw);
     return { label: token.label, shoppingItems: token.shoppingItems, chosen: false };
   });
   optionalChoiceState.set(key, optionalParsed);
-
   const mealEl = document.createElement('div');
   mealEl.className = 'meal';
-
   const header = document.createElement('div');
   header.className = 'meal-header';
-
   const labelWrap = document.createElement('button');
   labelWrap.className = 'meal-header-label';
   labelWrap.style.cssText = 'background:none;border:none;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer;flex:1;display:flex;align-items:center;gap:10px;';
@@ -670,7 +651,6 @@ meals.forEach(meal => {
     mealEl.classList.toggle('open');
   });
   header.appendChild(labelWrap);
-
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
   checkbox.className = 'meal-select';
@@ -691,7 +671,6 @@ meals.forEach(meal => {
     updatePickerState();
   });
   header.appendChild(checkbox);
-
   const chevron = document.createElement('span');
   chevron.innerHTML = `<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
   chevron.style.cssText = 'display:flex;cursor:pointer;';
@@ -699,25 +678,20 @@ meals.forEach(meal => {
     mealEl.classList.toggle('open');
   });
   header.appendChild(chevron);
-
   const body = document.createElement('div');
   body.className = 'meal-body';
-
   const inner = document.createElement('div');
   inner.className = 'meal-body-inner';
-
   const ul = document.createElement('ul');
   ul.className = 'ingredient-list';
   meal.mainParsed.forEach((line, idx) => {
     const li = document.createElement('li');
-
     if (line.isChoice) {
       li.className = 'choice-item';
       const labelEl = document.createElement('span');
       labelEl.className = 'choice-label';
       labelEl.textContent = '';
       li.appendChild(labelEl);
-
       const optWrap = document.createElement('div');
       optWrap.className = 'choice-options';
       line.options.forEach((opt, optIdx) => {
@@ -749,14 +723,12 @@ meals.forEach(meal => {
     ul.appendChild(li);
   });
   inner.appendChild(ul);
-
   if (optionalParsed.length) {
     const optBlock = document.createElement('div');
     optBlock.className = 'optional-block';
     const strongLabel = document.createElement('strong');
     strongLabel.textContent = 'Extras';
     optBlock.appendChild(strongLabel);
-
     const optWrap = document.createElement('div');
     optWrap.className = 'choice-options';
     optionalParsed.forEach(o => {
@@ -776,19 +748,16 @@ meals.forEach(meal => {
     optBlock.appendChild(optWrap);
     inner.appendChild(optBlock);
   }
-
   body.appendChild(inner);
   mealEl.appendChild(header);
   mealEl.appendChild(body);
   mealListEl.appendChild(mealEl);
-
   function refreshBadge() {
     const needs = mealNeedsChoice(key) && selected.has(key);
     badge.style.display = needs ? 'inline-flex' : 'none';
     mealEl.classList.toggle('needs-choice', needs);
   }
 });
-
 const pickerCountEl = document.getElementById('pickerCount');
 const shoppingListEl = document.getElementById('shoppingList');
 const exportBtn = document.getElementById('exportPdfBtn');
@@ -800,12 +769,10 @@ const receiptPantrySectionEl = document.getElementById('receiptPantrySection');
 const receiptPantryEl = document.getElementById('receiptPantry');
 const receiptOptionalSectionEl = document.getElementById('receiptOptionalSection');
 const receiptOptionalEl = document.getElementById('receiptOptional');
-
 function updatePickerState() {
   pickerCountEl.textContent = selected.size;
   renderShoppingList();
 }
-
 // Gathers the resolved ingredient data shared by the on-screen list and the printable receipt.
 // Ingredients marked with * always land in "pantryItems", regardless of whether they came from
 // a required or optional line. Everything else required (non-pantry) lands in "mainItems" and
@@ -815,7 +782,6 @@ function computeShoppingListData() {
   const pantrySet = new Map();
   const optionalSet = new Map();
   const pending = [];
-
   function addRequired(si) {
     const k = si.name.trim().toLowerCase();
     if (si.pantry) {
@@ -825,7 +791,6 @@ function computeShoppingListData() {
       if (pantrySet.has(k)) pantrySet.delete(k);
     }
   }
-
   // Pass 1: required ingredients (fixed lines + chosen options)
   selected.forEach(meal => {
     const lineState = choiceState.get(meal.key);
@@ -844,7 +809,6 @@ function computeShoppingListData() {
       }
     });
   });
-
   // Pass 2: selected optional extras (skip anything already required)
   selected.forEach(meal => {
     const optState = optionalChoiceState.get(meal.key);
@@ -861,7 +825,6 @@ function computeShoppingListData() {
       });
     });
   });
-
   return {
     meals: [...selected.values()],
     mainItems: [...mainSet.values()].sort((a, b) => a.localeCompare(b)),
@@ -870,24 +833,19 @@ function computeShoppingListData() {
     pending
   };
 }
-
 function renderShoppingList() {
   if (selected.size === 0) {
     shoppingListEl.innerHTML = '<p class="empty-note">Select some meals to generate your ingredient list.</p>';
     updateExportState(null);
     return;
   }
-
   const { meals: selMeals, mainItems, pantryItems, optionalItems, pending } = computeShoppingListData();
-
   let html = '';
-
   if (pending.length) {
     html += '<div class="pending-box"><strong>Still need your choice</strong><ul>' +
       pending.map(p => `<li>${p.mealName}: ${p.options}</li>`).join('') +
       '</ul></div>';
   }
-
   html += '<h3>Selected meals</h3><ul>' +
     selMeals.map(m => {
       const withLabels = getChosenOptionalLabels(m.key);
@@ -895,34 +853,26 @@ function renderShoppingList() {
       return `<li>${m.name}${withText}</li>`;
     }).join('') +
     '</ul>';
-
   html += '<h3>Ingredients to get</h3>' +
     (mainItems.length ? '<ul>' + mainItems.map(item => `<li>${item}</li>`).join('') + '</ul>' : '<p class="empty-note">Make your choices above to fill this in.</p>');
-
   if (pantryItems.length) {
     html += '<h3>Should have already?</h3><ul>' +
       pantryItems.map(item => `<li>${item}</li>`).join('') +
       '</ul>';
   }
-
   if (optionalItems.length) {
     html += '<h3>Extras to get</h3><ul>' +
       optionalItems.map(item => `<li>${item}</li>`).join('') +
       '</ul>';
   }
-
   shoppingListEl.innerHTML = html;
-
   updateExportState({ meals: selMeals, pending });
   updateReceipt({ meals: selMeals, mainItems, pantryItems, optionalItems });
 }
-
 function updateExportState(listData) {
   const hasPending = listData && listData.pending && listData.pending.length > 0;
   const hasMeals = listData && listData.meals && listData.meals.length > 0;
-
   exportBtn.disabled = !hasMeals || hasPending;
-
   if (!hasMeals) {
     exportNoteEl.textContent = '';
   } else if (hasPending) {
@@ -931,20 +881,16 @@ function updateExportState(listData) {
     exportNoteEl.textContent = '';
   }
 }
-
 function updateReceipt({ meals: selMeals, mainItems, pantryItems, optionalItems }) {
   receiptDateEl.textContent = new Date().toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
-
   receiptMealsEl.innerHTML = selMeals.map(m => {
     const withLabels = getChosenOptionalLabels(m.key);
     const withLine = withLabels.length ? `<div class="receipt-line"><span class="meta">with ${withLabels.join(', ')}</span></div>` : '';
     return `<div class="receipt-line"><span class="name">${m.name}</span></div>${withLine}`;
   }).join('');
-
   receiptIngredientsEl.innerHTML = mainItems.map(item =>
     `<div class="receipt-line"><span class="name">${item}</span><span class="box">[ ]</span></div>`
   ).join('');
-
   if (pantryItems.length) {
     receiptPantrySectionEl.style.display = '';
     receiptPantryEl.innerHTML = pantryItems.map(item =>
@@ -954,7 +900,6 @@ function updateReceipt({ meals: selMeals, mainItems, pantryItems, optionalItems 
     receiptPantrySectionEl.style.display = 'none';
     receiptPantryEl.innerHTML = '';
   }
-
   if (optionalItems.length) {
     receiptOptionalSectionEl.style.display = '';
     receiptOptionalEl.innerHTML = optionalItems.map(item =>
@@ -965,7 +910,6 @@ function updateReceipt({ meals: selMeals, mainItems, pantryItems, optionalItems 
     receiptOptionalEl.innerHTML = '';
   }
 }
-
 exportBtn.addEventListener('click', () => {
   if (exportBtn.disabled) return;
   window.print();
