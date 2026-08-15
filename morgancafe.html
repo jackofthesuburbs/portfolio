@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morgan Cafe</title>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --card-bg: #ffffff;
+    --ink: #2e2a26;
+    --muted: #756b60;
+    --accent: #a6714f;
+    --accent-soft: #f1e4d8;
+    --border: #e8e0d6;
+    --optional: #8a7f6b;
+  }
+  * { box-sizing: border-box; }
+  html {
+    font-size: 11px;
+  }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 32px 16px 80px;
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 1.6rem;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+    text-align: center;
+  }
+  .subtitle {
+    color: var(--muted);
+    margin: 0 0 32px;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+  .group {
+    margin-bottom: 32px;
+  }
+  .group-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin: 0 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--accent-soft);
+    text-align: center;
+  }
+  .meal {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .meal-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 13px 16px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .meal-header:hover {
+    background: var(--accent-soft);
+  }
+  .chevron {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--muted);
+    transition: transform 0.2s ease;
+  }
+  .meal.open .chevron {
+    transform: rotate(90deg);
+  }
+  .meal-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+  }
+  .meal.open .meal-body {
+    max-height: 400px;
+  }
+  .meal-body-inner {
+    padding: 2px 18px 16px 18px;
+  }
+  .ingredient-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ingredient-list li {
+    padding: 4px 0 4px 20px;
+    position: relative;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+  .ingredient-list li::before {
+    content: "•";
+    position: absolute;
+    left: 4px;
+    color: var(--accent);
+  }
+  .optional-block {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    font-size: 0.9rem;
+    color: var(--optional);
+  }
+  .optional-block strong {
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .meal-select {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .meal-header-label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .meal.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .picker-section {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 2px solid var(--accent-soft);
+  }
+  .picker-section h2 {
+    font-size: 1.2rem;
+    margin: 0 0 4px;
+    text-align: center;
+  }
+  .picker-count {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 0 0 20px;
+    text-align: center;
+  }
+  .picker-count strong {
+    color: var(--accent);
+  }
+  .shopping-list-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    padding: 18px 20px;
+  }
+  .shopping-list-box h3 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  .shopping-list-box h3:not(:first-child) {
+    margin-top: 18px;
+  }
+  .shopping-list-box ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .shopping-list-box li {
+    padding: 5px 0 5px 20px;
+    position: relative;
+    font-size: 0.95rem;
+  }
+  .shopping-list-box li::before {
+    content: "•";
+    position: absolute;
+    left: 4px;
+    color: var(--accent);
+  }
+  .empty-note {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+  .choice-item {
+    padding-left: 20px !important;
+  }
+  .choice-item::before {
+    content: "•";
+  }
+  .choice-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .choice-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .choice-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid var(--border);
+    border-radius: 0;
+    padding: 4px 11px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    background: var(--bg);
+  }
+  .choice-pill:has(input:checked) {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    font-weight: 600;
+  }
+  .choice-pill input {
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .choice-pill.optional-pill {
+    background: var(--bg);
+  }
+  .choice-pill.optional-pill:has(input:checked) {
+    border-color: var(--optional);
+    background: #efe9dc;
+    color: var(--optional);
+    font-weight: 600;
+  }
+  .choice-pill.optional-pill input {
+    accent-color: var(--optional);
+  }
+  .meal.needs-choice {
+    border-color: #c9893b;
+  }
+  .needs-choice-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    background: #c9893b;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 0;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .pending-box {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    background: #fbf1e2;
+    border: 1px solid #e7c48c;
+    border-radius: 0;
+    color: #7a5722;
+    font-size: 0.88rem;
+  }
+  .pending-box strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .pending-box ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .pending-box li {
+    padding: 3px 0;
+  }
+  .export-btn {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 11px 16px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .export-btn:hover:not(:disabled) {
+    background: var(--accent);
+  }
+  .export-btn:disabled {
+    background: var(--border);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+  .export-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    margin: 8px 0 0;
+  }
+
+  /* ---- Printable receipt ---- */
+  .receipt {
+    display: none;
+  }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    .receipt, .receipt * {
+      visibility: visible;
+    }
+    .receipt {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+    body {
+      padding: 0;
+      background: #fff;
+    }
+  }
+
+  .receipt {
+    font-family: "Courier New", Courier, monospace;
+    width: 280px;
+    margin: 0 auto;
+    color: #000;
+    background: #fff;
+    padding: 18px 14px;
+    font-size: 11px;
+  }
+  .receipt-header {
+    text-align: center;
+  }
+  .receipt-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+  .receipt-sub {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+  .receipt-date {
+    font-size: 10px;
+    margin-top: 6px;
+    color: #333;
+  }
+  .receipt-divider {
+    border-top: 1px dashed #000;
+    margin: 10px 0;
+  }
+  .receipt-section-title {
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .receipt-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .receipt-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .receipt-line .name {
+    flex: 1;
+  }
+  .receipt-line .box {
+    flex-shrink: 0;
+  }
+  .receipt-line .meta {
+    color: #444;
+    font-size: 10px;
+  }
+  .receipt-footer {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Morgan Cafe</h1>
+  <p class="subtitle">Tap a meal to see what's in it.</p>
+  <div id="groups"></div>
+
+  <div class="picker-section">
+    <h2>Build a Shopping List</h2>
+    <p class="picker-count">Tick any meals above — <strong id="pickerCount">0</strong> selected</p>
+    <div class="shopping-list-box" id="shoppingList">
+      <p class="empty-note">Select some meals to generate your ingredient list.</p>
+    </div>
+    <button id="exportPdfBtn" class="export-btn" disabled>Export as PDF</button>
+    <p class="export-note" id="exportNote"></p>
+  </div>
+</div>
+
+<div id="receipt" class="receipt">
+  <div class="receipt-header">
+    <div class="receipt-title">MORGAN CAFE</div>
+    <div class="receipt-sub">Shopping List</div>
+    <div class="receipt-date" id="receiptDate"></div>
+  </div>
+  <div class="receipt-divider"></div>
+  <div class="receipt-section">
+    <div class="receipt-section-title">Meals</div>
+    <div class="receipt-lines" id="receiptMeals"></div>
+  </div>
+  <div class="receipt-divider"></div>
+  <div class="receipt-section">
+    <div class="receipt-section-title">Ingredients</div>
+    <div class="receipt-lines" id="receiptIngredients"></div>
+  </div>
+  <div class="receipt-section" id="receiptOptionalSection">
+    <div class="receipt-divider"></div>
+    <div class="receipt-section-title">Optional Extras</div>
+    <div class="receipt-lines" id="receiptOptional"></div>
+  </div>
+  <div class="receipt-divider dashed"></div>
+  <div class="receipt-footer">Happy cooking!<br>Morgan Cafe</div>
+</div>
+
+<script>
+const data = [
+  {
+    group: "On Toast",
+    meals: [
+      { name: "Peas on Toast", main: ["Garden peas", "Mint sauce", "Bread"], optional: [] },
+      { name: "Beans on Toast", main: ["Baked beans", "Bread"], optional: [] }
+    ]
+  },
+  {
+    group: "Jacket Potatoes",
+    meals: [
+      { name: "Jacket Potato", main: ["Sweet potato / white potato", "Coleslaw", "Baked beans / coronation chickpea / chilli"], optional: [] }
+    ]
+  },
+  {
+    group: "Put It In A Wrap",
+    meals: [
+      { name: "Fajitas", main: ["Wraps", "Red pepper / chickpeas / sweet potato / cauliflower / black beans"], optional: ["Guacamole", "Salsa"] },
+      { name: "Naanwich", main: ["Naan", "Falafel / cauliflower / carrot / chickpeas / sweet potato", "Mango chutney / sun-dried tomato paste", "Hummus"], optional: [] }
+    ]
+  },
+  {
+    group: "Primary School",
+    meals: [
+      { name: "Primary School Dinner", main: ["Sausage / burger", "Chips", "Baked beans / garden peas"], optional: [] }
+    ]
+  },
+  {
+    group: "One Pot",
+    meals: [
+      { name: "Chilli", main: ["Beans / chickpeas / sweet potato / red pepper", "Tomatoes", "Rice"], optional: ["Coriander", "Cinnamon", "Salsa", "Tortilla chips"] },
+      { name: "Moqueca", main: ["Beans", "Red pepper", "Tomatoes", "Coconut milk", "Coriander", "Rice"], optional: [] },
+      { name: "Curry", main: ["Tomatoes", "Chickpeas / beans / cauliflower / potato / red lentils", "Rice"], optional: ["Naan", "Mango chutney", "Raita", "Coconut milk"] }
+    ]
+  },
+  {
+    group: "Sandwiches",
+    meals: [
+      { name: "Sandwich", main: ["Bread", "Rocket / lamb's lettuce", "Tomatoes", "Cucumber", "Chutney / hummus / raita", "Cheese / chicken / fish fingers / falafel"], optional: [] }
+    ]
+  },
+  {
+    group: "Pasta",
+    meals: [
+      { name: "Pesto Pasta", main: ["Pasta", "Pesto", "Creme fraiche", "Peas"], optional: ["Salmon", "Chicken"] },
+      { name: "Tomato Pasta", main: ["Pasta", "Tomatoes", "Red pepper", "Courgette", "Aubergine"], optional: [] },
+      { name: "Sue's Spaghetti", main: ["Pasta", "Tomato puree"], optional: [] }
+    ]
+  },
+  {
+    group: "Brunch",
+    meals: [
+      { name: "Brunch", main: ["Toast"], optional: ["Avocado", "Eggs", "Tomatoes", "Beans"] },
+      { name: "Sausage Sandwich", main: ["Muffins / bread", "Sausage"], optional: ["Avocado"] }
+    ]
+  },
+  {
+    group: "Soups",
+    meals: [
+      { name: "Carrot + Coriander", main: ["Carrot", "Coriander", "Potato", "Vegetable stock"], optional: [] },
+      { name: "Tomato + Red Pepper", main: ["Tomatoes", "Red pepper"], optional: ["Balsamic vinegar"] },
+      { name: "Pea + Mint", main: ["Garden peas", "Mint", "Potato"], optional: ["Cream"] },
+      { name: "Vegetable", main: ["Potato", "Parsnip", "Carrot", "Sage"], optional: ["Swede", "Chicken"] }
+    ]
+  }
+];
+
+const container = document.getElementById('groups');
+const selected = new Map(); // key -> meal (with groupName)
+const mealElsByKey = new Map();
+// choiceState: key -> array parallel to meal.main; each entry is null (fixed line) or { options, chosen } for choice lines
+const choiceState = new Map();
+// optionalChoiceState: key -> array parallel to meal.optional; each entry is { item, chosen }
+const optionalChoiceState = new Map();
+
+function parseMainLine(item) {
+  const options = item.split(/\s*\/\s*/).map(s => s.trim()).filter(Boolean);
+  return options.length > 1 ? options : null;
+}
+
+function mealNeedsChoice(key) {
+  const state = choiceState.get(key);
+  return state.some(entry => entry && entry.chosen.length === 0);
+}
+
+data.forEach(group => {
+  const groupEl = document.createElement('div');
+  groupEl.className = 'group';
+
+  const title = document.createElement('h2');
+  title.className = 'group-title';
+  title.textContent = group.group;
+  groupEl.appendChild(title);
+
+  group.meals.forEach(meal => {
+    const mealEl = document.createElement('div');
+    mealEl.className = 'meal';
+    const key = group.group + '|||' + meal.name;
+    const safeKey = key.replace(/[^a-zA-Z0-9]/g, '_');
+    mealElsByKey.set(key, mealEl);
+
+    // set up choice state for this meal's main ingredient lines
+    const lineState = meal.main.map(item => {
+      const options = parseMainLine(item);
+      return options ? { options, chosen: [] } : null;
+    });
+    choiceState.set(key, lineState);
+
+    // set up optional-extra selection state (never required)
+    const optionalState = meal.optional.map(item => ({ item, chosen: false }));
+    optionalChoiceState.set(key, optionalState);
+
+    const header = document.createElement('div');
+    header.className = 'meal-header';
+
+    const labelWrap = document.createElement('button');
+    labelWrap.className = 'meal-header-label';
+    labelWrap.style.cssText = 'background:none;border:none;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer;flex:1;display:flex;align-items:center;gap:10px;';
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = meal.name;
+    labelWrap.appendChild(nameSpan);
+    const badge = document.createElement('span');
+    badge.className = 'needs-choice-badge';
+    badge.textContent = 'Choose options';
+    badge.style.display = 'none';
+    labelWrap.appendChild(badge);
+    labelWrap.addEventListener('click', () => {
+      mealEl.classList.toggle('open');
+    });
+
+    header.appendChild(labelWrap);
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'meal-select';
+    checkbox.setAttribute('aria-label', `Select ${meal.name} for shopping list`);
+    checkbox.addEventListener('click', (e) => e.stopPropagation());
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        selected.set(key, { ...meal, groupName: group.group, key });
+        mealEl.classList.add('selected');
+        if (mealNeedsChoice(key)) {
+          mealEl.classList.add('open');
+        }
+      } else {
+        selected.delete(key);
+        mealEl.classList.remove('selected');
+      }
+      refreshBadge(key);
+      updatePickerState();
+    });
+    header.appendChild(checkbox);
+
+    const chevron = document.createElement('span');
+    chevron.innerHTML = `<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+    chevron.style.cssText = 'display:flex;cursor:pointer;';
+    chevron.addEventListener('click', () => {
+      mealEl.classList.toggle('open');
+    });
+    header.appendChild(chevron);
+
+    const body = document.createElement('div');
+    body.className = 'meal-body';
+
+    const inner = document.createElement('div');
+    inner.className = 'meal-body-inner';
+
+    const ul = document.createElement('ul');
+    ul.className = 'ingredient-list';
+    meal.main.forEach((item, idx) => {
+      const li = document.createElement('li');
+      const options = lineState[idx] ? lineState[idx].options : null;
+
+      if (options) {
+        li.className = 'choice-item';
+        const labelEl = document.createElement('span');
+        labelEl.className = 'choice-label';
+        labelEl.textContent = 'Select any that apply:';
+        li.appendChild(labelEl);
+
+        const optWrap = document.createElement('div');
+        optWrap.className = 'choice-options';
+        options.forEach(opt => {
+          const pill = document.createElement('label');
+          pill.className = 'choice-pill';
+          const checkboxOpt = document.createElement('input');
+          checkboxOpt.type = 'checkbox';
+          checkboxOpt.name = `choice_${safeKey}_${idx}`;
+          checkboxOpt.value = opt;
+          checkboxOpt.addEventListener('change', () => {
+            const chosen = lineState[idx].chosen;
+            if (checkboxOpt.checked) {
+              if (!chosen.includes(opt)) chosen.push(opt);
+            } else {
+              const i = chosen.indexOf(opt);
+              if (i > -1) chosen.splice(i, 1);
+            }
+            refreshBadge(key);
+            if (selected.has(key)) renderShoppingList();
+          });
+          pill.appendChild(checkboxOpt);
+          pill.appendChild(document.createTextNode(opt));
+          optWrap.appendChild(pill);
+        });
+        li.appendChild(optWrap);
+      } else {
+        li.textContent = item;
+      }
+      ul.appendChild(li);
+    });
+    inner.appendChild(ul);
+
+    if (meal.optional.length) {
+      const opt = document.createElement('div');
+      opt.className = 'optional-block';
+      const strongLabel = document.createElement('strong');
+      strongLabel.textContent = 'Optional extras (tick any you fancy)';
+      opt.appendChild(strongLabel);
+
+      const optWrap = document.createElement('div');
+      optWrap.className = 'choice-options';
+      meal.optional.forEach((item, oIdx) => {
+        const pill = document.createElement('label');
+        pill.className = 'choice-pill optional-pill';
+        const checkboxOpt = document.createElement('input');
+        checkboxOpt.type = 'checkbox';
+        checkboxOpt.value = item;
+        checkboxOpt.addEventListener('change', () => {
+          optionalState[oIdx].chosen = checkboxOpt.checked;
+          if (selected.has(key)) renderShoppingList();
+        });
+        pill.appendChild(checkboxOpt);
+        pill.appendChild(document.createTextNode(item));
+        optWrap.appendChild(pill);
+      });
+      opt.appendChild(optWrap);
+      inner.appendChild(opt);
+    }
+
+    body.appendChild(inner);
+    mealEl.appendChild(header);
+    mealEl.appendChild(body);
+    groupEl.appendChild(mealEl);
+
+    function refreshBadge(k) {
+      const needs = mealNeedsChoice(k) && selected.has(k);
+      badge.style.display = needs ? 'inline-flex' : 'none';
+      mealEl.classList.toggle('needs-choice', needs);
+    }
+  });
+
+  container.appendChild(groupEl);
+});
+
+const pickerCountEl = document.getElementById('pickerCount');
+const shoppingListEl = document.getElementById('shoppingList');
+const exportBtn = document.getElementById('exportPdfBtn');
+const exportNoteEl = document.getElementById('exportNote');
+const receiptDateEl = document.getElementById('receiptDate');
+const receiptMealsEl = document.getElementById('receiptMeals');
+const receiptIngredientsEl = document.getElementById('receiptIngredients');
+const receiptOptionalSectionEl = document.getElementById('receiptOptionalSection');
+const receiptOptionalEl = document.getElementById('receiptOptional');
+
+function updatePickerState() {
+  pickerCountEl.textContent = selected.size;
+  renderShoppingList();
+}
+
+// Gathers the resolved ingredient data shared by the on-screen list and the printable receipt.
+function computeShoppingListData() {
+  const mainSet = new Map(); // lowercase -> original text
+  const optionalSet = new Map();
+  const pending = []; // { mealName, options }
+
+  // Pass 1: collect every required ingredient first, so an item that's optional
+  // in one meal but required in another always lands under "Ingredients needed".
+  selected.forEach(meal => {
+    const lineState = choiceState.get(meal.key);
+    meal.main.forEach((item, idx) => {
+      const entry = lineState[idx];
+      if (entry) {
+        if (entry.chosen.length > 0) {
+          entry.chosen.forEach(choice => {
+            const k = choice.trim().toLowerCase();
+            if (!mainSet.has(k)) mainSet.set(k, choice.trim());
+          });
+        } else {
+          pending.push({ mealName: meal.name, options: entry.options.join(' / ') });
+        }
+      } else {
+        const k = item.trim().toLowerCase();
+        if (!mainSet.has(k)) mainSet.set(k, item.trim());
+      }
+    });
+  });
+
+  // Pass 2: collect selected optional extras, skipping anything already required.
+  selected.forEach(meal => {
+    const optState = optionalChoiceState.get(meal.key);
+    optState.forEach(o => {
+      if (o.chosen) {
+        const k = o.item.trim().toLowerCase();
+        if (!mainSet.has(k) && !optionalSet.has(k)) optionalSet.set(k, o.item.trim());
+      }
+    });
+  });
+
+  return {
+    meals: [...selected.values()],
+    mainItems: [...mainSet.values()].sort((a, b) => a.localeCompare(b)),
+    optionalItems: [...optionalSet.values()].sort((a, b) => a.localeCompare(b)),
+    pending
+  };
+}
+
+function renderShoppingList() {
+  if (selected.size === 0) {
+    shoppingListEl.innerHTML = '<p class="empty-note">Select some meals to generate your ingredient list.</p>';
+    updateExportState(null);
+    return;
+  }
+
+  const { meals, mainItems, optionalItems, pending } = computeShoppingListData();
+
+  let html = '';
+
+  if (pending.length) {
+    html += '<div class="pending-box"><strong>Still need your choice</strong><ul>' +
+      pending.map(p => `<li>${p.mealName}: ${p.options}</li>`).join('') +
+      '</ul></div>';
+  }
+
+  html += '<h3>Selected meals</h3><ul>' +
+    meals.map(m => `<li>${m.name} <span style="color:var(--muted);">(${m.groupName})</span></li>`).join('') +
+    '</ul>';
+
+  html += '<h3>Ingredients needed</h3>' +
+    (mainItems.length ? '<ul>' + mainItems.map(item => `<li>${item}</li>`).join('') + '</ul>' : '<p class="empty-note">Make your choices above to fill this in.</p>');
+
+  if (optionalItems.length) {
+    html += '<h3>Optional extras</h3><ul>' +
+      optionalItems.map(item => `<li>${item}</li>`).join('') +
+      '</ul>';
+  }
+
+  shoppingListEl.innerHTML = html;
+
+  updateExportState({ meals, mainItems, optionalItems, pending });
+  updateReceipt({ meals, mainItems, optionalItems });
+}
+
+function updateExportState(listData) {
+  const hasPending = listData && listData.pending && listData.pending.length > 0;
+  const hasMeals = listData && listData.meals && listData.meals.length > 0;
+
+  exportBtn.disabled = !hasMeals || hasPending;
+
+  if (!hasMeals) {
+    exportNoteEl.textContent = '';
+  } else if (hasPending) {
+    exportNoteEl.textContent = 'Finish choosing ingredient options above before exporting.';
+  } else {
+    exportNoteEl.textContent = '';
+  }
+}
+
+function updateReceipt({ meals, mainItems, optionalItems }) {
+  receiptDateEl.textContent = new Date().toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
+
+  receiptMealsEl.innerHTML = meals.map(m =>
+    `<div class="receipt-line"><span class="name">${m.name}</span></div><div class="receipt-line"><span class="meta">${m.groupName}</span></div>`
+  ).join('');
+
+  receiptIngredientsEl.innerHTML = mainItems.map(item =>
+    `<div class="receipt-line"><span class="name">${item}</span><span class="box">[ ]</span></div>`
+  ).join('');
+
+  if (optionalItems.length) {
+    receiptOptionalSectionEl.style.display = '';
+    receiptOptionalEl.innerHTML = optionalItems.map(item =>
+      `<div class="receipt-line"><span class="name">${item}</span><span class="box">[ ]</span></div>`
+    ).join('');
+  } else {
+    receiptOptionalSectionEl.style.display = 'none';
+    receiptOptionalEl.innerHTML = '';
+  }
+}
+
+exportBtn.addEventListener('click', () => {
+  if (exportBtn.disabled) return;
+  window.print();
+});
+</script>
+</body>
+</html>
