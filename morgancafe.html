@@ -715,7 +715,7 @@ meals.forEach(meal => {
       li.className = 'choice-item';
       const labelEl = document.createElement('span');
       labelEl.className = 'choice-label';
-      labelEl.textContent = 'Select any that apply:';
+      labelEl.textContent = '';
       li.appendChild(labelEl);
 
       const optWrap = document.createElement('div');
@@ -754,7 +754,7 @@ meals.forEach(meal => {
     const optBlock = document.createElement('div');
     optBlock.className = 'optional-block';
     const strongLabel = document.createElement('strong');
-    strongLabel.textContent = 'Optional extras (tick any you fancy)';
+    strongLabel.textContent = 'Extras';
     optBlock.appendChild(strongLabel);
 
     const optWrap = document.createElement('div');
