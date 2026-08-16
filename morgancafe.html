@@ -437,18 +437,18 @@
     <div class="receipt-section-title">Ingredients</div>
     <div class="receipt-lines" id="receiptIngredients"></div>
   </div>
-  <div class="receipt-section" id="receiptPantrySection">
-    <div class="receipt-divider"></div>
-    <div class="receipt-section-title">Already Have?</div>
-    <div class="receipt-lines" id="receiptPantry"></div>
-  </div>
   <div class="receipt-section" id="receiptOptionalSection">
     <div class="receipt-divider"></div>
     <div class="receipt-section-title">Optional Extras</div>
     <div class="receipt-lines" id="receiptOptional"></div>
   </div>
+  <div class="receipt-section" id="receiptPantrySection">
+    <div class="receipt-divider"></div>
+    <div class="receipt-section-title">Already Have?</div>
+    <div class="receipt-lines" id="receiptPantry"></div>
+  </div>
   <div class="receipt-divider dashed"></div>
-  <div class="receipt-footer">Happy cooking!<br>Morgan Cafe</div>
+  <div class="receipt-footer">Happy cooking!<br>The Morgans' Cafe</div>
 </div>
 <script>
 const meals = [
@@ -855,14 +855,16 @@ function renderShoppingList() {
     '</ul>';
   html += '<h3>Ingredients to get</h3>' +
     (mainItems.length ? '<ul>' + mainItems.map(item => `<li>${item}</li>`).join('') + '</ul>' : '<p class="empty-note">Make your choices above to fill this in.</p>');
-  if (pantryItems.length) {
-    html += '<h3>Should have already?</h3><ul>' +
-      pantryItems.map(item => `<li>${item}</li>`).join('') +
-      '</ul>';
-  }
+  
   if (optionalItems.length) {
     html += '<h3>Extras to get</h3><ul>' +
       optionalItems.map(item => `<li>${item}</li>`).join('') +
+      '</ul>';
+  }
+
+  if (pantryItems.length) {
+    html += '<h3>Should have already?</h3><ul>' +
+      pantryItems.map(item => `<li>${item}</li>`).join('') +
       '</ul>';
   }
   shoppingListEl.innerHTML = html;
