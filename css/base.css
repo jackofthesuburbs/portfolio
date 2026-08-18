@@ -1,8 +1,4 @@
-/* ============================================================
-   base.css — shared across every page on the site
-   (index.html, projects.html, and all individual project pages)
-   ============================================================ */
- 
+
 :root {
   --ink: #000000;
   --paper: #ffffff;
@@ -32,21 +28,17 @@ img {
   width: 400px;
   max-width: 100%;
   height: auto;
-  /* white 6px border, with a 1px blue border just outside it —
-     outline sits right on the edge of the border without adding to
-     the box's layout size, so this reads as two nested borders */
   border: 6px solid var(--paper);
   outline: 1px solid var(--accent);
   box-sizing: border-box;
 }
  
-/* ---- footer: fixed to the bottom of the screen ---- */
 .site-footer {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 5; /* stays above any floating image/player */
+  z-index: 5;
   display: flex;
   justify-content: space-between;
   align-items: center;

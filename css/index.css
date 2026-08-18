@@ -1,8 +1,3 @@
-/* ============================================================
-   index.css — homepage-only styles
-   (bio, floating photo + audio player, mobile spacing)
-   ============================================================ */
- 
 .bio {
   margin: 0;
 }
@@ -83,13 +78,9 @@
     margin: 0;
     z-index: 1;
     cursor: grab;
-    touch-action: none; /* stops touch-drag from also scrolling the page */
+    touch-action: none;
     user-select: none;
     -webkit-user-drag: none;
-    /* stays invisible until JS has actually placed it — otherwise, before
-       that runs, a fixed element with no left/top falls back to its
-       "static position" (i.e. right where it'd sit inline in the flow),
-       which flashes briefly on load */
     opacity: 0;
   }
   #float-img.is-positioned,
@@ -106,9 +97,6 @@
   }
 }
  
-/* on mobile, content items (bio, image, audio player, links) stack in
-   normal document flow — the gap between them is intentionally a little
-   tighter here than the desktop floating layout implies */
 @media screen and (max-width: 900px) {
   #float-img {
     display: block;

@@ -1,13 +1,3 @@
-/* ============================================================
-   project-float.js — floating/draggable photos shared by the
-   projects listing page (projects.html) and every individual
-   project page.
- 
-   Photos never touch the text or the footer, never go past the
-   edge of the window, and are spread as far apart from one
-   another as the window allows (they're allowed to overlap only
-   when the window is too small to avoid it).
-   ============================================================ */
 (function () {
   var floats = Array.prototype.slice.call(document.querySelectorAll('.float-img'));
   if (!floats.length) return;
@@ -15,9 +5,9 @@
   var content = document.querySelector('.page-content');
   var backLink = document.querySelector('.back-link');
   var footer = document.querySelector('.site-footer');
-  var EDGE_MARGIN = 40;   // never sits snug against the side of the page
-  var TEXT_BUFFER = 24;   // never hovers over/right up against text
-  var SAMPLES = 250;      // candidate positions tried per image when spreading them out
+  var EDGE_MARGIN = 40;   
+  var TEXT_BUFFER = 24;   
+  var SAMPLES = 250;   
   var resizeTimer;
  
   function footerHeight() {
@@ -33,18 +23,12 @@
     );
   }
  
-  // distance between two rects — 0 if they overlap or touch
   function rectDistance(a, b) {
     var dx = Math.max(a.left - b.right, b.left - a.right, 0);
     var dy = Math.max(a.top - b.bottom, b.top - a.bottom, 0);
     return Math.sqrt(dx * dx + dy * dy);
   }
  
-  // Picks a random spot that never overlaps text and never goes past the
-  // window/footer edge (hard constraints), then — among every valid spot it
-  // sampled — keeps the one farthest from images already placed. Overlap
-  // between images is allowed if the window is too small to avoid it, but
-  // the images are always pushed as far apart from each other as possible.
   function findSpreadPosition(w, h, textExclusions, placedRects) {
     var maxX = window.innerWidth - w - EDGE_MARGIN;
     var maxY = window.innerHeight - footerHeight() - h - EDGE_MARGIN;
@@ -62,7 +46,7 @@
       if (!clearOfText) continue;
       var score;
       if (placedRects.length === 0) {
-        score = 0; // nothing placed yet — first valid spot found is as good as any
+        score = 0;
       } else {
         score = Infinity;
         for (var j = 0; j < placedRects.length; j++) {
@@ -76,9 +60,7 @@
       }
     }
     if (!best) {
-      // extremely constrained viewport: no spot fully clears the text —
-      // fall back to the top-left corner of the safe area rather than
-      // breaking the "never over the text / never off-window" rule silently
+      
       best = { left: EDGE_MARGIN, top: EDGE_MARGIN, right: EDGE_MARGIN + w, bottom: EDGE_MARGIN + h };
     }
     return { x: best.left, y: best.top };
@@ -86,8 +68,7 @@
  
   function placeFloating() {
     if (window.innerWidth <= 900) {
-      // images are either display:none or stacked in normal flow via CSS
-      // at this width — nothing to place
+      
       floats.forEach(function (el) {
         el.style.left = '';
         el.style.top = '';
@@ -140,9 +121,7 @@
     return Math.min(Math.max(value, min), max);
   }
  
-  // shared counter so whichever image is picked up most recently is
-  // always given a higher stacking order than every other one — and it
-  // keeps that position after being dropped, instead of resetting
+  
   var topZ = 1;
   floats.forEach(function (el) { el.style.zIndex = topZ; });
  
@@ -175,8 +154,7 @@
       if (!dragging) return;
       dragging = false;
       el.classList.remove('is-dragging');
-      // deliberately not resetting z-index here — it should stay on top
-      // after being dropped, until another image is picked up
+      
       if (el.hasPointerCapture(e.pointerId)) {
         el.releasePointerCapture(e.pointerId);
       }

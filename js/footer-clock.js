@@ -1,8 +1,3 @@
-/* ============================================================
-   footer-clock.js — shared footer date/time display
-   used on every page (index.html, projects.html, and every
-   individual project page)
-   ============================================================ */
 (function () {
   var timeEl = document.getElementById('footer-time');
   if (!timeEl) return;

@@ -1,20 +1,13 @@
-/* ============================================================
-   index.js — homepage-only behaviour:
-   - picks one of 11 photos at random on each load
-   - floats + drags the photo and audio player (desktop only)
-   - runs the little audio player
-   ============================================================ */
 (function () {
   var img = document.getElementById('float-img');
   var player = document.getElementById('float-player');
   var bio = document.querySelector('.bio');
   var links = document.querySelector('.links');
   var footer = document.querySelector('.site-footer');
-  var EDGE_MARGIN = 40;   // never sits snug against the side of the page
-  var TEXT_BUFFER = 24;   // never hovers over/right up against text
+  var EDGE_MARGIN = 40;   
+  var TEXT_BUFFER = 24;
   var resizeTimer;
  
-  // ---- pick one homepage photo at random out of 11 ----
   var HOME_IMAGES = [
     'images/home/gm1.jpg',
     'images/home/gm2.jpg',
@@ -146,7 +139,7 @@
   makeDraggable(img);
   makeDraggable(player, 'button, .ap-scrub');
  
-  // ---- audio player ----
+
   var AUDIO_FILES = [
     'audio/18 Kensington Avenue.mp3',
     'audio/33 Clytha Park Road.mp3',
