@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>data fm</title>
+<title>plotline</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;1,300;1,400;1,600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
@@ -18,7 +18,7 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{background:var(--bg);color:var(--fg);font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:1.7;letter-spacing:0.04em;
-    padding-inline:20px;padding-block:20px 64px;}
+    padding-inline:20px;padding-block:20px 76px;}
   .wrap{width:calc(100% - 50px);max-width:420px;display:grid;gap:12px;}
 
   #wordmark{
@@ -27,10 +27,12 @@
     font-size:15px;letter-spacing:0.14em;color:rgba(var(--fg-rgb),0.62);
     pointer-events:none;opacity:0;transition:opacity 1.4s ease;
     text-transform:lowercase;
-    line-height:normal; /* data fm's body uses 1.7; weather fm's body uses the default */
+    line-height:normal; /* plotline's body uses 1.7; weather fm's body uses the default */
   }
   #wordmark.show{opacity:1;}
-  #credit{position:fixed;right:20px;bottom:20px;line-height:normal;font-size:10px;letter-spacing:0.05em;z-index:2}
+  #footer{position:fixed;left:0;right:0;bottom:0;height:56px;background:var(--bg);z-index:3;pointer-events:none}
+  #wordmark{z-index:4}
+  #credit{position:fixed;right:20px;bottom:20px;line-height:normal;font-size:10px;letter-spacing:0.05em;z-index:4}
   #credit a{color:rgba(var(--fg-rgb),0.55);text-decoration:none;border-bottom:1px solid rgba(var(--fg-rgb),0.3);transition:color .3s, border-color .3s}
   #credit a:hover,#credit a:focus-visible{color:var(--fg);border-color:var(--fg)}
   #corner{position:fixed;top:20px;right:20px;display:flex;flex-direction:column;gap:10px;z-index:2}
@@ -97,7 +99,8 @@
   /* mixer */
   #mixer,#settings{display:none}
   #settings.open{display:flex}
-  .lenfield{flex:0 1 120px;min-width:90px}
+  .lenfield{flex:0 1 72px;min-width:60px}
+  .lenfield .label{letter-spacing:0.06em}
   #mixer.open{display:block}
   .strips{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
   .strip{flex:0 0 64px;display:grid;gap:8px;justify-items:center;padding:10px 6px;border:1px solid rgba(var(--fg-rgb),0.12);border-radius:2px}
@@ -111,11 +114,11 @@
   .controls .row{gap:10px 14px}
   .controls .grp{display:flex;gap:8px;align-items:flex-end;min-width:0}
   .controls .btn{margin-bottom:1px}
-  #addLayer{justify-self:start;font-weight:700;letter-spacing:0.06em;padding:10px 18px;border-style:dashed}
+  #addLayer{justify-self:start;font-weight:400;font-style:italic;letter-spacing:0.06em;padding:10px 18px;border-style:dashed}
   .err{color:var(--clay)}
   dialog{background:var(--bg);color:var(--fg);border:1px solid rgba(var(--fg-rgb),0.3);border-radius:2px;width:min(520px,92vw);padding:16px}
   dialog::backdrop{background:rgba(6,8,9,0.6)}
-  @media (max-width:560px){.lhead{flex-wrap:wrap}}
+  @media (max-width:560px){.lhead{flex-wrap:wrap}#settings{padding:12px;gap:8px}#settings select{padding:5px 4px}.lenfield{flex:0 1 60px;min-width:56px}.lenfield .label{letter-spacing:0}}
   @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -135,7 +138,7 @@
   </section>
 
   <div class="panel" id="info">
-    <p><i>data fm</i> turns a dataset into sound.</p>
+    <p><i>plotline</i> turns a dataset into sound.</p>
     <p>add a dataset by loading a csv file or pasting cells from a spreadsheet. assign a column an instrument and a parameter for the data to change. add new layers for more columns or more datasets. press play to hear the dataset stretched across the length of the piece.</p>
     <p>export midi saves every layer as its own track in one midi file, with brightness as cc74 and volume as cc11.</p>
     <p>built with <a href="https://tonejs.github.io/" target="_blank" rel="noopener">tone.js</a>.</p>
@@ -155,7 +158,8 @@
   </section>
 </div>
 
-<div id="wordmark">data fm</div>
+<div id="footer" aria-hidden="true"></div>
+<div id="wordmark">plotline</div>
 <div id="credit">created by <a href="https://gary-mart.in" target="_blank" rel="noopener">gary-martin</a></div>
 
 <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv" hidden>
@@ -181,21 +185,21 @@ function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.im
 
 /* instruments (the weather fm palette) and what the data can change on each */
 const INST={
-  pad:  {label:"pad",            ctrl:["pitch","brightness","volume"]},
-  drone:{label:"sine drone",     ctrl:["pitch","volume"]},
-  pluck:{label:"pluck",          ctrl:["pitch","busyness","brightness"]},
-  click:{label:"wooden click",   ctrl:["busyness","pitch"]},
-  stab: {label:"noise stab",     ctrl:["busyness","brightness"]},
-  noise:{label:"breathing noise",ctrl:["brightness","volume"]}
+  pad:  {label:"tape pad",       ctrl:["pitch","brightness","volume"]},
+  drone:{label:"wobbly lead",    ctrl:["pitch","volume"]},
+  pluck:{label:"music box",      ctrl:["pitch","busyness","brightness"]},
+  click:{label:"dusty kick",     ctrl:["busyness","pitch"]},
+  stab: {label:"tape snare",     ctrl:["busyness","brightness"]},
+  noise:{label:"hiss & crackle", ctrl:["brightness","volume"]}
 };
-const RANGE={pad:[43,24],drone:[55,24],pluck:[50,24],click:[74,19]}; // lowest midi note, span in semitones
+const RANGE={pad:[43,24],drone:[62,19],pluck:[67,19],click:[31,12]}; // lowest midi note, span in semitones
 
 /* ---------- state ---------- */
-let S={len:60,root:2,scale:"minor pentatonic",theme:null,layers:[]};
+let S={len:90,root:2,scale:"major",theme:null,layers:[]};
 let DATA=[];  // {id,name,labels,labelName,cols:[{name,values,norm,min,max}]}
 let nextId=1,playing=false,audio=null,startAt=0,offset=0,PLAN=null;
-function save(){try{localStorage.setItem("datafm.v2",JSON.stringify({len:S.len,root:S.root,scale:S.scale,theme:S.theme}));}catch(e){}}
-function restore(){try{const j=JSON.parse(localStorage.getItem("datafm.v2")||"null");if(j)Object.assign(S,j);}catch(e){}}
+function save(){try{localStorage.setItem("datafm-tape.v1",JSON.stringify({len:S.len,root:S.root,scale:S.scale,theme:S.theme}));}catch(e){}}
+function restore(){try{const j=JSON.parse(localStorage.getItem("datafm-tape.v1")||"null");if(j)Object.assign(S,j);}catch(e){}}
 
 /* ---------- theme + info ---------- */
 function setTheme(t){S.theme=t;document.documentElement.classList.toggle("day",t==="day");document.documentElement.classList.toggle("night",t!=="day");save();drawAllSparks();}
@@ -326,8 +330,8 @@ function planLayer(l){
   if(l.ctrl==="brightness"||l.ctrl==="volume"){out.curve=[];for(let t=0;t<=T;t+=0.1)out.curve.push(val(t));}
   const pitched=RANGE[l.inst];
   if(l.inst==="pad"||l.inst==="drone"){
-    const[lo,span]=RANGE[l.inst];const sc=scaleNotes(lo,lo+span),ext=scaleNotes(lo,lo+span+24);
-    const chord=i=>l.inst==="pad"?[ext[i],ext[i+2],ext[i+4]]:[ext[i]];
+    const[lo,span]=RANGE[l.inst];const sc=scaleNotes(lo,lo+span),ext=scaleNotes(lo,lo+span+30);
+    const chord=i=>l.inst==="pad"?[ext[i],ext[i+2],ext[i+4],ext[i+6]].filter(n=>n!=null):[ext[i]];
     if(l.ctrl==="pitch"){
       // a new note only when the data has moved past the next scale step (with a little hysteresis)
       let cur=Math.round(val(0)*(sc.length-1)),start=0;const minHold=l.inst==="pad"?1.6:0.3;
@@ -336,7 +340,7 @@ function planLayer(l){
       out.notes.push({t:start,dur:T-start,notes:chord(ext.indexOf(sc[cur])),vel:0.7});
     }else{
       // data shapes the sound; the harmony moves slowly on its own
-      const prog=l.inst==="pad"?[0,3,4,2]:[0];const step=l.inst==="pad"?Math.max(6,T/8):T;
+      const prog=l.inst==="pad"?[0,3,5,4]:[0];const step=l.inst==="pad"?Math.max(6,T/8):T;
       for(let t=0,k=0;t<T-0.01;t+=step,k++){const i=ext.indexOf(sc[0])+prog[k%prog.length];out.notes.push({t,dur:Math.min(step,T-t),notes:chord(i),vel:0.7});}
     }
   }else if(l.inst==="noise"){out.notes.push({t:0,dur:T,notes:[48],vel:0.7});}
@@ -357,34 +361,52 @@ function planSoon(){clearTimeout(planT);planT=setTimeout(()=>{plan();if(playing)
 /* ---------- audio ---------- */
 function makeVoice(inst,dest){
   switch(inst){
-    case"pad":{const f=new Tone.Filter({frequency:1100,type:"lowpass",rolloff:-24}).connect(dest.chorus);
-      const s=new Tone.PolySynth(Tone.FMSynth,{harmonicity:1.5,modulationIndex:3,envelope:{attack:2.5,decay:2,sustain:0.6,release:4},modulationEnvelope:{attack:3,decay:2,sustain:0.4,release:4}});s.volume.value=-14;return{s,f,range:[200,4200]};}
-    case"drone":{const f=new Tone.Filter({frequency:2400,type:"lowpass"}).connect(dest.reverb);
-      const s=new Tone.Synth({oscillator:{type:"sine"},portamento:0.35,envelope:{attack:0.8,decay:1,sustain:0.8,release:2.5}});s.volume.value=-9;return{s,f,mono:true};}
-    case"pluck":{const f=new Tone.Filter({frequency:2600,type:"lowpass"}).connect(dest.wetdry);
-      const s=new Tone.PolySynth(Tone.MonoSynth,{oscillator:{type:"fatsawtooth",count:2,spread:12},filter:{Q:2,type:"lowpass"},filterEnvelope:{attack:0.001,decay:0.12,sustain:0,release:0.2,baseFrequency:300,octaves:3.5},envelope:{attack:0.001,decay:0.45,sustain:0,release:0.35}});s.volume.value=-12;return{s,f,range:[400,7000]};}
-    case"click":{const f=new Tone.Filter({frequency:3200,type:"lowpass"}).connect(dest.wetdry);
-      const s=new Tone.MembraneSynth({pitchDecay:0.015,octaves:1.2,oscillator:{type:"triangle"},envelope:{attack:0.001,decay:0.09,sustain:0,release:0.05}});s.volume.value=-10;return{s,f,perc:true};}
-    case"stab":{const f=new Tone.Filter({frequency:1200,type:"bandpass",Q:1.4}).connect(dest.wetdry);
-      const s=new Tone.NoiseSynth({noise:{type:"pink"},envelope:{attack:0.005,decay:0.12,sustain:0,release:0.1}});s.volume.value=-12;return{s,f,noiseHit:true,range:[300,4500]};}
-    case"noise":{const f=new Tone.Filter({frequency:700,type:"bandpass",Q:0.8}).connect(dest.reverb);
-      const s=new Tone.Noise("pink");s.volume.value=-8;return{s,f,bed:true,range:[150,3500]};}
+    case"pad":{ // detuned saws, slow and dark, through chorus into the tape bus
+      const f=new Tone.Filter({frequency:900,type:"lowpass",rolloff:-24}).connect(dest.chorus);
+      const s=new Tone.PolySynth(Tone.Synth,{oscillator:{type:"fatsawtooth",count:3,spread:38},envelope:{attack:2.2,decay:2,sustain:0.7,release:5}});s.volume.value=-22;return{s,f,range:[250,2800]};}
+    case"drone":{ // soft triangle lead with portamento; the wobble bus adds vibrato and echo
+      const f=new Tone.Filter({frequency:1800,type:"lowpass"}).connect(dest.wob);
+      const s=new Tone.Synth({oscillator:{type:"triangle"},portamento:0.5,envelope:{attack:0.4,decay:1,sustain:0.75,release:2.5}});s.volume.value=-12;return{s,f,mono:true};}
+    case"pluck":{ // small fm bell, like a worn music box
+      const f=new Tone.Filter({frequency:3500,type:"lowpass"}).connect(dest.wob);
+      const s=new Tone.PolySynth(Tone.FMSynth,{harmonicity:4,modulationIndex:2.2,oscillator:{type:"sine"},envelope:{attack:0.002,decay:1.3,sustain:0,release:1.3},modulationEnvelope:{attack:0.002,decay:0.25,sustain:0,release:0.4}});s.volume.value=-14;return{s,f,range:[800,6000]};}
+    case"click":{ // soft, saturated kick
+      const f=new Tone.Filter({frequency:900,type:"lowpass"}).connect(dest.dust);
+      const s=new Tone.MembraneSynth({pitchDecay:0.06,octaves:4,oscillator:{type:"sine"},envelope:{attack:0.002,decay:0.45,sustain:0,release:0.2}});s.volume.value=-6;return{s,f,perc:true};}
+    case"stab":{ // dull, tape-saturated snare
+      const f=new Tone.Filter({frequency:1800,type:"bandpass",Q:0.8}).connect(dest.dust);
+      const s=new Tone.NoiseSynth({noise:{type:"white"},envelope:{attack:0.002,decay:0.18,sustain:0,release:0.1}});s.volume.value=-10;return{s,f,noiseHit:true,range:[600,5000]};}
+    case"noise":{ // tape hiss bed plus random vinyl crackle
+      const f=new Tone.Filter({frequency:3500,type:"lowpass"}).connect(dest.bus);
+      const s=new Tone.Noise("pink");s.volume.value=-26;
+      const crack=new Tone.NoiseSynth({noise:{type:"white"},envelope:{attack:0.001,decay:0.004,sustain:0,release:0.003}});crack.volume.value=-14;
+      return{s,f,bed:true,crack,range:[800,9000]};}
   }
 }
 async function initAudio(){
   if(audio)return;await Tone.start();
-  const limiter=new Tone.Limiter(-1).toDestination(),master=new Tone.Gain(0.85).connect(limiter);
-  const reverb=new Tone.Reverb({decay:8,wet:0.35}).connect(master);
-  const chorus=new Tone.Chorus(3.3,2,0.25).start().connect(reverb);
-  const wetdry=new Tone.Gain(1);wetdry.connect(master);const send=new Tone.Gain(0.2).connect(reverb);wetdry.connect(send);
-  audio={master,reverb,chorus,wetdry,L:{}};
+  // the tape bus: slow wow, fast flutter, gentle saturation, rolled-off top
+  const limiter=new Tone.Limiter(-1).toDestination(),master=new Tone.Gain(0.9).connect(limiter);
+  const lp=new Tone.Filter({frequency:6500,type:"lowpass",rolloff:-12}).connect(master);
+  const sat=new Tone.Distortion({distortion:0.15,wet:0.45}).connect(lp);
+  const flutter=new Tone.Vibrato({frequency:6.5,depth:0.025}).connect(sat);
+  const wow=new Tone.Vibrato({frequency:0.35,depth:0.12}).connect(flutter);
+  const bus=new Tone.Gain(1).connect(wow);
+  const reverb=new Tone.Reverb({decay:10,wet:0.45}).connect(bus);
+  const chorus=new Tone.Chorus({frequency:0.8,delayTime:4,depth:0.6,wet:0.6}).start();chorus.connect(bus);chorus.connect(reverb);
+  const echo=new Tone.FeedbackDelay({delayTime:"8n.",feedback:0.38,wet:0.28});
+  const wob=new Tone.Gain(1);wob.connect(echo);echo.connect(bus);const wobSend=new Tone.Gain(0.35).connect(reverb);echo.connect(wobSend);
+  const dirt=new Tone.Distortion({distortion:0.35,wet:0.6}).connect(bus);const dustSend=new Tone.Gain(0.12).connect(reverb);dirt.connect(dustSend);
+  const dust=new Tone.Gain(1).connect(dirt);
+  const wetdry=new Tone.Gain(1);wetdry.connect(bus);const send=new Tone.Gain(0.25).connect(reverb);wetdry.connect(send);
+  audio={master,reverb,chorus,wetdry,wob,dust,bus,L:{}};
 }
 function buildLayerAudio(l){
   const v=makeVoice(l.inst,audio);const level=new Tone.Gain(Tone.dbToGain(l.db)),mute=new Tone.Gain(l.mute?0:1),amp=new Tone.Gain(1);
-  v.s.connect(amp);amp.connect(level);level.connect(mute);mute.connect(v.f);
+  v.s.connect(amp);if(v.crack)v.crack.connect(amp);amp.connect(level);level.connect(mute);mute.connect(v.f);
   audio.L[l.id]=Object.assign(v,{level,mute,amp});
 }
-function disposeLayers(){if(!audio)return;for(const k in audio.L){const v=audio.L[k];[v.s,v.f,v.level,v.mute,v.amp].forEach(n=>{try{n.dispose();}catch(e){}});}audio.L={};}
+function disposeLayers(){if(!audio)return;for(const k in audio.L){const v=audio.L[k];[v.s,v.crack,v.f,v.level,v.mute,v.amp].filter(Boolean).forEach(n=>{try{n.dispose();}catch(e){}});}audio.L={};}
 const now=()=>playing?clamp(offset+(Tone.now()-startAt),0,S.len):offset;
 async function play(){
   if(!S.layers.length)return;await initAudio();plan();if(offset>=S.len-0.05)offset=0;
@@ -401,6 +423,7 @@ async function play(){
           else v.s.triggerAttackRelease(n.notes.map(hz),Math.max(0.2,dur),time,n.vel);
         }catch(e){}
       },st);}
+    if(v.crack)Tone.Transport.scheduleRepeat(time=>{if(Math.random()<0.18){try{v.crack.triggerAttackRelease(0.004,time+Math.random()*0.04,0.2+Math.random()*0.8);}catch(e){}}},0.05,0);
     if(P.curve){Tone.Transport.scheduleRepeat(time=>{const t=offset+Tone.Transport.seconds;const x=sample(P.curve,t/0.1);
       if(P.ctrl==="volume")v.amp.gain.rampTo(0.05+x*1.1,0.15,time);
       else if(v.range){const[a,b]=v.range;v.f.frequency.rampTo(a*Math.pow(b/a,x),0.15,time);}},0.1,0);}
@@ -413,7 +436,7 @@ function stop(keep){
   const t=now();Tone.Transport.stop();Tone.Transport.cancel();playing=false;
   if(audio)for(const k in audio.L){const v=audio.L[k];try{if(v.bed)v.s.stop();else if(v.mono)v.s.triggerRelease();else v.s.releaseAll&&v.s.releaseAll();}catch(e){}}
   const dead=audio?Object.values(audio.L):[];if(audio)audio.L={};
-  setTimeout(()=>dead.forEach(v=>[v.s,v.f,v.level,v.mute,v.amp].forEach(n=>{try{n.dispose();}catch(e){}})),4500);
+  setTimeout(()=>dead.forEach(v=>[v.s,v.crack,v.f,v.level,v.mute,v.amp].filter(Boolean).forEach(n=>{try{n.dispose();}catch(e){}})),4500);
   if(!keep)offset=t;
   $("play").classList.remove("on");$("play").setAttribute("aria-label","Play");$("playIcon").innerHTML='<path d="M7 4.5v15l13-7.5z"/>';
 }
@@ -437,7 +460,7 @@ function chunk(t,d){const l=d.length;return[...t].map(c=>c.charCodeAt(0)).concat
 function meta(type,s){const b=[...new TextEncoder().encode(s)];return[0,0xff,type,...vlq(b.length),...b];}
 function buildMidi(only){
   plan();const TPS=960; // 480 ppq at 120 bpm
-  const tracks=[chunk("MTrk",[...meta(3,"data fm"),0,0xff,0x51,3,0x07,0xA1,0x20,0,0xff,0x58,4,4,2,24,8,0,0xff,0x2f,0])];
+  const tracks=[chunk("MTrk",[...meta(3,"plotline"),0,0xff,0x51,3,0x07,0xA1,0x20,0,0xff,0x58,4,4,2,24,8,0,0xff,0x2f,0])];
   S.layers.forEach((l,i)=>{if(only&&l!==only)return;const P=PLAN[l.id],ch=[0,1,2,3,4,5,6,7,8,10,11,12,13,14,15][i%15],ev=[];
     for(const n of P.notes){const on=Math.round(n.t*TPS),off=Math.max(on+10,Math.round((n.t+n.dur)*TPS)-4),vel=clamp(Math.round(n.vel*127),1,127);
       for(const m of n.notes){ev.push([on,2,0x90|ch,m,vel]);ev.push([off,0,0x80|ch,m,0]);}}
@@ -449,7 +472,7 @@ function buildMidi(only){
 }
 const slugify=x=>String(x).toLowerCase().replace(/\.[a-z]+$/i,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 $("midi").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buildMidi()],{type:"audio/midi"}));
-  const d=DATA.find(x=>x.id===S.layers[0].ds);a.download=`${slugify(d?d.name:"data")}-data-fm.mid`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);};
+  const d=DATA.find(x=>x.id===S.layers[0].ds);a.download=`${slugify(d?d.name:"data")}-plotline.mid`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);};
 
 /* ---------- boot ---------- */
 restore();setTheme(S.theme||"night");
