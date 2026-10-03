@@ -130,18 +130,19 @@
 </div>
 
 <div class="wrap">
+  <div class="panel" id="info">
+    <p><i>plotline</i> turns a dataset into sound.</p>
+    <p>add a dataset by loading a csv file or pasting cells from a spreadsheet. assign a column an instrument and a parameter for the data to change. add new layers for more columns or more datasets. press play to hear the dataset stretched across the length of the piece.</p>
+    <p>export midi saves every layer as its own track in one midi file, with brightness as cc74 and volume as cc11.</p>
+    <p>want to try it first? <a href="#" id="exampleLink">download the example csv</a> (invented numbers) and load it into a layer.</p>
+    <p>built with <a href="https://tonejs.github.io/" target="_blank" rel="noopener">tone.js</a>.</p>
+  </div>
+
   <section class="panel transport" id="settings" aria-label="Settings">
     <label class="field lenfield"><span class="label" style="white-space:nowrap">length <b id="lenv"></b></span><input type="range" id="len" min="20" max="300" step="5"></label>
     <label class="field"><span class="label">key</span><select id="root"></select></label>
     <label class="field"><span class="label">scale</span><select id="scale"></select></label>
   </section>
-
-  <div class="panel" id="info">
-    <p><i>plotline</i> turns a dataset into sound.</p>
-    <p>add a dataset by loading a csv file or pasting cells from a spreadsheet. assign a column an instrument and a parameter for the data to change. add new layers for more columns or more datasets. press play to hear the dataset stretched across the length of the piece.</p>
-    <p>export midi saves every layer as its own track in one midi file, with brightness as cc74 and volume as cc11.</p>
-    <p>built with <a href="https://tonejs.github.io/" target="_blank" rel="noopener">tone.js</a>.</p>
-  </div>
 
   <section class="panel transport" aria-label="Playback">
     <button class="round" id="play" aria-label="Play"><svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></button>
@@ -235,13 +236,25 @@ function layerMsg(l,m){const el=document.querySelector(`[data-l="${l.id}"] .msg`
 
 /* ---------- layers ---------- */
 const DEFAULT_INST=["pad","pluck","drone","click","noise","stab"];
-function newLayer(){const i=S.layers.length;const d=S.layers.length?DATA.find(x=>x.id===S.layers[i-1].ds):DATA[0];
+function newLayer(){const i=S.layers.length;const d=S.layers.length?DATA.find(x=>x.id===S.layers[i-1].ds):null;
   const inst=DEFAULT_INST[i%DEFAULT_INST.length];
-  return{id:nextId++,idx:i,ds:d.id,col:d.cols[i%d.cols.length].name,inst,ctrl:INST[inst].ctrl[0],flip:false,mute:false,db:0,color:COLORS[i%COLORS.length]};}
+  return{id:nextId++,idx:i,ds:d?d.id:null,col:d?d.cols[i%d.cols.length].name:null,inst,ctrl:INST[inst].ctrl[0],flip:false,mute:false,db:0,color:COLORS[i%COLORS.length]};}
 const opt=(v,l,s)=>`<option value="${esc(v)}"${String(v)===String(s)?" selected":""}>${esc(l)}</option>`;
 function renderLayers(){
   $("layers").innerHTML=S.layers.map((l,i)=>{
     const d=DATA.find(x=>x.id===l.ds);
+    if(!d)return`<article class="panel layer" style="--lc:var(${l.color})" data-l="${l.id}">
+      <div class="lhead">
+        <span class="name"><span class="dot"></span>new layer</span>
+        ${S.layers.length>1?`<button class="btn small" data-act="remove" aria-label="Remove this layer">remove</button>`:""}
+      </div>
+      <div class="src">
+        <button class="btn small" data-act="file">load csv</button>
+        <button class="btn small" data-act="paste">paste</button>
+        <span class="fname muted">no data yet</span>
+      </div>
+      <p class="muted msg" style="margin:0">load a csv file or paste cells from a spreadsheet to begin.</p>
+    </article>`;
     return`<article class="panel layer${l.mute?" muted-l":""}" style="--lc:var(${l.color})" data-l="${l.id}">
       <div class="lhead">
         <span class="name"><span class="dot"></span>${esc(l.col)}</span>
@@ -268,10 +281,10 @@ function renderLayers(){
 }
 function renderMixer(){
   $("strips").innerHTML=S.layers.map(l=>`<div class="strip${l.mute?" m":""}" style="--lc:var(${l.color})" data-l="${l.id}">
-    <span class="dot" title="${esc(l.col)}"></span>
+    <span class="dot" title="${esc(l.col||"new layer")}"></span>
     <span class="db">${l.db} db</span>
-    <div class="fader"><input type="range" data-k="db" min="-24" max="6" step="1" value="${l.db}" aria-label="Level for ${esc(l.col)}"></div>
-    <button class="btn small${l.mute?" on":""}" data-act="mute" aria-pressed="${l.mute}" aria-label="Mute ${esc(l.col)}">mute</button>
+    <div class="fader"><input type="range" data-k="db" min="-24" max="6" step="1" value="${l.db}" aria-label="Level for ${esc(l.col||"new layer")}"></div>
+    <button class="btn small${l.mute?" on":""}" data-act="mute" aria-pressed="${l.mute}" aria-label="Mute ${esc(l.col||"new layer")}">mute</button>
   </div>`).join("");
 }
 $("strips").addEventListener("input",e=>{const el=e.target;if(el.dataset.k!=="db")return;const l=S.layers.find(x=>x.id===+el.closest("[data-l]").dataset.l);
@@ -299,7 +312,7 @@ $("addLayer").onclick=()=>{S.layers.push(newLayer());renderLayers();planSoon();
 /* ---------- sparkline per layer ---------- */
 const colOf=l=>{const d=DATA.find(x=>x.id===l.ds);return d&&d.cols.find(c=>c.name===l.col);};
 function drawSpark(l){
-  const art=document.querySelector(`[data-l="${l.id}"]`);if(!art)return;const cv=art.querySelector(".sp"),ph=art.querySelector(".ph"),dpr=devicePixelRatio||1;
+  const art=document.querySelector(`[data-l="${l.id}"]`);if(!art)return;const cv=art.querySelector(".sp"),ph=art.querySelector(".ph"),dpr=devicePixelRatio||1;if(!cv)return;
   const w=cv.clientWidth,h=cv.clientHeight;for(const c of[cv,ph]){c.width=w*dpr;c.height=h*dpr;}
   const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);const c=colOf(l);if(!c)return;const fr=css("--fg-rgb"),R=c.norm.length;
   g.fillStyle=`rgba(${fr},.08)`;g.fillRect(0,h-1,w,1);
@@ -312,7 +325,7 @@ function drawSpark(l){
 function drawAllSparks(){S.layers.forEach(drawSpark);}
 addEventListener("resize",drawAllSparks);
 function drawPlayheads(t){
-  const T=S.len;S.layers.forEach(l=>{const art=document.querySelector(`[data-l="${l.id}"]`);if(!art)return;const ph=art.querySelector(".ph"),dpr=devicePixelRatio||1;
+  const T=S.len;S.layers.forEach(l=>{const art=document.querySelector(`[data-l="${l.id}"]`);if(!art)return;const ph=art.querySelector(".ph"),dpr=devicePixelRatio||1;if(!ph)return;
     const g=ph.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);const w=ph.width/dpr,h=ph.height/dpr;g.clearRect(0,0,w,h);
     const x=clamp(t/T,0,1)*w;g.fillStyle=css("--fg");g.fillRect(Math.round(x)-1,0,2,h);
     const c=colOf(l),d=DATA.find(z=>z.id===l.ds);if(c&&d){const f=t/T*(c.values.length-1),i=clamp(Math.round(f),0,c.values.length-1);
@@ -354,7 +367,8 @@ function planLayer(l){
   return out;
 }
 let planT=null;
-function plan(){PLAN={};for(const l of S.layers)PLAN[l.id]=planLayer(l);}
+function plan(){PLAN={};for(const l of S.layers)if(colOf(l))PLAN[l.id]=planLayer(l);}
+const ready=()=>S.layers.filter(l=>colOf(l));
 function planSoon(){clearTimeout(planT);planT=setTimeout(()=>{plan();if(playing){const t=now();stop(true);offset=t;play();}},120);}
 
 /* ---------- audio ---------- */
@@ -408,9 +422,9 @@ function buildLayerAudio(l){
 function disposeLayers(){if(!audio)return;for(const k in audio.L){const v=audio.L[k];[v.s,v.crack,v.f,v.level,v.mute,v.amp].filter(Boolean).forEach(n=>{try{n.dispose();}catch(e){}});}audio.L={};}
 const now=()=>playing?clamp(offset+(Tone.now()-startAt),0,S.len):offset;
 async function play(){
-  if(!S.layers.length)return;await initAudio();plan();if(offset>=S.len-0.05)offset=0;
+  if(!ready().length)return;await initAudio();plan();if(offset>=S.len-0.05)offset=0;
   disposeLayers();Tone.Transport.stop();Tone.Transport.cancel();Tone.Transport.position=0;
-  for(const l of S.layers){buildLayerAudio(l);const v=audio.L[l.id],P=PLAN[l.id];
+  for(const l of ready()){buildLayerAudio(l);const v=audio.L[l.id],P=PLAN[l.id];
     for(const n of P.notes){if(n.t+n.dur<=offset)continue;
       const st=Math.max(0,n.t-offset),dur=n.t<offset?n.dur-(offset-n.t):n.dur;
       Tone.Transport.schedule(time=>{
@@ -460,7 +474,7 @@ function meta(type,s){const b=[...new TextEncoder().encode(s)];return[0,0xff,typ
 function buildMidi(only){
   plan();const TPS=960; // 480 ppq at 120 bpm
   const tracks=[chunk("MTrk",[...meta(3,"plotline"),0,0xff,0x51,3,0x07,0xA1,0x20,0,0xff,0x58,4,4,2,24,8,0,0xff,0x2f,0])];
-  S.layers.forEach((l,i)=>{if(only&&l!==only)return;const P=PLAN[l.id],ch=[0,1,2,3,4,5,6,7,8,10,11,12,13,14,15][i%15],ev=[];
+  ready().forEach((l,i)=>{if(only&&l!==only)return;const P=PLAN[l.id],ch=[0,1,2,3,4,5,6,7,8,10,11,12,13,14,15][i%15],ev=[];
     for(const n of P.notes){const on=Math.round(n.t*TPS),off=Math.max(on+10,Math.round((n.t+n.dur)*TPS)-4),vel=clamp(Math.round(n.vel*127),1,127);
       for(const m of n.notes){ev.push([on,2,0x90|ch,m,vel]);ev.push([off,0,0x80|ch,m,0]);}}
     if(P.curve){const cc=P.ctrl==="volume"?11:74;let last=-1;P.curve.forEach((x,k)=>{const v=Math.round(clamp01(x)*127);if(v!==last){ev.push([Math.round(k*0.1*TPS),1,0xB0|ch,cc,v]);last=v;}});}
@@ -470,13 +484,13 @@ function buildMidi(only){
   return new Uint8Array(chunk("MThd",[0,1,0,tracks.length,1,224]).concat(...tracks));
 }
 const slugify=x=>String(x).toLowerCase().replace(/\.[a-z]+$/i,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-$("midi").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buildMidi()],{type:"audio/midi"}));
-  const d=DATA.find(x=>x.id===S.layers[0].ds);a.download=`${slugify(d?d.name:"data")}-plotline.mid`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);};
+$("midi").onclick=()=>{if(!ready().length)return;const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buildMidi()],{type:"audio/midi"}));
+  const d=DATA.find(x=>x.id===ready()[0].ds);a.download=`${slugify(d?d.name:"data")}-plotline.mid`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);};
 
 /* ---------- boot ---------- */
 restore();setTheme(S.theme||"night");
-addData(EXAMPLE,"example data (invented numbers)");
 S.layers=[newLayer()];
+$("exampleLink").onclick=e=>{e.preventDefault();const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([EXAMPLE],{type:"text/csv"}));a.download="plotline-example-data.csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);};
 syncGlobals();renderLayers();plan();drawPlayheads(0);
 requestAnimationFrame(()=>requestAnimationFrame(()=>$("wordmark").classList.add("show")));
 </script>
