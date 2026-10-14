@@ -345,7 +345,7 @@ function renderMap(F){
     const rows=S.grid[lv];
     return `<section class="lvl" data-level="${lv}">
       <div class="lvlhead"><span class="tag" style="background:${lvColor[lv]}"></span><h3>Level ${lv}</h3></div>
-      <div class="cols">${C.map(c=>`<div class="ch"><b>${c}</b><span class="full">${CN[c]}</span></div>`).join('')}</div>
+      <div class="cols">${C.map(c=>`<div class="ch" title="${CN[c]}"><b>${c}</b></div>`).join('')}</div>
       ${rows.map((row,r)=>{
         let html='',c=0; const trailing=r===rows.length-1;
         while(c<3){
