@@ -1,11 +1,11 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Music &amp; Sound</title>
+<title>Music &amp; Sound Planner</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 :root{
   --bg:#ffffff; --surface:#ffffff; --sunk:#eef1f2; --line:#d3dade; --fg:#1b2428; --muted:#5c6b72;
   --accent:#1f6f6a; --accent-ink:#ffffff; --accent-soft:#d7ebe8;
-  --sh3:#dbe8f7; --sh3e:#3a73b5; --sh2:#f8ecbf; --sh2e:#b08a12; --sh1:#dcefdc; --sh1e:#3d8a4a;
+  --sh3:#dcefdc; --sh3e:#3d8a4a; --sh2:#f8ecbf; --sh2e:#b08a12; --sh1:#dbe8f7; --sh1e:#3a73b5; --shc:#fbe1cc; --shce:#c8641e;
   --l4:#3d7bb8; --l4s:#dce9f5; --l5:#9a6a1d; --l5s:#f4e8d2; --l6:#7a4d9c; --l6s:#ebdff3;
   --bad:#b3362c; --bad-soft:#f8e0dd; --warn:#99600a; --warn-soft:#f8ecd3; --ok:#2f7a3f;
   --display:Arial,Helvetica,sans-serif;
@@ -18,13 +18,13 @@
 :root:not([data-theme="light"]){
   --bg:#12181a; --surface:#1a2225; --sunk:#222c30; --line:#33403f; --edge:#6b7b80; --fg:#e3eaec; --muted:#93a3a8;
   --accent:#5cb8ae; --accent-ink:#0d1a19; --accent-soft:#1e3735;
-  --sh3:#1d2f45; --sh3e:#7fb0e6; --sh2:#3a321a; --sh2e:#e0c060; --sh1:#1e3522; --sh1e:#7cc48a;
+  --sh3:#1e3522; --sh3e:#7cc48a; --sh2:#3a321a; --sh2e:#e0c060; --sh1:#1d2f45; --sh1e:#7fb0e6; --shc:#3d2a1a; --shce:#e8955a;
   --l4:#7fb2e3; --l4s:#1c2c3b; --l5:#d9a85a; --l5s:#352a17; --l6:#bc93dd; --l6s:#2e2238;
   --bad:#ef7d72; --bad-soft:#3d1f1c; --warn:#e4ad55; --warn-soft:#3a2c14; --ok:#7cc48a; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#12181a; --surface:#1a2225; --sunk:#222c30; --line:#33403f; --edge:#6b7b80; --fg:#e3eaec; --muted:#93a3a8;
   --accent:#5cb8ae; --accent-ink:#0d1a19; --accent-soft:#1e3735;
-  --sh3:#1d2f45; --sh3e:#7fb0e6; --sh2:#3a321a; --sh2e:#e0c060; --sh1:#1e3522; --sh1e:#7cc48a;
+  --sh3:#1e3522; --sh3e:#7cc48a; --sh2:#3a321a; --sh2e:#e0c060; --sh1:#1d2f45; --sh1e:#7fb0e6; --shc:#3d2a1a; --shce:#e8955a;
   --l4:#7fb2e3; --l4s:#1c2c3b; --l5:#d9a85a; --l5s:#352a17; --l6:#bc93dd; --l6s:#2e2238;
   --bad:#ef7d72; --bad-soft:#3d1f1c; --warn:#e4ad55; --warn-soft:#3a2c14; --ok:#7cc48a; color-scheme:dark}
 *{box-sizing:border-box}
@@ -82,6 +82,12 @@ body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px
 #pg-plan .cell{background:var(--sh1);box-shadow:inset 4px 0 0 var(--sh1e);cursor:grab;position:relative;display:flex;flex-direction:column;gap:2px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 #pg-plan .cell.sh2{background:var(--sh2);box-shadow:inset 4px 0 0 var(--sh2e)}
 #pg-plan .cell.sh3{background:var(--sh3);box-shadow:inset 4px 0 0 var(--sh3e)}
+#pg-plan .cell.shc{background:var(--shc);box-shadow:inset 4px 0 0 var(--shce)}
+#pg-plan .cell.linkhl{outline:2px dashed var(--shce);outline-offset:-3px}
+#pg-plan .lk{display:flex;gap:6px;align-items:center;justify-content:space-between;font-size:13px;padding:3px 0}
+#pg-plan .lk .x{border:0;background:transparent;padding:0 6px;font-size:15px;color:var(--muted)}
+#pg-plan .lk .x:hover{color:var(--bad)}
+#pg-plan .lv{display:inline-block;font-size:10.5px;padding:0 4px;border:1px solid var(--line);border-radius:3px;color:var(--muted);margin-right:4px}
 #pg-plan .cell:hover{outline:1px solid var(--muted);outline-offset:-1px}
 #pg-plan .cell.sel{outline:2px solid var(--fg);outline-offset:-2px;z-index:1}
 #pg-plan .cell .top{display:flex;gap:6px;align-items:flex-start}
@@ -191,191 +197,12 @@ body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px
 *{transition:none!important}}
 </style>
 <style>
-:root{
-  --bg:#ffffff; --surface:#ffffff; --sunk:#eef1f2; --line:#d3dade; --edge:#7d8a90; --fg:#1b2428; --muted:#5c6b72;
-  --accent:#1f6f6a; --accent-ink:#ffffff; --accent-soft:#d7ebe8;
-  --sh3:#dbe8f7; --sh3e:#3a73b5; --sh2:#f8ecbf; --sh2e:#b08a12; --sh1:#dcefdc; --sh1e:#3d8a4a;
-  --lost:#b3362c; --lost-soft:#f8e0dd; --fresh:#6a3fb5; --fresh-soft:#ece4f8; --kept:#1f6f6a;
-  --warn:#99600a; --warn-soft:#f8ecd3;
-  --font:Arial,Helvetica,sans-serif;
-}
-@media (prefers-color-scheme:dark){
-:root:not([data-theme="light"]){
-  --bg:#12181a; --surface:#1a2225; --sunk:#222c30; --line:#33403f; --edge:#6b7b80; --fg:#e3eaec; --muted:#93a3a8;
-  --accent:#5cb8ae; --accent-ink:#0d1a19; --accent-soft:#1e3735;
-  --sh3:#1d2f45; --sh3e:#7fb0e6; --sh2:#3a321a; --sh2e:#e0c060; --sh1:#1e3522; --sh1e:#7cc48a;
-  --lost:#ef7d72; --lost-soft:#3d1f1c; --fresh:#b99af0; --fresh-soft:#2d2340; --kept:#5cb8ae;
-  --warn:#e4ad55; --warn-soft:#3a2c14; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#12181a; --surface:#1a2225; --sunk:#222c30; --line:#33403f; --edge:#6b7b80; --fg:#e3eaec; --muted:#93a3a8;
-  --accent:#5cb8ae; --accent-ink:#0d1a19; --accent-soft:#1e3735;
-  --sh3:#1d2f45; --sh3e:#7fb0e6; --sh2:#3a321a; --sh2e:#e0c060; --sh1:#1e3522; --sh1e:#7cc48a;
-  --lost:#ef7d72; --lost-soft:#3d1f1c; --fresh:#b99af0; --fresh-soft:#2d2340; --kept:#5cb8ae;
-  --warn:#e4ad55; --warn-soft:#3a2c14; color-scheme:dark}
-*{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:14px;line-height:1.4;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
-#pg-map .wrap{max-width:1900px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
-#pg-map h1,#pg-map h2,#pg-map h3{margin:0;text-wrap:balance}
-#pg-map h1{font-size:28px;font-weight:700}
-#pg-map h2{font-size:17px;font-weight:700}
-#pg-map h3{font-size:15px;font-weight:700}
-#pg-map .muted{color:var(--muted)}
-#pg-map button,#pg-map select,#pg-map input,#pg-map textarea{font:inherit;color:inherit}
-#pg-map button{cursor:pointer;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:5px 10px}
-#pg-map button:hover{border-color:var(--accent)}
-#pg-map button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-#pg-map button.danger{color:var(--lost);border-color:var(--lost)}
-#pg-map :focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-#pg-map input[type=text],#pg-map select,#pg-map textarea{border:1px solid var(--line);border-radius:5px;padding:5px 7px;background:var(--surface)}
-#pg-map .box{background:var(--surface);border:1.5px solid var(--edge);border-radius:8px}
-#pg-map .bar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:9px 12px;border-bottom:1.5px solid var(--edge);background:var(--sunk);border-radius:6px 6px 0 0}
-#pg-map .keyrow{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);align-items:center}
-#pg-map .keyrow i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:5px;vertical-align:-2px}
-#pg-map .keyrow .k{display:inline-block;font-size:11px;padding:0 6px;border:1px solid var(--line);border-radius:9px;margin-right:4px;background:var(--surface);color:var(--fg)}
-#pg-map .layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
-#pg-map .side{position:sticky;top:max(12px,env(safe-area-inset-top,0px));max-height:calc(100vh - 24px);display:flex;flex-direction:column;gap:12px;min-width:0}
-#pg-map .maps{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;min-width:0;position:relative}
-@media (max-width:1250px){
-#pg-map .maps{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:820px){
-#pg-map .layout{grid-template-columns:minmax(0,1fr)}
-#pg-map .side{position:static;max-height:none}
-#pg-map .sklist{max-height:50vh}}
-#pg-map #sel{padding:14px;overflow:auto;max-height:52vh;flex:0 1 auto;display:flex;flex-direction:column;gap:11px}
-#pg-map #sel .hint{font-size:13px;color:var(--muted);margin:0}
-#pg-map .eyebrow{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-#pg-map #sel input.big{font-size:18px;font-weight:700;width:100%;border-color:transparent;padding:2px 4px;margin-left:-4px;background:transparent}
-#pg-map #sel input.big:hover{border-color:var(--line)}
-#pg-map #sel input.big:focus{border-color:var(--accent);outline:none;background:var(--bg)}
-#pg-map .fld{display:flex;flex-direction:column;gap:5px}
-#pg-map .lab{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-#pg-map .inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-#pg-map .toggles{display:flex;gap:4px;flex-wrap:wrap}
-#pg-map .toggles label{position:relative}
-#pg-map .toggles input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
-#pg-map .toggles span{display:inline-block;padding:3px 9px;border:1px solid var(--line);border-radius:5px;font-size:12.5px}
-#pg-map .toggles input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-#pg-map .toggles input:focus-visible+span{outline:2px solid var(--accent)}
-#pg-map ul.lst{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-#pg-map ul.lst li{font-size:13px;display:flex;flex-direction:column;gap:3px}
-#pg-map ul.lst .ln{display:flex;gap:6px;align-items:center}
-#pg-map ul.lst .ln .grow{flex:1;min-width:0}
-#pg-map .x{border:0;background:transparent;padding:0 6px;font-size:15px;line-height:1;color:var(--muted)}
-#pg-map .x:hover{color:var(--lost)}
-#pg-map .goto{border:0;background:transparent;padding:0;text-align:left;color:var(--fg);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px;cursor:pointer}
-#pg-map .goto:hover{text-decoration-color:var(--accent)}
-#pg-map .lv{display:inline-block;font-size:10.5px;padding:0 4px;border:1px solid var(--line);border-radius:3px;color:var(--muted);margin-right:3px}
-#pg-map .lv.shift{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
-#pg-map .where{font-size:12px;color:var(--muted);padding-left:2px}
-#pg-map .t-lost{color:var(--lost);font-weight:600}
-#pg-map .t-fresh{color:var(--fresh);font-weight:600}
-#pg-map .confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}
-#pg-map #skillsBox{display:flex;flex-direction:column;min-height:0;flex:1 1 auto}
-#pg-map #skillsBox.droptarget{outline:2px dashed var(--lost);outline-offset:-4px}
-#pg-map .filters{display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px 0}
-#pg-map .filters button{font-size:12px;padding:2px 8px;border-radius:12px}
-#pg-map .filters button[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-#pg-map .filters .d{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:1px}
-#pg-map .search{padding:8px 10px}
-#pg-map .search input{width:100%}
-#pg-map .sklist{overflow:auto;padding:0 6px 8px;min-height:120px;flex:1 1 auto}
-#pg-map .grp{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 6px 3px}
-#pg-map .sk{display:flex;align-items:center;gap:7px;padding:5px 6px;border-radius:5px;cursor:grab;user-select:none;-webkit-user-select:none;font-size:13px}
-#pg-map .sk:hover{background:var(--sunk)}
-#pg-map .sk.on{background:var(--fg);color:var(--bg)}
-#pg-map .sk.on .ct{color:var(--bg)}
-#pg-map .sk .dot{width:8px;height:8px;border-radius:50%;flex:none}
-#pg-map .sk .nm{flex:1;min-width:0}
-#pg-map .sk .ct{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-#pg-map .sk .grip{display:none;touch-action:none;padding:0 4px;color:var(--muted)}
-@media (pointer:coarse){
-#pg-map .sk .grip{display:inline}}
-#pg-map .d-kept{background:var(--kept)}
-#pg-map .d-lost{background:var(--lost)}
-#pg-map .d-fresh{background:var(--fresh)}
-#pg-map .d-unused{background:var(--line)}
-#pg-map .addsk{border-top:1px solid var(--line);padding:8px 10px;display:flex;flex-direction:column;gap:6px}
-#pg-map .addsk .inline input{flex:1;min-width:0}
-#pg-map details.more summary{cursor:pointer;font-size:12.5px;color:var(--muted)}
-#pg-map details.more textarea{width:100%;min-height:90px;margin-top:6px;font-size:12.5px}
-#pg-map .example{font-size:12px;background:var(--warn-soft);color:var(--warn);padding:5px 10px}
-#pg-map .mapcol{display:flex;flex-direction:column;gap:12px;min-width:0}
-#pg-map .maphead{display:flex;justify-content:space-between;align-items:flex-end;gap:8px;flex-wrap:wrap}
-#pg-map .maphead h2{font-size:20px}
-#pg-map .maphead .sum{font-size:12.5px;color:var(--muted)}
-#pg-map .maphead .sum b{font-weight:600}
-#pg-map .imp{border:1.5px solid var(--edge);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:12.5px}
-#pg-map .imp p{margin:0;color:var(--muted)}
-#pg-map .imp textarea{width:100%;min-height:110px;font-size:12px}
-#pg-map .rowb{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-#pg-map .levels{display:flex;flex-direction:column;gap:14px}
-#pg-map .lvl{background:var(--surface);border:1.5px solid var(--edge);border-radius:8px;overflow:hidden}
-#pg-map .lvlhead{display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:1.5px solid var(--edge);background:var(--sunk)}
-#pg-map .cols,#pg-map .row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
-#pg-map .ch{padding:5px 9px;border-right:1px solid var(--line);border-bottom:1px solid var(--edge);font-size:12.5px;font-weight:700}
-#pg-map .ch:last-child,#pg-map .row>*:last-child{border-right:0}
-#pg-map .row{border-top:1px solid var(--line)}
-#pg-map .tile,#pg-map .slot{border-right:1px solid var(--line);min-height:40px;padding:6px 8px;text-align:left;border-radius:0;border-top:0;border-bottom:0;border-left:0}
-#pg-map .tile{background:var(--sh1);box-shadow:inset 4px 0 0 var(--sh1e);cursor:grab;position:relative;display:flex;flex-direction:column;gap:4px;user-select:none;-webkit-user-select:none;transition:opacity .12s}
-#pg-map .tile.sh2{background:var(--sh2);box-shadow:inset 4px 0 0 var(--sh2e)}
-#pg-map .tile.sh3{background:var(--sh3);box-shadow:inset 4px 0 0 var(--sh3e)}
-#pg-map .tile:hover{outline:1px solid var(--muted);outline-offset:-1px}
-#pg-map .tile .top{display:flex;gap:6px;align-items:flex-start}
-#pg-map .tile .nm{font-weight:700;font-size:13px;line-height:1.25;flex:1;min-width:0;overflow-wrap:anywhere}
-#pg-map .tile .cat{font-size:10.5px;padding:0 4px;border:1px solid var(--line);border-radius:3px;background:var(--surface);flex:none}
-#pg-map .tile input.rn{font-weight:700;font-size:13px;width:100%;border:1px solid var(--accent);border-radius:4px;padding:2px 4px;background:var(--surface)}
-#pg-map .chips{display:flex;flex-wrap:wrap;gap:3px}
-#pg-map .chip{font-size:11px;line-height:1.35;padding:1px 6px;border:1px solid var(--line);background:var(--surface);border-radius:9px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
-#pg-map .chip.lost{color:var(--lost);border-color:var(--lost);text-decoration:line-through;text-decoration-thickness:1px}
-#pg-map .chip.fresh{color:var(--fresh);border-color:var(--fresh)}
-#pg-map .chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg);text-decoration:none}
-#pg-map .foot{font-size:11px;color:var(--muted);align-self:flex-end}
-#pg-map .foot.lost{color:var(--lost);font-weight:700}
-#pg-map .foot.fresh{color:var(--fresh);font-weight:700}
-#pg-map .tile .grip{display:none;position:absolute;top:4px;right:4px;font-size:13px;color:var(--muted);touch-action:none;padding:2px 4px;line-height:1}
-@media (pointer:coarse){
-#pg-map .tile .grip{display:block}
-#pg-map .tile .cat{margin-right:16px}}
-#pg-map .gap{border-right:1px solid var(--line);min-height:40px}
-#pg-map .row>.gap:last-child{border-right:0}
-#pg-map .slot{background:transparent;color:var(--muted);font-size:12px;opacity:0;cursor:pointer}
-#pg-map .slot:hover,#pg-map .slot:focus-visible{opacity:1;background:var(--sunk)}
-#pg-map .row.trailing .slot{opacity:.6}
-#pg-map .row.trailing .slot::before{content:"+ "}
-#pg-map .credits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px dashed var(--line);background:var(--bg)}
-#pg-map .credits span{font-size:10.5px;color:var(--muted);padding:3px 9px;font-variant-numeric:tabular-nums}
-#pg-map .credits span.off{color:var(--warn)}
-#pg-map .credits span.low{color:var(--lost)}
-#pg-map .focus .tile{opacity:.32}
-#pg-map .focus .tile.sel,#pg-map .focus .tile.linked,#pg-map .focus .tile.related,#pg-map .focus .tile.has{opacity:1}
-#pg-map .tile.sel{outline:2.5px solid var(--fg);outline-offset:-2.5px;z-index:1}
-#pg-map .tile.linked{outline:2.5px solid var(--accent);outline-offset:-2.5px}
-#pg-map .tile.related{outline:1.5px dashed var(--accent);outline-offset:-2px}
-#pg-map .tile.has{outline:2.5px solid var(--fg);outline-offset:-2.5px}
-#pg-map .tile .tag{display:none;font-size:10.5px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
-#pg-map .tile.linked .tag,#pg-map .tile.related .tag{display:block}
-#pg-map .assign{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;grid-column:1/-1;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 12px;background:var(--fg);color:var(--bg);border-radius:8px;font-size:13px}
-#pg-map .assign button{background:var(--bg);color:var(--fg);border-color:var(--bg);padding:3px 10px}
-#pg-map .dragging{opacity:.35}
-#tGhost{position:fixed;pointer-events:none;z-index:50;padding:6px 10px;border-radius:6px;background:var(--surface);border:1px solid var(--accent);box-shadow:0 6px 18px rgba(0,0,0,.18);font-weight:700;font-size:12.5px;max-width:260px}
-#tGhost small{display:block;font-weight:400;color:var(--muted);margin-top:2px}
-#tDrop{position:fixed;pointer-events:none;z-index:40;border:2px dashed var(--accent);border-radius:4px;background:color-mix(in srgb,var(--accent) 12%,transparent)}
-#tDrop.no{border-color:var(--lost);background:color-mix(in srgb,var(--lost) 10%,transparent)}
-#tToast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:6px;font-size:13px;z-index:60;max-width:calc(100% - 32px)}
-#pg-map details.data{padding:12px 14px}
-#pg-map details.data summary{cursor:pointer;font-weight:700}
-#pg-map details.data textarea{width:100%;min-height:100px;margin-top:10px;font-size:11.5px}
-@media (prefers-reduced-motion:reduce){
-*{transition:none!important}}
-</style>
-<style>
 [hidden]{display:none!important}
 .app{max-width:1800px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
 .apphead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px 24px;flex-wrap:wrap;border-bottom:1.5px solid var(--edge)}
 .apphead h1{font-family:Arial,Helvetica,sans-serif;font-size:30px;font-weight:700;margin:0}
 .apphead p{margin:2px 0 12px;color:var(--muted);font-size:16px;font-family:Arial,Helvetica,sans-serif}
-.tabs{display:flex;gap:4px;align-self:flex-end}
+/*tabs removed*/.tabs-unused{display:flex;gap:4px;align-self:flex-end}
 .tabs button{font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;border:1.5px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;padding:9px 16px;background:transparent;color:var(--muted);cursor:pointer;margin-bottom:-1.5px}
 .tabs button:hover{color:var(--fg)}
 .tabs button[aria-selected=true]{background:var(--bg);color:var(--fg);border-color:var(--edge);border-bottom:1.5px solid var(--bg)}
@@ -402,36 +229,56 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:14px
 .appdata .rowb{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
 .appdata button{font-family:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:6px;padding:5px 10px}
 .appdata button.danger{color:var(--bad);border-color:var(--bad)}
+
+.apphead{border-bottom:0}
+.apphead p{margin:2px 0 0}
+.saved{border:1.5px solid var(--edge);border-radius:8px;padding:10px 14px;margin-top:-8px;font-family:Arial,Helvetica,sans-serif}
+.savedhead{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+.savedhead h3{margin:0;font-size:15px}
+.savedhead .muted{font-size:12px;color:var(--muted)}
+#savedList{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+#savedList li{display:flex;justify-content:space-between;align-items:center;gap:8px 14px;flex-wrap:wrap;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+#savedList li:first-child{border-top:0}
+#savedList .vn{font-weight:700}
+#savedList .vm{font-size:12.5px;color:var(--muted);margin-left:6px}
+#savedList .now{font-size:11px;font-weight:700;color:var(--accent);border:1px solid var(--accent);border-radius:9px;padding:0 6px;margin-left:6px}
+#savedList .acts{display:flex;gap:6px;flex-wrap:wrap}
+#savedList button,#uploadRow button{font-family:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:6px;padding:3px 10px}
+#savedList button.danger{color:var(--bad);border-color:var(--bad)}
+#savedList .empty{color:var(--muted);font-size:13px;padding:4px 0}
+#uploadRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;padding:6px 10px;margin-bottom:6px;border-radius:6px;background:var(--accent-soft)}
 </style>
 
 <div class="app">
   <header class="apphead">
-    <div><h1>Music &amp; Sound</h1><p>Course and module map</p></div>
-    <nav class="tabs" role="tablist" aria-label="Pages">
-      <button role="tab" id="tab-plan" aria-controls="pg-plan" aria-selected="true">Planner &amp; timetable</button>
-      <button role="tab" id="tab-map" aria-controls="pg-map" aria-selected="false">Old to new</button>
-    </nav>
+    <div><h1>Music &amp; Sound</h1><p>Module planner</p></div>
   </header>
 
   <section class="verbar" aria-label="Your version">
     <div class="vmeta">
-      <label for="vName">Version name</label><input type="text" id="vName" placeholder="e.g. Tim’s proposal">
-      <label for="vBy">By</label><input type="text" id="vBy" placeholder="Your name" style="max-width:150px">
+      <input type="text" id="vName" placeholder="Version name" aria-label="Version name">
+      <input type="text" id="vBy" placeholder="Your name" aria-label="Your name" style="max-width:180px">
     </div>
     <div class="vact">
-      <button id="exportBtn" class="primary">Export to file</button>
-      <button id="openBtn">Open a file</button>
-      <input type="file" id="fileIn" accept=".json,application/json" hidden>
+      <button id="saveBtn" class="primary">Save version</button>
+      <button id="xlBtn">Download Excel</button>
+      <button id="pasteBtn">Paste a version</button>
       <button id="restoreBtn" hidden>Back to my work</button>
-      <button id="resetData" class="danger">Reset everything</button>
+      <button id="resetData" class="danger">Reset</button>
     </div>
     <div class="vinfo" id="vInfo"></div>
   </section>
-  <div class="dropcover" id="dropCover" hidden>Drop a Music &amp; Sound file to open it</div>
 
-  <div class="page" id="pg-plan" role="tabpanel" aria-labelledby="tab-plan">
+  <section class="saved" id="savedBox" aria-label="Saved versions">
+    <div class="savedhead"><h3 id="savedTitle">Saved versions</h3><span class="muted" id="savedNote"></span></div>
+    <div id="uploadRow" hidden></div>
+    <ul id="savedList"></ul>
+  </section>
+
+  <div class="page" id="pg-plan">
+
   <div class="toprow">
-    <div class="keyrow"><span><i style="background:var(--sh3);box-shadow:inset 3px 0 0 var(--sh3e)"></i>Shared by all 3 courses</span><span><i style="background:var(--sh2);box-shadow:inset 3px 0 0 var(--sh2e)"></i>Shared by 2</span><span><i style="background:var(--sh1);box-shadow:inset 3px 0 0 var(--sh1e)"></i>Single course</span></div>
+    <div class="keyrow"><span><i style="background:var(--sh3);box-shadow:inset 3px 0 0 var(--sh3e)"></i>Shared by all 3 courses</span><span><i style="background:var(--sh2);box-shadow:inset 3px 0 0 var(--sh2e)"></i>Shared by 2</span><span><i style="background:var(--shc);box-shadow:inset 3px 0 0 var(--shce)"></i>Connected (shared teaching)</span><span><i style="background:var(--sh1);box-shadow:inset 3px 0 0 var(--sh1e)"></i>Single course</span></div>
     <button id="copyMap" title="Copies levels, course headings and modules with their CATs, ready to paste into a spreadsheet">Copy module map</button>
   </div>
   <div id="copyFallback" class="copyfb" hidden><p>Your browser blocked copying. The map is selected below: press Ctrl+C (or Cmd+C on a Mac) to copy it.</p><textarea id="copyText" aria-label="Module map text" readonly></textarea><button id="copyClose">Close</button></div>
@@ -470,64 +317,20 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:14px
     </div>
   </section>
 
-  </div>
-
-  <div class="page" id="pg-map" role="tabpanel" aria-labelledby="tab-map" hidden>
-  <div class="keyrow">
-    <span><i style="background:var(--sh3);box-shadow:inset 3px 0 0 var(--sh3e)"></i>Shared by all 3 courses</span>
-    <span><i style="background:var(--sh2);box-shadow:inset 3px 0 0 var(--sh2e)"></i>Shared by 2</span>
-    <span><i style="background:var(--sh1);box-shadow:inset 3px 0 0 var(--sh1e)"></i>Single course</span>
-    <span><span class="k">Skill</span>carried over</span>
-    <span><span class="k" style="color:var(--lost);border-color:var(--lost);text-decoration:line-through">Skill</span>left out</span>
-    <span><span class="k" style="color:var(--fresh);border-color:var(--fresh)">Skill</span>new</span>
-  </div>
-
-  <div class="layout">
-    <aside class="side">
-      <section class="box" id="skillsBox" aria-label="Skills and competencies">
-        <div class="bar"><h2>Skills &amp; competencies</h2><span class="muted" id="skCount" style="font-size:12.5px"></span></div>
-        <div class="filters" id="filters"></div>
-        <div class="search"><input type="text" id="skSearch" placeholder="Search skills" aria-label="Search skills"></div>
-        <div class="sklist" id="sklist" style="padding-top:4px"></div>
-        <div class="addsk">
-          <div class="inline"><input type="text" id="newSkill" placeholder="New skill" aria-label="New skill name"><button id="addSkill">Add</button></div>
-          <details class="more"><summary>Add several at once</summary>
-            <p class="muted" style="font-size:12px;margin:6px 0 0">One skill per line, or paste a column from a spreadsheet.</p>
-            <textarea id="bulkSkills" aria-label="Skills to add"></textarea>
-            <div class="rowb" style="margin-top:6px"><button id="bulkAdd">Add to list</button><button id="bulkReplace" class="danger">Replace list</button><span class="muted" id="bulkMsg" style="font-size:12px"></span></div>
-          </details>
-        </div>
-      </section>
-      <section class="box" id="sel" aria-label="Selected"></section>
-    </aside>
-
-    <main class="maps" id="maps">
-      <div class="assign" id="assign" hidden></div>
-      <section class="mapcol" data-map="old">
-        <div class="maphead"><div><h2>Old map</h2><div class="sum" id="sum-old"></div></div></div>
-        <div class="levels" id="map-old"></div>
-      </section>
-      <section class="mapcol" data-map="new">
-        <div class="maphead"><div><h2>New map</h2><div class="sum" id="sum-new"></div></div><span class="muted" style="font-size:12.5px">Same modules as the Planner tab</span></div>
-        <div class="levels" id="map-new"></div>
-      </section>
-    </main>
-  </div>
-
-
+  
   </div>
 
   <details class="appdata" id="appdata">
-    <summary>Copy and paste instead of using a file</summary>
-    <p>If exporting or opening files doesn’t work on your device, copy the data as text, send it, and the other person pastes it here.</p>
+    <summary>Copy and paste instead</summary>
+    <p>Use <b>Copy</b> on a saved version to send it to a colleague by email or Teams. To load one you were sent, paste it here and click Load.</p>
     <textarea id="dataBox" aria-label="Data"></textarea>
-    <div class="rowb"><button id="copyData">Copy data</button><button id="loadData">Load pasted data</button><span id="dataMsg" style="font-size:12.5px;color:var(--muted)"></span></div>
+    <div class="rowb"><button id="loadData">Load pasted data</button><span id="dataMsg" style="font-size:12.5px;color:var(--muted)"></span></div>
   </details>
 </div>
 <div id="drop" hidden></div><div id="ghost" hidden></div><div id="toast" hidden></div>
-<div id="tDrop" hidden></div><div id="tGhost" hidden></div><div id="tToast" hidden></div>
 
 <script>
+
 (function(){
 
 const C=['POM','SMP','MUB'];
@@ -542,54 +345,25 @@ const STAFF=()=>[
   ['Ben Hamid','Perm',[2,3,4]],['Philip Reeder','Perm',[2,3,4]],['Gary-Martin Morgan','Perm',[0,1,2]],['Tom Spice','Perm',[0,4]],
   ['Andy Rea','PTHP',[1]],['Rachel Roberts','PTHP',[1]],['Kieran Jenkins','PTHP',[3]],['Gary-Martin Morgan (PTHP)','PTHP',[3]]
 ].map(([name,type,days],i)=>({id:'st'+i,name,type,days}));
-const START=9, END=19, KEY='module-diet-planner-v2';
+const START=9, END=19, KEY='ms-planner-v1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let uid=Date.now(); const nid=()=>'m'+(uid++).toString(36);
 
-const SHEET={
- 4:[['Music Economies & Cultures 30','Music Economies & Cultures 30','Music Economies & Cultures 30'],
-    ['Live Event Performance 30','Live Event Management 30','Live Event Technologies 30'],
-    ['Music Production 30','Marketing, Data & Analytics 30','Music Production 30'],
-    ['Visual Music','Visual Music','Visual Music'],
-    ['Composition: Songwriting','Tech Lab:','Production: Sound design']],
- 5:[['Music & Sound Studies','Music & Sound Studies','Music & Sound Studies'],
-    ['Live Music 30','Events, Gigs & Festivals 30','Live Production & AV 30'],
-    ['Music Production 30','New Music Enterprise 30','Music Production 30'],
-    ['Composition for Screen Media','Music, PR & Journalism','Composition for Screen Media'],
-    ['Composition: Creative Strategies 30','Music Rights & Regulation','Game Audio / Interaction 30'],
-    ['','Design Thinking','']],
- 6:[['Major Project 30','Major Project 60','Major Project 60'],
-    ['Research Project 30','Research Project 30','Research Project 30'],
-    ['Music & Sound Professional 30','Music & Sound Professional 30','Music & Sound Professional 30'],
-    ['Production Techniques 1','The Production Company 30','Production Techniques 1'],
-    ['The Live Music Event','','Production Techniques 2']]
-};
 function seed(){
-  const modules={}, grid={};
-  for(const lv of LV){
-    const byName={};
-    grid[lv]=SHEET[lv].map(row=>row.map(raw=>{
-      if(!raw)return null;
-      if(byName[raw])return byName[raw];
-      const mm=raw.match(/^(.*?)\s+(15|30|60)$/);
-      const name=mm?mm[1]:raw, cat=mm?+mm[2]:15, id=nid();
-      modules[id]={id,name,cat,delivery:cat>15?'s12':'s1',staff:[],sessions:[],desc:''};
-      return byName[raw]=id;
-    }));
-  }
-  const st={modules,grid,staff:STAFF(),rooms:ROOMS.slice()};
-  fixOrder(st); LV.forEach(l=>trim(st,l)); return st;
+  const st={modules:{},grid:{4:[],5:[],6:[]},staff:STAFF(),rooms:ROOMS.slice(),links:[],colOrder:C.join(',')};
+  LV.forEach(l=>trim(st,l)); return st;
 }
 function trim(st,lv){const g=st.grid[lv].filter(r=>r.some(Boolean));g.push([null,null,null]);st.grid[lv]=g}
 
 let S; try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!S||!S.modules||!S.grid) S=seed();
 if(S.staff&&S.staff.every(x=>/^(Staff member \d+|PTHP \d+)$/.test(x.name))){const old=new Set(S.staff.map(x=>x.id));S.staff=STAFF();Object.values(S.modules).forEach(m=>m.staff=m.staff.filter(x=>!old.has(x)))}
-function migrate(){fixOrder(S);Object.values(S.modules).forEach(m=>m.sessions.forEach(x=>{if(!Array.isArray(x.rooms)){x.rooms=x.room?[x.room]:[];delete x.room}}));}
+function migrate(){fixOrder(S);if(!Array.isArray(S.links))S.links=[];S.links=S.links.filter(l=>Array.isArray(l)&&S.modules[l[0]]&&S.modules[l[1]]&&l[0]!==l[1]);Object.values(S.modules).forEach(m=>m.sessions.forEach(x=>{if(!Array.isArray(x.rooms)){x.rooms=x.room?[x.room]:[];delete x.room}}));}
 migrate();
 if(S.rooms&&S.rooms.join('|')==='Live Room|Studio 1|Studio 2|Mac Lab|Seminar Room|Lecture Theatre')S.rooms=ROOMS.slice();
 let sel=null, sem=1, confirmDel=false;
 let saveT; function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},300)}
+window.addEventListener('pagehide',()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}});
 
 /* ---------- model helpers ---------- */
 const M=id=>S.modules[id];
@@ -597,6 +371,8 @@ const staffOf=id=>S.staff.find(s=>s.id===id);
 function where(id){const out=[];for(const lv of LV)S.grid[lv].forEach((row,r)=>row.forEach((x,c)=>{if(x===id)out.push({lv,r,c})}));return out}
 const levelOf=id=>where(id)[0]?.lv;
 const coursesOf=id=>[...new Set(where(id).map(p=>C[p.c]))].sort((a,b)=>C.indexOf(a)-C.indexOf(b));
+const linksOf=id=>S.links.filter(l=>l[0]===id||l[1]===id).map(l=>l[0]===id?l[1]:l[0]).filter(x=>S.modules[x]);
+const connected=(a,b)=>S.links.some(l=>(l[0]===a&&l[1]===b)||(l[0]===b&&l[1]===a));
 const semCount=m=>m.delivery==='s12'?2:1;
 const hrs=m=>m.cat/5/semCount(m);
 const active=(m,s)=>m.delivery==='s12'||(m.delivery==='s'+s);
@@ -621,6 +397,7 @@ function computeFlags(){
       const a=items[i],b=items[j]; if(a.day!==b.day)continue;
       if(!(a.start<b.start+b.len&&b.start<a.start+a.len))continue;
       if(a.m===b.m){add(a.m.id,'Sessions overlap S'+s,'bad');continue}
+      if(connected(a.m.id,b.m.id))continue;
       const both=a.m.staff.filter(x=>b.m.staff.includes(x));
       both.forEach(sid=>{const n=staffOf(sid)?.name||'Staff';add(a.m.id,`${n} double-booked S${s}`,'bad');add(b.m.id,`${n} double-booked S${s}`,'bad')});
       a.rooms.filter(x=>b.rooms.includes(x)).forEach(rm=>{add(a.m.id,`${rm} double-booked S${s}`,'bad');add(b.m.id,`${rm} double-booked S${s}`,'bad')})
@@ -660,7 +437,8 @@ function renderMap(F){
           if(!id){html+=`<button class="slot" data-lv="${lv}" data-r="${r}" data-c="${c}" style="grid-column:${c+1}" aria-label="Add module to ${C[c]} level ${lv}">${trailing?'Add module':'+'}</button>`;c++;continue}
           let n=1; while(c+n<3&&row[c+n]===id)n++;
           const m=M(id), nc=coursesOf(id).length, shared=nc>1, bad=(F[id]||[]).some(x=>x.cls==='bad');
-          html+=`<div class="cell sh${nc}${bad?' hasdot':''}${id===sel?' sel':''}" tabindex="0" data-id="${id}" data-lv="${lv}" data-r="${r}" data-c="${c}" style="grid-column:${c+1} / span ${n}" title="${esc(m.name)}${shared?' (shared: '+coursesOf(id).join(', ')+')':''}">
+          const lk=linksOf(id), shc=nc===1&&lk.length?'shc':'sh'+nc, hl=sel&&sel!==id&&connected(sel,id)?' linkhl':'';
+          html+=`<div class="cell ${shc}${hl}${bad?' hasdot':''}${id===sel?' sel':''}" tabindex="0" data-id="${id}" data-lv="${lv}" data-r="${r}" data-c="${c}" style="grid-column:${c+1} / span ${n}" title="${esc(m.name)}${shared?' (shared: '+coursesOf(id).join(', ')+')':''}${lk.length?' (shared teaching with '+lk.map(x=>M(x).name).join(', ')+')':''}">
             ${bad?'<span class="dot" aria-label="Has clashes"></span>':''}
             <div class="top"><span class="nm">${esc(m.name)||'<em class="muted">Untitled</em>'}</span><span class="cat">${m.cat}</span></div>
             <span class="grip" aria-hidden="true">⠿</span></div>`;
@@ -699,11 +477,15 @@ function renderPanel(F){
       <button class="close" data-act="close" aria-label="Close panel">Close</button></div>
     ${(F[sel]||[]).length?`<div class="flags">${F[sel].map(x=>`<span class="chip ${x.cls}">${esc(x.f)}</span>`).join('')}</div>`:'<div class="flags"><span class="chip ok">No issues</span></div>'}
     <div class="two">
-      <div class="fld"><label for="p-cat">CAT</label><select id="p-cat">${[15,30,60].map(v=>opt(v,v+' CAT',m.cat)).join('')}</select></div>
+      <div class="fld"><label for="p-cat">CAT</label><select id="p-cat">${[15,30].map(v=>opt(v,v+' CAT',m.cat)).join('')}</select></div>
       <div class="fld"><label for="p-del">Runs in</label><select id="p-del">${Object.entries(DELIV).map(([k,v])=>opt(k,v,m.delivery)).join('')}</select></div>
     </div>
     <p class="note" style="margin:-6px 0 0">${m.cat} CAT = ${m.cat/15*36} contact hours → <b>${need} hrs/wk</b> over ${semCount(m)===2?'24 weeks':'12 weeks'}.${m.cat===30&&m.delivery!=='s12'?' Condensed into one semester.':''}</p>
     <div class="fld"><span class="lab">Courses</span><div class="toggles">${C.map(c=>`<label title="${CN[c]}"><input type="checkbox" id="p-c-${c}" data-course="${c}"${cs.includes(c)?' checked':''}><span>${c}</span></label>`).join('')}</div></div>
+    <div class="fld"><span class="lab">Shared teaching with</span>
+      ${linksOf(sel).map(x=>`<div class="lk"><span><span class="lv">L${levelOf(x)} ${coursesOf(x).join('/')}</span>${esc(M(x).name)}</span><button class="x" data-act="unlink" data-id="${x}" aria-label="Remove connection">×</button></div>`).join('')}
+      <select id="p-link" aria-label="Connect a module"><option value="">+ Connect a module taught alongside this one</option>${LV.map(l=>{const seen=new Set(),ids=[];S.grid[l].forEach(row=>row.forEach(x=>{if(x&&x!==sel&&!seen.has(x)&&!connected(sel,x)){seen.add(x);ids.push(x)}}));return ids.length?`<optgroup label="Level ${l}">${ids.map(x=>`<option value="${x}">${esc(M(x).name)} (${coursesOf(x).join('/')})</option>`).join('')}</optgroup>`:''}).join('')}</select>
+      <span class="note">Connected modules are separate modules taught together. They can share a slot, staff and room without being flagged as a clash.</span></div>
     <div class="fld"><span class="lab">Staff</span><div class="toggles">${S.staff.map(s=>`<label class="${s.type==='PTHP'?'pthp':''}"><input type="checkbox" id="p-s-${s.id}" data-staff="${s.id}"${m.staff.includes(s.id)?' checked':''}><span>${esc(s.name)}</span></label>`).join('')||'<span class="note">Add staff in the table below the timetable.</span>'}</div></div>
     ${slotsHtml}
     <div class="fld"><label for="p-desc">Description</label><textarea id="p-desc" placeholder="Aims, indicative content, assessment, learning outcomes…">${esc(m.desc)}</textarea></div>
@@ -886,6 +668,7 @@ P.addEventListener('change',e=>{
   const m=M(sel); if(!m)return; const t=e.target;
   if(t.id==='p-name'||t.id==='p-desc')return;
   if(t.id==='p-cat'){m.cat=+t.value}
+  else if(t.id==='p-link'){if(t.value&&!connected(sel,t.value))S.links.push([sel,t.value])}
   else if(t.id==='p-del'){m.delivery=t.value;if(m.delivery!=='s12')setSplit(m,false)}
   else if(t.id==='p-split'){setSplit(m,t.checked)}
   else if(t.dataset.course){
@@ -902,6 +685,7 @@ P.addEventListener('change',e=>{
 P.addEventListener('click',e=>{
   const a=e.target.closest('[data-act]')?.dataset.act, m=M(sel); if(!a||!m)return;
   if(a==='close'){sel=null;document.querySelectorAll('.cell.sel').forEach(c=>c.classList.remove('sel'));renderPanel(computeFlags());renderTT(computeFlags());return}
+  if(a==='unlink'){const o=e.target.closest('[data-id]').dataset.id;S.links=S.links.filter(l=>!((l[0]===sel&&l[1]===o)||(l[0]===o&&l[1]===sel)))}
   if(a==='addSess'){const sm=+e.target.dataset.sem||0;const done=sm?schedHrsSem(m,sm):schedHrs(m);const left=Math.max(1,Math.min(6,hrs(m)-done||3));
     const pool=sm?m.sessions.filter(x=>+x.sem===sm):m.sessions;const prev=pool[pool.length-1];
     const ns={day:'',start:'9',len:String(left),rooms:prev?prev.rooms.slice():[]};if(sm)ns.sem=sm;m.sessions.push(ns)}
@@ -909,7 +693,7 @@ P.addEventListener('click',e=>{
   if(a==='rmSess'){m.sessions.splice(+e.target.closest('.sr').dataset.i,1)}
   if(a==='del'){confirmDel=true;renderPanel(computeFlags());return}
   if(a==='delNo'){confirmDel=false;renderPanel(computeFlags());return}
-  if(a==='delYes'){const lv=levelOf(sel);where(sel).forEach(p=>S.grid[p.lv][p.r][p.c]=null);delete S.modules[sel];trim(S,lv);sel=null;confirmDel=false}
+  if(a==='delYes'){const lv=levelOf(sel);where(sel).forEach(p=>S.grid[p.lv][p.r][p.c]=null);const gone=sel;delete S.modules[sel];S.links=S.links.filter(l=>l[0]!==gone&&l[1]!==gone);trim(S,lv);sel=null;confirmDel=false}
   renderAll();
 });
 
@@ -932,598 +716,232 @@ sb.addEventListener('change',e=>{
 sb.addEventListener('click',e=>{if(e.target.dataset.sf!=='remove')return;const sid=e.target.closest('tr').dataset.sid;S.staff=S.staff.filter(s=>s.id!==sid);Object.values(S.modules).forEach(m=>m.staff=m.staff.filter(x=>x!==sid));renderAll()});
 document.getElementById('addStaff').onclick=()=>{const s={id:'s'+nid(),name:'New staff member',type:'Perm',days:[0,1,2,3,4]};S.staff.push(s);renderAll();const i=document.getElementById('sname-'+s.id);i?.focus();i?.select()};
 document.getElementById('roomList').addEventListener('change',e=>{S.rooms=e.target.value.split('\n').map(x=>x.trim()).filter(Boolean);renderAll()});
-window.MSplan={get:()=>S,set:d=>{S=d;migrate();sel=null;renderAll()},reset:()=>{S=seed();sel=null;renderAll()},render:()=>renderAll(),
+window.MSplan={api:{C,CN,LV,DAYS,DELIV,START,END,levelOf,coursesOf,linksOf,sessFor,active,split,hrs,staffOf,computeFlags,live},get:()=>S,set:d=>{S=d;migrate();sel=null;renderAll()},reset:()=>{S=seed();sel=null;renderAll()},render:()=>renderAll(),
   save:()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}};
 renderAll();
 
 })();
+
 </script>
 <script>
 (function(){
-
-const C=['POM','SMP','MUB'];
-const CN={POM:'Popular Music',SMP:'Sound & Music Production',MUB:'Music Business'};
-const LV=[4,5,6];
-const KEY='ms-transition-v2';
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let uid=Date.now(); const nid=p=>p+(uid++).toString(36);
-
-/* Example old map (POM, SMP, MUB) */
-const OLD_FIXED={
- 4:[['The Music Business 30','The Music Business 30','The Music Business 30'],
-    ['Music Cultures & Economies 15','Making Tracks 15','Music Cultures & Economies 15'],
-    ['Music Video Production 15','Audio & Studio Technology 30','Music Video Production 15'],
-    ['Songwriting & Performance 30','Live Event Technologies 30','Marketing, Data & Analytics 30'],
-    ['Songmaking & Production 30','Sound for Screen Media 15','Audio Production 15'],
-    ['','','Artist Management & Development 15']],
- 5:[['Music & Sound Studies 15','Music & Sound Studies 15','Music & Sound Studies 15'],
-    ['Songwriting & Context 15','Sound Design & Post Production 15','Events, Gigs & Festivals 15'],
-    ['Make Music Your Business 15','Immersive Audio 15','Music, PR & Journalism 15'],
-    ['Composing For Screen Media 15','Composing For Screen Media 15','New Music Enterprise 30'],
-    ['The Future Professional 15','The Future Professional 15','The Future Professional 15'],
-    ['Creator Economy 15','Music Production Techniques 15','Music Law & Copyright 15'],
-    ['Music Performance 15','Game Audio 15','Design Thinking 15'],
-    ['Music Production 15','Audio Broadcast & Production 15','']],
- 6:[['Sustainable Music Practice 15','Advanced Studio 1 15','IP & Rights Management 15'],
-    ['The Research Project 30','The Research Project 30','Major Project 1 15'],
-    ['Major Music Project 30','The Production Project 30','The Research Project 30'],
-    ['Music & Sound Professional 30','Music & Sound Professional 30','The Production Company 30'],
-    ['The Live Music Event 15','Advanced Studio 2 15','Professional Experience 15'],
-    ['','','Major Project 2 15']]
-};
-function buildFixedOld(){
-  const modules={},grid={};
-  for(const lv of LV){
-    grid[lv]=OLD_FIXED[lv].map(row=>row.map(raw=>{
-      if(!raw)return null;
-      const mm=raw.match(/^(.*?)\s+(15|30|45|60)$/),name=mm?mm[1]:raw,cat=mm?+mm[2]:null;
-      const id='o'+lv+'-'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-      if(!modules[id])modules[id]={id,name,cat,skills:[]};
-      return id;
-    }));
-  }
-  return {modules,grid};
-}
-function normalizeOld(st){
-  const fresh=buildFixedOld(),prev=st.old,byKey={},remap={};
-  for(const lv of LV)fresh.grid[lv].forEach(r=>r.forEach(id=>{if(id)byKey[lv+'|'+fresh.modules[id].name.toLowerCase()]=id}));
-  if(prev&&prev.modules&&prev.grid)for(const lv of LV)(prev.grid[lv]||[]).forEach(r=>r.forEach(pid=>{
-    const pm=pid&&prev.modules[pid]; if(!pm||remap[pid])return;
-    const fid=byKey[lv+'|'+String(pm.name).trim().toLowerCase()]; if(!fid)return;
-    remap[pid]=fid; fresh.modules[fid].skills=[...new Set([...fresh.modules[fid].skills,...(pm.skills||[])])];
-  }));
-  const seen=new Set();
-  st.links=(st.links||[]).map(l=>fresh.modules[l[0]]?l:(remap[l[0]]?[remap[l[0]],l[1]]:null)).filter(l=>{if(!l)return false;const k=l.join('>');if(seen.has(k))return false;seen.add(k);return true});
-  st.old=fresh; delete st.oldExample;
-}
-const SKILLS_EX=['Songwriting','Mixing','PA setup','Recording','Studio','Data & analytics','Copyright & rights','Enterprise & funding'];
-
-function trim(mp,lv){const g=(mp.grid[lv]||[]).filter(r=>r.some(Boolean));g.push([null,null,null]);mp.grid[lv]=g}
-function buildMap(prefix,rows){
-  const modules={},grid={};
-  for(const lv of LV){
-    const byName={};
-    grid[lv]=(rows[lv]||[]).map(row=>row.map(raw=>{
-      raw=(raw||'').trim(); if(!raw)return null;
-      if(byName[raw])return byName[raw];
-      const mm=raw.match(/^(.*?)\s+(15|30|45|60)$/);
-      const id=nid(prefix);
-      modules[id]={id,name:mm?mm[1]:raw,cat:mm?+mm[2]:15,skills:[]};
-      return byName[raw]=id;
-    }));
-  }
-  const mp={modules,grid}; LV.forEach(l=>trim(mp,l)); return mp;
-}
-function seed(){
-  const skills=SKILLS_EX.map(n=>({id:nid('k'),name:n}));
-  const byN=Object.fromEntries(skills.map(s=>[s.name,s.id]));
-  const old=buildFixedOld();
-  return {skills,old,links:[],oldExample:true,skillsExample:true};
-}
-
-const PS=()=>window.MSplan.get();
-function attach(st){Object.defineProperty(st,'maps',{configurable:true,enumerable:false,get(){return {old:st.old,new:{grid:PS().grid,modules:PS().modules}}}});return st}
-function fromV1(v){
-  const st={skills:v.skills||[],old:v.maps.old,links:[],oldExample:!!v.oldExample,skillsExample:!!v.skillsExample};
-  const P=PS(),lvOf=(grid,id)=>LV.find(l=>grid[l].some(r=>r.includes(id))),pk={},remap={};
-  Object.values(P.modules).forEach(m=>{pk[lvOf(P.grid,m.id)+'|'+m.name.trim().toLowerCase()]=m.id});
-  Object.values(v.maps.new.modules).forEach(m=>{const pid=pk[lvOf(v.maps.new.grid,m.id)+'|'+m.name.trim().toLowerCase()];if(pid){remap[m.id]=pid;const pm=P.modules[pid];pm.skills=[...new Set([...(pm.skills||[]),...m.skills])]}});
-  st.links=(v.links||[]).map(l=>remap[l[1]]?[l[0],remap[l[1]]]:null).filter(Boolean);
-  return st;
-}
-let S=null; try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!S||!S.old||!S.skills||!S.links)S=seed();
-attach(S);
-normalizeOld(S);
-if(S.skillsExample&&S.skills.length===26){const keep=new Set();S.skills=SKILLS_EX.map(n=>{const ex=S.skills.find(k=>k.name===n);const sk=ex||{id:nid('k'),name:n};keep.add(sk.id);return sk});
-  for(const k of ['old','new'])Object.values(S.maps[k].modules).forEach(m=>{if(Array.isArray(m.skills))m.skills=m.skills.filter(x=>keep.has(x))})}
-const mkMod=(k,id,name,cat,skills)=>k==='new'?{id,name,cat,delivery:cat>15?'s12':'s1',staff:[],sessions:[],desc:'',skills}:{id,name,cat,skills};
-let sel=null, filter='all', confirmDel=false, USE={};
-let saveT; function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}window.MSplan.save()},300)}
-
-/* ---------- model ---------- */
-const mapOf=id=>S.maps.old.modules[id]?'old':S.maps.new.modules[id]?'new':null;
-const mod=id=>{const k=mapOf(id);return k?S.maps[k].modules[id]:null};
-const skill=id=>S.skills.find(s=>s.id===id);
-function where(k,id){const out=[];for(const lv of LV)S.maps[k].grid[lv].forEach((row,r)=>row.forEach((x,c)=>{if(x===id)out.push({lv,r,c})}));return out}
-const levelOf=id=>where(mapOf(id),id)[0]?.lv;
-const coursesOf=id=>[...new Set(where(mapOf(id),id).map(p=>p.c))].sort().map(c=>C[c]);
-const other=k=>k==='old'?'new':'old';
-function skillUse(){
-  const u={}; S.skills.forEach(s=>u[s.id]={old:[],new:[]});
-  for(const k of ['old','new'])Object.values(S.maps[k].modules).forEach(m=>m.skills.forEach(sid=>{if(u[sid]&&!u[sid][k].includes(m.id))u[sid][k].push(m.id)}));
-  return u;
-}
-const statusOf=sid=>{const u=USE[sid];if(!u)return'unused';return u.old.length&&u.new.length?'kept':u.old.length?'lost':u.new.length?'fresh':'unused'};
-const STATUS={kept:'Carried over',lost:'Left out',fresh:'New',unused:'Not used'};
-function linksOf(id){const k=mapOf(id),a=k==='old'?0:1;return S.links.filter(l=>l[a]===id).map(l=>l[1-a]).filter(x=>mod(x))}
-function related(id){
-  const k=mapOf(id),m=mod(id),out=new Set(linksOf(id));
-  Object.values(S.maps[other(k)].modules).forEach(o=>{if(o.skills.some(s=>m.skills.includes(s)))out.add(o.id)});
-  return out;
-}
-function colHas(k,lv,c,id,exceptR){return S.maps[k].grid[lv].some((row,r)=>r!==exceptR&&row[c]===id)}
-function firstFree(k,lv,c,prefR){
-  const G=S.maps[k].grid[lv];
-  if(prefR!=null&&G[prefR]&&!G[prefR][c])return prefR;
-  const r=G.findIndex(row=>!row[c]); if(r>=0)return r;
-  G.push([null,null,null]); return G.length-1;
-}
-const modLabel=id=>{const m=mod(id);return `<span class="lv">L${levelOf(id)} ${coursesOf(id).join('/')}</span>${esc(m.name)}`};
-
-/* ---------- render maps ---------- */
-function focusInfo(){
-  if(sel?.type==='mod'&&mod(sel.id)){return {on:true,sel:sel.id,linked:new Set(linksOf(sel.id)),rel:related(sel.id)}}
-  if(sel?.type==='skill'&&skill(sel.id)){const u=USE[sel.id];return {on:true,has:new Set([...u.old,...u.new]),skill:sel.id}}
-  return {on:false};
-}
-function renderMap(k,FI){
-  const mp=S.maps[k];
-  const credit=(lv,c)=>{const ids=new Set(mp.grid[lv].map(r=>r[c]).filter(Boolean));return [...ids].reduce((a,id)=>a+mp.modules[id].cat,0)};
-  document.getElementById('map-'+k).innerHTML=LV.map(lv=>{
-    const rows=mp.grid[lv];
-    return `<section class="lvl"><div class="lvlhead"><h3>Level ${lv}</h3></div>
-      <div class="cols">${C.map(c=>`<div class="ch" title="${CN[c]}">${c}</div>`).join('')}</div>
-      ${rows.map((row,r)=>{
-        let html='',c=0; const trailing=r===rows.length-1;
-        while(c<3){
-          const id=row[c];
-          if(!id){html+=k==='old'?`<div class="gap" style="grid-column:${c+1}"></div>`:`<button class="slot" data-map="${k}" data-lv="${lv}" data-r="${r}" data-c="${c}" style="grid-column:${c+1}" aria-label="Add module to ${C[c]} level ${lv}">${trailing?'Add module':'+'}</button>`;c++;continue}
-          let n=1; while(c+n<3&&row[c+n]===id)n++;
-          const m=mp.modules[id], nc=coursesOf(id).length;
-          let cls='';
-          if(FI.on){ if(FI.sel===id)cls=' sel'; else if(FI.linked?.has(id))cls=' linked'; else if(FI.rel?.has(id))cls=' related'; else if(FI.has?.has(id))cls=' has'; }
-          const tag=cls===' linked'?'Linked':cls===' related'?'Shares skills':'';
-          const rel=related(id).size;
-          const foot=k==='old'?(rel?`→ ${rel} new`:'Not carried over'):(rel?`← ${rel} old`:'New module');
-          const fcls=rel?'':(k==='old'?'lost':'fresh');
-          const chips=m.skills.map(sid=>{const s=skill(sid);if(!s)return'';const st=statusOf(sid);
-            const sc=(k==='old'&&st==='lost')?' lost':(k==='new'&&st==='fresh')?' fresh':'';
-            return `<span class="chip${sc}${FI.skill===sid?' on':''}" data-drag-skill="${sid}" title="${esc(s.name)}: ${STATUS[st].toLowerCase()}">${esc(s.name)}</span>`}).join('');
-          html+=`<div class="tile sh${nc}${cls}" tabindex="0" data-id="${id}" data-map="${k}" data-lv="${lv}" data-r="${r}" data-c="${c}" style="grid-column:${c+1} / span ${n}">
-            ${tag?`<span class="tag">${tag}</span>`:''}
-            <div class="top"><span class="nm">${esc(m.name)||'<em class="muted">Untitled</em>'}</span>${m.cat?`<span class="cat">${m.cat}</span>`:''}</div>
-            ${chips?`<div class="chips">${chips}</div>`:''}
-            <span class="foot ${fcls}">${foot}</span><span class="grip" aria-hidden="true">⠿</span></div>`;
-          c+=n;
-        }
-        if(k==='old'&&!row.some(Boolean))return '';
-        return `<div class="row${trailing&&k!=='old'?' trailing':''}" data-map="${k}" data-lv="${lv}" data-r="${r}">${html}</div>`}).join('')}
-      ${`<div class="credits">${C.map((c,i)=>{const cr=credit(lv,i);return `<span class="${cr<120?'low':cr>120?'off':''}" title="Credits in ${c} at Level ${lv}. Students take 120.">${c} ${cr} / 120</span>`}).join('')}</div>`}
-    </section>`}).join('');
-  const ms=Object.values(mp.modules), lone=ms.filter(m=>!related(m.id).size).length;
-  document.getElementById('sum-'+k).innerHTML=`${ms.length} modules · <b style="color:${lone?(k==='old'?'var(--lost)':'var(--fresh)'):'inherit'}">${lone} ${k==='old'?'not carried over':'new'}</b>`;
-}
-function renderMaps(){
-  const FI=focusInfo();
-  document.getElementById('maps').classList.toggle('focus',FI.on);
-  renderMap('old',FI); renderMap('new',FI);
-  const as=document.getElementById('assign');
-  if(sel?.type==='skill'&&skill(sel.id)){as.hidden=false;as.innerHTML=`<span>Assigning <b>${esc(skill(sel.id).name)}</b>. Click modules in either map to add or remove it.</span><button data-act="done">Done</button>`}
-  else as.hidden=true;
-}
-
-/* ---------- render sidebar ---------- */
-function renderSkills(){
-  const counts={all:S.skills.length,kept:0,lost:0,fresh:0,unused:0};
-  S.skills.forEach(s=>counts[statusOf(s.id)]++);
-  const F=[['all','All'],['kept','Carried over'],['lost','Left out'],['fresh','New'],['unused','Not used']];
-  document.getElementById('filters').innerHTML=F.map(([f,l])=>`<button data-filter="${f}" aria-pressed="${filter===f}">${f!=='all'?`<span class="d d-${f}"></span>`:''}${l} ${counts[f]}</button>`).join('');
-  document.getElementById('skCount').textContent='';
-  const q=document.getElementById('skSearch').value.trim().toLowerCase();
-  const list=S.skills.filter(s=>(filter==='all'||statusOf(s.id)===filter)&&(!q||s.name.toLowerCase().includes(q)));
-  const el=document.getElementById('sklist'), st=el.scrollTop;
-  el.innerHTML=list.map(s=>{const u=USE[s.id],stt=statusOf(s.id);
-      return `<div class="sk${sel?.type==='skill'&&sel.id===s.id?' on':''}" role="button" tabindex="0" data-drag-skill="${s.id}" data-skrow="${s.id}" title="${STATUS[stt]}"><span class="grip" aria-hidden="true">⠿</span><span class="dot d-${stt}"></span><span class="nm">${esc(s.name)}</span><span class="ct" title="Old modules → new modules">${u.old.length} → ${u.new.length}</span></div>`}).join('')
-    ||`<p class="muted" style="padding:10px;margin:0;font-size:13px">${S.skills.length?'No skills match.':'No skills yet. Add one below.'}</p>`;
-  el.scrollTop=st;
-}
-function skillOptions(exclude){
-  return S.skills.filter(s=>!exclude.includes(s.id)).map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
-}
-function moduleOptions(k,exclude){
-  return LV.map(lv=>{const seen=new Set(),ids=[];S.maps[k].grid[lv].forEach(row=>row.forEach(id=>{if(id&&!seen.has(id)&&!exclude.includes(id)){seen.add(id);ids.push(id)}}));
-    return ids.length?`<optgroup label="Level ${lv}">${ids.map(id=>`<option value="${id}">${esc(mod(id).name)} (${coursesOf(id).join('/')})</option>`).join('')}</optgroup>`:''}).join('');
-}
-function renderSel(){
-  const el=document.getElementById('sel');
-  if(sel?.type==='mod'&&mod(sel.id))el.innerHTML=modPanel(sel.id);
-  else if(sel?.type==='skill'&&skill(sel.id))el.innerHTML=skillPanel(sel.id);
-  else{sel=null;el.innerHTML=`<p class="hint"><b style="color:var(--fg)">Click a module</b> to see where it goes in the new map, or where a new module came from.</p>
-    <p class="hint"><b style="color:var(--fg)">Click a skill</b> to assign it to modules, or drag it onto a module. Drag skills between modules to move or copy them. Drag an old module onto a new one to link them, or onto an empty slot to carry it over.</p>`}
-}
-function modPanel(id){
-  const k=mapOf(id),m=mod(id),lv=levelOf(id),cs=coursesOf(id),o=other(k),links=linksOf(id);
-  const opt=(v,l,cur)=>`<option value="${v}"${String(v)===String(cur)?' selected':''}>${l}</option>`;
-  const skillRows=m.skills.map(sid=>{const s=skill(sid);if(!s)return'';const there=USE[sid][o];
-    const whereHtml=there.length?there.map(t=>`<button class="goto" data-goto="${t}">${modLabel(t).replace('class="lv"',levelOf(t)!==lv?'class="lv shift"':'class="lv"')}</button>`).join(', '):(k==='old'?'<span class="t-lost">Left out of the new map</span>':'<span class="t-fresh">New, not in the old map</span>');
-    return `<li><div class="ln"><span class="grow"><span class="chip${statusOf(sid)==='lost'&&k==='old'?' lost':statusOf(sid)==='fresh'&&k==='new'?' fresh':''}" data-drag-skill="${sid}">${esc(s.name)}</span></span><button class="x" data-act="rmSkill" data-sid="${sid}" aria-label="Remove ${esc(s.name)}">×</button></div><div class="where">${k==='old'?'→':'←'} ${whereHtml}</div></li>`}).join('');
-  const linkRows=links.map(t=>`<li><div class="ln"><span class="grow"><button class="goto" data-goto="${t}">${modLabel(t).replace('class="lv"',levelOf(t)!==lv?'class="lv shift"':'class="lv"')}</button></span><button class="x" data-act="unlink" data-id="${t}" aria-label="Remove link">×</button></div></li>`).join('');
-  const head=k==='old'
-    ?`<div><div class="eyebrow">Old map · Level ${lv} · ${cs.join(' · ')}</div><h3 style="font-size:18px;margin-top:2px">${esc(m.name)}</h3></div>`
-    :`<div><div class="eyebrow">New map · Level ${lv}</div><input class="big" id="p-name" value="${esc(m.name)}" aria-label="Module name"></div>
-    <div class="inline"><select id="p-cat" aria-label="CAT">${[15,30,60].map(v=>opt(v,v+' CAT',m.cat)).join('')}</select>
-      <div class="toggles">${C.map(c=>`<label title="${CN[c]}"><input type="checkbox" id="p-c-${c}" data-course="${c}"${cs.includes(c)?' checked':''}><span>${c}</span></label>`).join('')}</div></div>`;
-  return `${head}
-    <div class="fld"><span class="lab">${k==='old'?'Linked to in the new map':'Comes from in the old map'}</span>
-      ${linkRows?`<ul class="lst">${linkRows}</ul>`:`<span class="where">${k==='old'?'Not linked yet. Drag this module onto a new module, or choose one:':'No old module linked. Choose one:'}</span>`}
-      <select id="p-link" aria-label="Add link"><option value="">+ Link ${k==='old'?'a new':'an old'} module</option>${moduleOptions(o,links)}</select></div>
-    <div class="fld"><span class="lab">Skills · ${k==='old'?'where they go':'where they came from'}</span>
-      ${skillRows?`<ul class="lst">${skillRows}</ul>`:'<span class="where">No skills yet.</span>'}
-      <select id="p-skill" aria-label="Add skill"><option value="">+ Add skill</option>${skillOptions(m.skills)}</select></div>
-    <div class="confirm">${k==='old'?'<button data-act="close">Close</button>':confirmDel?`<span>Delete ${esc(m.name)}?</span><button class="danger" data-act="delYes">Delete</button><button data-act="delNo">Keep</button>`:`<button class="danger" data-act="del">Delete module</button><button data-act="close">Close</button>`}</div>`;
-}
-function skillPanel(id){
-  const s=skill(id),u=USE[id],st=statusOf(id);
-  const ol=[...new Set(u.old.map(levelOf))].sort(),nl=[...new Set(u.new.map(levelOf))].sort();
-  const shift=ol.length&&nl.length&&ol.join()!==nl.join();
-  const list=(ids,k)=>ids.length?`<ul class="lst">${ids.map(t=>`<li><div class="ln"><span class="grow"><button class="goto" data-goto="${t}">${modLabel(t)}</button></span><button class="x" data-act="rmFrom" data-id="${t}" aria-label="Remove from module">×</button></div></li>`).join('')}</ul>`:`<span class="where">${k==='old'?'Not in any old module.':'Not in any new module yet.'}</span>`;
-  return `<div><div class="eyebrow"><span class="dot d-${st}" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px"></span>${STATUS[st]}</div><input class="big" id="s-name" value="${esc(s.name)}" aria-label="Skill name"></div>
-    ${shift?`<div class="where" style="color:var(--warn)">Moves from Level ${ol.join(', ')} to Level ${nl.join(', ')}.</div>`:''}
-    <div class="fld"><span class="lab">In the old map (${u.old.length})</span>${list(u.old,'old')}</div>
-    <div class="fld"><span class="lab">In the new map (${u.new.length})</span>${list(u.new,'new')}</div>
-    <div class="confirm">${confirmDel?`<span>Delete this skill from the list and every module?</span><button class="danger" data-act="skDelYes">Delete</button><button data-act="delNo">Keep</button>`:`<button class="danger" data-act="skDel">Delete skill</button><button data-act="close">Done</button>`}</div>`;
-}
-function renderData(){window.MSsync&&window.MSsync()}
-function renderAll(){Object.values(PS().modules).forEach(m=>{if(!Array.isArray(m.skills))m.skills=[]});USE=skillUse();renderMaps();renderSkills();renderSel();renderData();save()}
-let tT; function toast(t){const el=document.getElementById('tToast');el.textContent=t;el.hidden=false;clearTimeout(tT);tT=setTimeout(()=>el.hidden=true,2600)}
-function selectMod(id,scroll){sel={type:'mod',id};confirmDel=false;renderAll();if(scroll){const t=document.querySelector(`.tile[data-id="${id}"]`);t?.scrollIntoView({block:'nearest',behavior:'smooth'})}}
-function selectSkill(id){sel=(sel?.type==='skill'&&sel.id===id)?null:{type:'skill',id};confirmDel=false;renderAll()}
-function clearSel(){sel=null;confirmDel=false;renderAll()}
-
-/* ---------- actions ---------- */
-function addSkillTo(sid,mid){const m=mod(mid);if(m.skills.includes(sid))return false;m.skills.push(sid);return true}
-function removeSkillFrom(sid,mid){const m=mod(mid);m.skills=m.skills.filter(x=>x!==sid)}
-function addLink(a,b){const o=mapOf(a)==='old'?a:b,n=mapOf(a)==='old'?b:a;if(!S.links.some(l=>l[0]===o&&l[1]===n))S.links.push([o,n])}
-function deleteModule(id){const k=mapOf(id),lv=levelOf(id);where(k,id).forEach(p=>S.maps[k].grid[p.lv][p.r][p.c]=null);delete S.maps[k].modules[id];S.links=S.links.filter(l=>l[0]!==id&&l[1]!==id);trim(S.maps[k],lv)}
-function move(k,src,t){
-  const G=S.maps[k].grid;
-  if(src.lv===t.lv&&src.r===t.r&&src.c===t.c)return;
-  const id=G[src.lv][src.r][src.c],occ=G[t.lv][t.r][t.c];
-  if(occ===id)return;
-  if(src.lv===t.lv){
-    if(t.c!==src.c&&colHas(k,t.lv,t.c,id,t.r)){toast(`${mod(id).name} is already in ${C[t.c]}`);return}
-    if(occ&&t.c!==src.c&&colHas(k,src.lv,src.c,occ,src.r)){toast(`${mod(occ).name} is already in ${C[src.c]}`);return}
-    G[src.lv][src.r][src.c]=occ||null; G[t.lv][t.r][t.c]=id;
-  } else {
-    if(occ){toast('Drop onto an empty slot to move a module to another level');return}
-    const all=where(k,id); all.forEach(p=>G[p.lv][p.r][p.c]=null);
-    G[t.lv][t.r][t.c]=id;
-    all.filter(p=>p.c!==src.c&&p.c!==t.c).forEach(p=>{const r=firstFree(k,t.lv,p.c,t.r);G[t.lv][r][p.c]=id});
-  }
-  trim(S.maps[k],src.lv); if(t.lv!==src.lv)trim(S.maps[k],t.lv);
-  renderAll();
-}
-function carryOver(oid,t){
-  const o=mod(oid),G=S.maps.new.grid,id=nid('n');
-  S.maps.new.modules[id]=mkMod('new',id,o.name,o.cat,o.skills.slice());
-  G[t.lv][t.r][t.c]=id;
-  const cs=where('old',oid).map(p=>p.c).filter((c,i,a)=>a.indexOf(c)===i&&c!==t.c);
-  cs.forEach(c=>{const r=firstFree('new',t.lv,c,t.r);G[t.lv][r][c]=id});
-  addLink(oid,id); trim(S.maps.new,t.lv);
-  sel={type:'mod',id}; renderAll();
-  toast(`Carried over to Level ${t.lv} (${coursesOf(id).join(', ')}) with its skills`);
-}
-function newModuleAt(k,lv,r,c){
-  const id=nid(k==='old'?'o':'n'); S.maps[k].modules[id]=mkMod(k,id,'New module',15,[]);
-  S.maps[k].grid[lv][r][c]=id; trim(S.maps[k],lv); sel={type:'mod',id}; renderAll(); startRename(id);
-}
-function startRename(id){
-  const tile=document.querySelector(`.tile[data-id="${id}"]`); if(!tile)return;
-  const nm=tile.querySelector('.nm'),m=mod(id);
-  const inp=document.createElement('input');inp.className='rn';inp.value=m.name;inp.setAttribute('aria-label','Module name');
-  nm.replaceWith(inp);inp.focus();inp.select();
-  let done=false;const finish=ok=>{if(done)return;done=true;if(ok)m.name=inp.value.trim()||m.name;renderAll()};
-  inp.addEventListener('keydown',e=>{if(e.key==='Enter')finish(true);if(e.key==='Escape')finish(false);e.stopPropagation()});
-  inp.addEventListener('blur',()=>finish(true));
-  inp.addEventListener('pointerdown',e=>e.stopPropagation());
-}
-
-/* ---------- drag & drop ---------- */
-let drag=null, suppress=false;
-const ghost=document.getElementById('tGhost'), dropEl=document.getElementById('tDrop');
-function rowCol(row,x){const rr=row.getBoundingClientRect(),c=Math.min(2,Math.max(0,Math.floor((x-rr.left)/(rr.width/3))));return {c,rect:{left:rr.left+c*rr.width/3,top:rr.top,width:rr.width/3,height:rr.height}}}
-document.addEventListener('pointerdown',e=>{
-  if(e.button!==0||e.target.closest('input,textarea,select,button.x'))return;
-  const ch=e.target.closest('[data-drag-skill]');
-  if(ch){
-    if(ch.classList.contains('sk')&&e.pointerType!=='mouse'&&!e.target.closest('.grip'))return;
-    const tile=ch.closest('.tile');
-    drag={kind:'skill',sid:ch.dataset.dragSkill,from:tile?tile.dataset.id:(ch.closest('#sel')&&sel?.type==='mod'?sel.id:null),x:e.clientX,y:e.clientY,on:false};
-    if(e.pointerType!=='mouse')e.preventDefault();
-    return;
-  }
-  const tile=e.target.closest('.tile'); if(!tile)return;
-  if(e.pointerType!=='mouse'&&!e.target.closest('.grip'))return;
-  const k=tile.dataset.map,src={lv:+tile.dataset.lv,r:+tile.dataset.r,c:+tile.dataset.c},id=tile.dataset.id;
-  const {c}=rowCol(tile.parentElement,e.clientX); if(S.maps[k].grid[src.lv][src.r][c]===id)src.c=c;
-  drag={kind:'mod',id,map:k,src,x:e.clientX,y:e.clientY,on:false};
-  if(e.pointerType!=='mouse')e.preventDefault();
-});
-function target(x,y){
-  const el=document.elementFromPoint(x,y); if(!el)return null;
-  if(drag.kind==='skill'){
-    const t=el.closest('.tile');
-    if(t){const m=mod(t.dataset.id),fk=drag.from&&mapOf(drag.from),tk=t.dataset.map;
-      if(t.dataset.id===drag.from)return null;
-      const act=m.skills.includes(drag.sid)?'Already there':!drag.from?'Add to':fk===tk?'Move to':'Copy to';
-      return {type:'tile',id:t.dataset.id,rect:t.getBoundingClientRect(),label:`${act} ${m.name}`,no:act==='Already there'}}
-    if(drag.from&&el.closest('#skillsBox'))return {type:'remove',label:`Remove from ${mod(drag.from).name}`};
+  const $=id=>document.getElementById(id);
+  const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+  const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const box=$('dataBox'),det=$('appdata'),info=$('vInfo'),vName=$('vName'),vBy=$('vBy');
+  let meta={}; try{meta=JSON.parse(ls.get('msp-version')||'{}')}catch(e){}
+  vName.value=meta.name||''; vBy.value=meta.by||'';
+  const saveMeta=()=>{meta.name=vName.value.trim();meta.by=vBy.value.trim();ls.set('msp-version',JSON.stringify(meta))};
+  vName.addEventListener('input',saveMeta); vBy.addEventListener('input',saveMeta); vName.addEventListener('change',renderSaved);
+  const fmtDate=iso=>{try{return new Date(iso).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}};
+  const say=(h,err)=>{info.innerHTML=h;info.classList.toggle('err',!!err)};
+  window.MSsync=()=>{};
+  const snapshot=()=>JSON.parse(JSON.stringify(window.MSplan.get()));
+  function toPlanner(d){
+    if(!d||typeof d!=='object')return null;
+    if(d.planner&&d.planner.modules&&d.planner.grid)return JSON.parse(JSON.stringify(d.planner));
+    if(d.modules&&d.grid&&Array.isArray(d.staff))return JSON.parse(JSON.stringify(d));
+    const m=d.map||(d.modules&&d.grid?d:null);
+    if(m&&m.modules&&m.grid){const cur=window.MSplan.get(),modules={};
+      Object.values(m.modules).forEach(x=>{const cat=+x.cat>15?30:15;modules[x.id]={id:x.id,name:String(x.name||''),cat,delivery:cat>15?'s12':'s1',staff:[],sessions:[],desc:String(x.desc||'')}});
+      return {modules,grid:JSON.parse(JSON.stringify(m.grid)),staff:JSON.parse(JSON.stringify(cur.staff)),rooms:cur.rooms.slice(),links:[],colOrder:'POM,SMP,MUB'}}
     return null;
   }
-  const row=el.closest('.row'); if(!row)return null;
-  const tk=row.dataset.map,lv=+row.dataset.lv,r=+row.dataset.r,{c,rect}=rowCol(row,x);
-  const occ=S.maps[tk].grid[lv][r][c];
-  if(tk===drag.map&&tk==='old')return null;
-  if(tk===drag.map)return {type:'move',lv,r,c,rect,label:occ&&occ!==drag.id?'Swap':'Move here',no:lv!==drag.src.lv&&occ&&occ!==drag.id};
-  if(drag.map!=='old')return null;
-  if(occ){const t=el.closest('.tile');return {type:'link',id:occ,rect:t?t.getBoundingClientRect():rect,label:linksOf(drag.id).includes(occ)?'Already linked':`Link to ${mod(occ).name}`,no:linksOf(drag.id).includes(occ)}}
-  return {type:'carry',lv,r,c,rect,label:`Carry over to Level ${lv}`};
-}
-window.addEventListener('pointermove',e=>{
-  if(!drag)return;
-  if(!drag.on){if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6)return;drag.on=true;
-    if(drag.kind==='mod')document.querySelectorAll(`.tile[data-id="${drag.id}"]`).forEach(t=>t.classList.add('dragging'));
-    ghost.hidden=false;}
-  ghost.style.left=(e.clientX+12)+'px';ghost.style.top=(e.clientY+10)+'px';
-  const t=target(e.clientX,e.clientY); drag.t=t;
-  const name=drag.kind==='skill'?skill(drag.sid)?.name:mod(drag.id).name;
-  ghost.innerHTML=`${esc(name)}${t?`<small>${esc(t.label)}</small>`:''}`;
-  document.getElementById('skillsBox').classList.toggle('droptarget',t?.type==='remove');
-  if(t&&t.rect){dropEl.hidden=false;Object.assign(dropEl.style,{left:t.rect.left+'px',top:t.rect.top+'px',width:t.rect.width+'px',height:t.rect.height+'px'});dropEl.classList.toggle('no',!!t.no)}
-  else dropEl.hidden=true;
-  e.preventDefault();
-},{passive:false});
-function endDrag(){ghost.hidden=true;dropEl.hidden=true;document.getElementById('skillsBox').classList.remove('droptarget');document.querySelectorAll('.dragging').forEach(t=>t.classList.remove('dragging'))}
-window.addEventListener('pointerup',()=>{
-  if(!drag)return; const d=drag; drag=null; endDrag();
-  if(!d.on)return;
-  suppress=true; setTimeout(()=>suppress=false,0);
-  const t=d.t; if(!t||t.no)return;
-  if(d.kind==='skill'){
-    const s=skill(d.sid);
-    if(t.type==='remove'){removeSkillFrom(d.sid,d.from);toast(`Removed ${s.name} from ${mod(d.from).name}`);renderAll();return}
-    const fk=d.from&&mapOf(d.from),tk=mapOf(t.id);
-    addSkillTo(d.sid,t.id);
-    if(d.from&&fk===tk){removeSkillFrom(d.sid,d.from);toast(`Moved ${s.name} to ${mod(t.id).name}`)}
-    else toast(`${d.from?'Copied':'Added'} ${s.name} to ${mod(t.id).name}`);
-    renderAll(); return;
-  }
-  if(t.type==='move'){sel={type:'mod',id:d.id};move(d.map,d.src,t)}
-  else if(t.type==='link'){addLink(d.id,t.id);sel={type:'mod',id:d.id};renderAll();toast(`Linked ${mod(d.id).name} → ${mod(t.id).name}`)}
-  else if(t.type==='carry')carryOver(d.id,t);
-});
-window.addEventListener('pointercancel',()=>{if(drag){drag=null;endDrag()}});
-
-/* ---------- clicks ---------- */
-document.getElementById('maps').addEventListener('click',e=>{
-  if(suppress)return;
-  if(e.target.closest('[data-act="done"]')){clearSel();return}
-  const slot=e.target.closest('.slot'); if(slot){newModuleAt(slot.dataset.map,+slot.dataset.lv,+slot.dataset.r,+slot.dataset.c);return}
-  const tile=e.target.closest('.tile'); if(!tile||e.target.closest('input'))return;
-  const id=tile.dataset.id;
-  if(sel?.type==='skill'){
-    const s=skill(sel.id),m=mod(id);
-    if(m.skills.includes(sel.id)){removeSkillFrom(sel.id,id);toast(`Removed ${s.name} from ${m.name}`)}else{addSkillTo(sel.id,id);toast(`Added ${s.name} to ${m.name}`)}
-    renderAll();return;
-  }
-  const chip=e.target.closest('.chip'); if(chip){selectSkill(chip.dataset.dragSkill);return}
-  if(sel?.type==='mod'&&sel.id===id){clearSel();return}
-  selectMod(id);
-});
-document.getElementById('maps').addEventListener('dblclick',e=>{const t=e.target.closest('.tile');if(t&&t.dataset.map!=='old'&&!e.target.closest('input')&&sel?.type!=='skill'){sel={type:'mod',id:t.dataset.id};renderAll();startRename(t.dataset.id)}});
-document.getElementById('maps').addEventListener('keydown',e=>{const t=e.target.closest('.tile');if(!t)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();t.click()}if(e.key==='F2'&&t.dataset.map!=='old'){e.preventDefault();startRename(t.dataset.id)}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sel&&!e.target.closest('input,textarea'))clearSel()});
-const skl=document.getElementById('sklist');
-skl.addEventListener('click',e=>{if(suppress)return;const r=e.target.closest('[data-skrow]');if(r)selectSkill(r.dataset.skrow)});
-skl.addEventListener('keydown',e=>{const r=e.target.closest('[data-skrow]');if(r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();selectSkill(r.dataset.skrow)}});
-document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(b){filter=b.dataset.filter;renderSkills()}});
-document.getElementById('skSearch').addEventListener('input',renderSkills);
-
-/* panel */
-const P=document.getElementById('sel');
-P.addEventListener('input',e=>{
-  if(e.target.id==='p-name'){mod(sel.id).name=e.target.value;USE=skillUse();renderMaps();renderData();save()}
-  if(e.target.id==='s-name'){skill(sel.id).name=e.target.value;USE=skillUse();renderMaps();renderSkills();renderData();save()}
-});
-P.addEventListener('change',e=>{
-  const t=e.target;
-  if(t.id==='p-name'||t.id==='s-name')return;
-  if(!sel||sel.type!=='mod')return;
-  const id=sel.id,k=mapOf(id),m=mod(id);
-  if(t.id==='p-cat')m.cat=+t.value;
-  else if(t.id==='p-skill'&&t.value){addSkillTo(t.value,id)}
-  else if(t.id==='p-link'&&t.value){addLink(id,t.value)}
-  else if(t.dataset.course){
-    const c=C.indexOf(t.dataset.course),lv=levelOf(id),here=where(k,id);
-    if(t.checked){if(!colHas(k,lv,c,id)){const r=firstFree(k,lv,c,here[0]?.r);S.maps[k].grid[lv][r][c]=id}}
-    else{const mine=here.filter(p=>p.c===c);if(here.length-mine.length<1){toast('A module needs at least one course. Use Delete to remove it.');t.checked=true;return}mine.forEach(p=>S.maps[k].grid[p.lv][p.r][p.c]=null)}
-    trim(S.maps[k],lv);
-  }
-  renderAll();
-});
-P.addEventListener('click',e=>{
-  if(suppress)return;
-  const g=e.target.closest('[data-goto]'); if(g){selectMod(g.dataset.goto,true);return}
-  const b=e.target.closest('[data-act]'); if(!b)return; const a=b.dataset.act;
-  if(a==='close'){clearSel();return}
-  if(a==='del'||a==='skDel'){confirmDel=true;renderSel();return}
-  if(a==='delNo'){confirmDel=false;renderSel();return}
-  if(a==='delYes'){deleteModule(sel.id);sel=null;confirmDel=false}
-  if(a==='skDelYes'){const sid=sel.id;S.skills=S.skills.filter(s=>s.id!==sid);for(const k of ['old','new'])Object.values(S.maps[k].modules).forEach(m=>m.skills=m.skills.filter(x=>x!==sid));sel=null;confirmDel=false}
-  if(a==='rmSkill')removeSkillFrom(b.dataset.sid,sel.id);
-  if(a==='unlink'){const o=mapOf(sel.id)==='old'?sel.id:b.dataset.id,n=mapOf(sel.id)==='old'?b.dataset.id:sel.id;S.links=S.links.filter(l=>!(l[0]===o&&l[1]===n))}
-  if(a==='rmFrom')removeSkillFrom(sel.id,b.dataset.id);
-  renderAll();
-});
-
-/* add skills */
-function addSkills(lines,replace){
-  const parsed=lines.map(l=>{const p=l.split('\t').map(x=>x.trim()).filter(Boolean);return p.length?{name:p[p.length-1]}:null}).filter(Boolean);
-  if(replace){S.skills=[];for(const k of ['old','new'])Object.values(S.maps[k].modules).forEach(m=>m.skills=[]);sel=null}
-  let n=0; parsed.forEach(p=>{if(S.skills.some(s=>s.name.toLowerCase()===p.name.toLowerCase()))return;S.skills.push({id:nid('k'),name:p.name});n++});
-  S.skillsExample=false; renderAll(); return n;
-}
-document.getElementById('addSkill').onclick=()=>{const i=document.getElementById('newSkill');if(!i.value.trim())return;
-  const n=addSkills([i.value.trim()],false);if(!n)toast('That skill is already in the list');i.value='';i.focus()};
-document.getElementById('newSkill').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('addSkill').click()});
-const bmsg=t=>{const el=document.getElementById('bulkMsg');el.textContent=t;setTimeout(()=>{if(el.textContent===t)el.textContent=''},3500)};
-document.getElementById('bulkAdd').onclick=()=>{const t=document.getElementById('bulkSkills');const n=addSkills(t.value.split(/\r?\n/),false);t.value='';bmsg(`Added ${n}`)};
-let armR=false;
-document.getElementById('bulkReplace').onclick=e=>{const t=document.getElementById('bulkSkills');if(!t.value.trim()){bmsg('Paste your list first');return}
-  if(!armR){armR=true;e.target.textContent='Click again: clears skills from all modules';setTimeout(()=>{armR=false;e.target.textContent='Replace list'},4000);return}
-  armR=false;e.target.textContent='Replace list';const n=addSkills(t.value.split(/\r?\n/),true);t.value='';bmsg(`List replaced with ${n} skills`)};
-
-/* paste maps */
-function parseSheet(text){
-  const out={4:[],5:[],6:[]};let lv=null,cols=null,n=0;
-  text.split(/\r?\n/).forEach(line=>{
-    const cells=line.split('\t').map(x=>x.trim()),first=cells.find(Boolean)||'';
-    const lm=first.match(/^level\s*([456])\b/i); if(lm){lv=+lm[1];cols=null;return}
-    const hdr={};cells.forEach((x,i)=>{const u=x.toUpperCase();if(C.includes(u))hdr[i]=C.indexOf(u)});
-    if(Object.keys(hdr).length>=2){cols=hdr;return}
-    if(!lv||!cols)return;
-    const row=[null,null,null];let any=false;
-    for(const [i,c] of Object.entries(cols)){if(cells[i]){row[c]=cells[i];any=true}}
-    if(any){out[lv].push(row);n++}
-  });
-  return n?out:null;
-}
-document.querySelectorAll('[data-imp]').forEach(b=>b.onclick=()=>{const k=b.dataset.imp,el=document.getElementById('imp-'+k);el.hidden=!el.hidden;if(!el.hidden)document.getElementById('impt-'+k).focus()});
-document.querySelectorAll('[data-impx]').forEach(b=>b.onclick=()=>{document.getElementById('imp-'+b.dataset.impx).hidden=true});
-document.querySelectorAll('[data-impgo]').forEach(b=>b.onclick=()=>{
-  const k=b.dataset.impgo,ta=document.getElementById('impt-'+k),msg=document.getElementById('impm-'+k);
-  const rows=parseSheet(ta.value);
-  if(!rows){msg.textContent='No modules found. Include the “Level 4” rows and the POM / MUB / SMP header rows.';return}
-  const prev=S.maps[k], oldIds=new Set(Object.keys(prev.modules));
-  const keyOf=(mp,id)=>{let lv=null;for(const l of LV)if(mp.grid[l].some(r=>r.includes(id))){lv=l;break}return lv+'|'+mp.modules[id].name.trim().toLowerCase()};
-  const prevByKey={}; Object.keys(prev.modules).forEach(id=>{const key=keyOf(prev,id);(prevByKey[key]=prevByKey[key]||[]).push(id)});
-  const next=buildMap(k==='old'?'o':'n',rows), remap={}; let kept=0;
-  Object.keys(next.modules).forEach(id=>{const cand=prevByKey[keyOf(next,id)];if(cand&&cand.length){const pid=cand.shift();next.modules[id].skills=prev.modules[pid].skills.slice();remap[pid]=id;kept++}});
-  if(k==='old')S.old=next;
-  const idx=k==='old'?0:1;
-  S.links=S.links.map(l=>{if(!oldIds.has(l[idx]))return l;const n=remap[l[idx]];if(!n)return null;const c=l.slice();c[idx]=n;return c}).filter(Boolean);
-  if(k==='old')S.oldExample=false;
-  if(sel?.type==='mod'&&oldIds.has(sel.id))sel=null;
-  ta.value='';msg.textContent='';document.getElementById('imp-'+k).hidden=true;
-  renderAll();toast(`Loaded ${Object.keys(S.maps[k].modules).length} modules into the ${k} map. ${kept} kept their skills and links.`);
-});
-
-window.MSmap={get:()=>S,set:d=>{S=attach(d.old?d:fromV1(d));normalizeOld(S);sel=null;renderAll()},reset:()=>{S=attach(seed());sel=null;renderAll()},render:()=>renderAll()};
-renderAll();
-
-})();
-</script>
-<script>
-(function(){
-  const box=document.getElementById('dataBox'),det=document.getElementById('appdata'),info=document.getElementById('vInfo');
-  const vName=document.getElementById('vName'),vBy=document.getElementById('vBy');
-  const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
-  let meta={}; try{meta=JSON.parse(ls.get('ms-version')||'{}')}catch(e){}
-  vName.value=meta.name||''; vBy.value=meta.by||'';
-  const saveMeta=()=>{meta.name=vName.value.trim();meta.by=vBy.value.trim();ls.set('ms-version',JSON.stringify(meta))};
-  vName.addEventListener('input',saveMeta); vBy.addEventListener('input',saveMeta);
-  const fmtDate=iso=>{try{return new Date(iso).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}};
-  const say=(html,err)=>{info.innerHTML=html;info.classList.toggle('err',!!err)};
   function showOrigin(){
-    if(meta.from)say(`Working on <b>${esc(meta.from.name||'an unnamed version')}</b>${meta.from.by?' by <b>'+esc(meta.from.by)+'</b>':''}${meta.from.savedAt?', exported '+fmtDate(meta.from.savedAt):''}. Changes you make stay in this browser until you export.`);
-    else say('');
-    document.getElementById('restoreBtn').hidden=!ls.get('ms-backup');
-  }
-  const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const state=()=>({planner:window.MSplan.get(),transition:window.MSmap.get()});
-  const payload=()=>JSON.stringify(state());
-  window.MSsync=()=>{if(det.open&&document.activeElement!==box&&window.MSmap)box.value=payload()};
-  det.addEventListener('toggle',()=>window.MSsync());
-  function apply(d){
-    if(d.planner||d.transition){if(d.planner)window.MSplan.set(d.planner);if(d.transition)window.MSmap.set(d.transition);else window.MSmap.render()}
-    else if(d.modules&&d.grid&&Array.isArray(d.staff)){window.MSplan.set(d);window.MSmap.render()}
-    else if(d.maps&&d.skills){window.MSmap.set(d)}
-    else throw new Error('not ours');
+    if(meta.from)say(`Working on <b>${esc(meta.from.name||'an unnamed version')}</b>${meta.from.by?' by <b>'+esc(meta.from.by)+'</b>':''}. Click <b>Save version</b> to keep it.`);
+    $('restoreBtn').hidden=!ls.get('msp-backup');
   }
   function openData(d,label){
-    if(!(d.planner||d.transition||(d.modules&&d.grid)||(d.maps&&d.skills)))throw new Error('not ours');
-    if(!ls.get('ms-backup'))ls.set('ms-backup',JSON.stringify({data:state(),meta:{name:meta.name,by:meta.by,from:meta.from||null}}));
-    apply(d);
-    meta.from={name:d.name||label||'',by:d.by||'',savedAt:d.savedAt||''};
-    ls.set('ms-version',JSON.stringify(meta));
-    showOrigin();
+    const st=toPlanner(d); if(!st)throw new Error('not ours');
+    if(!ls.get('msp-backup'))ls.set('msp-backup',JSON.stringify({data:snapshot(),meta:{name:meta.name,by:meta.by,from:meta.from||null}}));
+    window.MSplan.set(st);
+    meta.from={name:d.name||label||'',by:d.by||''};ls.set('msp-version',JSON.stringify(meta));showOrigin();renderSaved();
   }
-  // export
-  let dl=null; (async()=>{try{dl=await window.claude?.use?.('downloads')}catch(e){dl=null}})();
-  document.getElementById('exportBtn').onclick=async()=>{
-    saveMeta();
-    const now=new Date(),day=now.toISOString().slice(0,10);
-    const doc={app:'music-sound',format:1,name:meta.name||'',by:meta.by||'',savedAt:now.toISOString(),...state()};
-    const clean=t=>t.replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').trim();
-    const filename=clean(`Music & Sound - ${meta.name||meta.by||'version'} - ${day}`)+'.json';
-    if(!dl){det.open=true;box.value=JSON.stringify(doc);box.focus();box.select();say('Saving files isn’t available here. The data is selected below: copy it and send it instead.',true);return}
-    try{await dl.save({filename,data:JSON.stringify(doc,null,1)});say(`Exported <b>${esc(filename)}</b>. Send this file to colleagues; they open it with “Open a file”.`)}
-    catch(e){if(e?.code==='declined')say('Export cancelled.');else if(e?.code==='rate_limited')say('A save prompt is already open. Finish that one first.',true);else{det.open=true;box.value=JSON.stringify(doc);box.select();say('Saving files isn’t available here. The data is selected below: copy it and send it instead.',true)}}
-  };
-  // open
-  const fileIn=document.getElementById('fileIn');
-  document.getElementById('openBtn').onclick=()=>fileIn.click();
-  function readFile(f){
-    if(!f)return;
-    const r=new FileReader();
-    r.onload=()=>{try{openData(JSON.parse(r.result),f.name.replace(/\.json$/i,''))}catch(e){say(`<b>${esc(f.name)}</b> isn’t a Music &amp; Sound file. Choose a file exported from this tool.`,true)}};
-    r.onerror=()=>say('That file couldn’t be read. Try exporting it again.',true);
-    r.readAsText(f);
-  }
-  fileIn.addEventListener('change',()=>{readFile(fileIn.files[0]);fileIn.value=''});
-  const cover=document.getElementById('dropCover');let dragDepth=0;
-  const hasFiles=e=>[...(e.dataTransfer?.types||[])].includes('Files');
-  window.addEventListener('dragenter',e=>{if(!hasFiles(e))return;dragDepth++;cover.hidden=false});
-  window.addEventListener('dragleave',e=>{if(!hasFiles(e))return;dragDepth=Math.max(0,dragDepth-1);if(!dragDepth)cover.hidden=true});
-  window.addEventListener('dragover',e=>{if(hasFiles(e))e.preventDefault()});
-  window.addEventListener('drop',e=>{if(!hasFiles(e))return;e.preventDefault();dragDepth=0;cover.hidden=true;readFile(e.dataTransfer.files[0])});
-  // back to my work
-  document.getElementById('restoreBtn').onclick=()=>{
-    try{const bk=JSON.parse(ls.get('ms-backup'));apply(bk.data);meta={name:bk.meta?.name||'',by:bk.meta?.by||'',from:bk.meta?.from||null};vName.value=meta.name;vBy.value=meta.by;ls.set('ms-version',JSON.stringify(meta));ls.del('ms-backup');showOrigin();say('Back to your own work.')}
+  $('pasteBtn').onclick=()=>{det.open=true;box.value='';box.focus();say('Paste the version you were sent into the box at the bottom, then click <b>Load pasted data</b>.');det.scrollIntoView({block:'nearest',behavior:'smooth'})};
+  const msg=t=>{const el=$('dataMsg');el.textContent=t;setTimeout(()=>{if(el.textContent===t)el.textContent=''},3000)};
+  $('loadData').onclick=()=>{try{openData(JSON.parse(box.value),'pasted version');msg('Loaded')}catch(e){msg('That text isn’t planner data. Paste the whole copied block.')}};
+  $('restoreBtn').onclick=()=>{
+    try{const bk=JSON.parse(ls.get('msp-backup'));window.MSplan.set(bk.data);meta={name:bk.meta?.name||'',by:bk.meta?.by||'',from:bk.meta?.from||null};
+      vName.value=meta.name;vBy.value=meta.by;ls.set('msp-version',JSON.stringify(meta));ls.del('msp-backup');showOrigin();renderSaved();say('Back to your own work.')}
     catch(e){say('Your earlier work couldn’t be restored.',true)}
   };
-  // paste fallback
-  const msg=t=>{const el=document.getElementById('dataMsg');el.textContent=t;setTimeout(()=>{if(el.textContent===t)el.textContent=''},3000)};
-  document.getElementById('copyData').onclick=()=>{box.value=payload();const fb=()=>{box.select();msg('Selected. Press Ctrl/Cmd+C to copy.')};try{navigator.clipboard.writeText(box.value).then(()=>msg('Copied'),fb)}catch(e){fb()}};
-  document.getElementById('loadData').onclick=()=>{try{openData(JSON.parse(box.value),'pasted data');msg('Loaded')}catch(e){msg('That text isn’t Music & Sound data. Paste the whole copied block.')}};
   let arm=false;
-  document.getElementById('resetData').onclick=e=>{
-    if(!arm){arm=true;e.target.textContent='Click again: resets both pages';setTimeout(()=>{arm=false;e.target.textContent='Reset everything'},3500);return}
-    arm=false;e.target.textContent='Reset everything';window.MSplan.reset();window.MSmap.reset();meta.from=null;ls.set('ms-version',JSON.stringify(meta));showOrigin();say('Reset to the starting map.')
+  $('resetData').onclick=e=>{
+    if(!arm){arm=true;e.target.textContent='Click again: clears the map';setTimeout(()=>{arm=false;e.target.textContent='Reset'},3500);return}
+    arm=false;e.target.textContent='Reset';window.MSplan.reset();meta.from=null;ls.set('msp-version',JSON.stringify(meta));ls.del('msp-backup');showOrigin();say('Cleared. Saved versions are still in the list.')
   };
-  showOrigin();
-  const tabs={plan:document.getElementById('tab-plan'),map:document.getElementById('tab-map')};
-  function show(which,push){
-    for(const k of ['plan','map']){const on=k===which;tabs[k].setAttribute('aria-selected',on);tabs[k].tabIndex=on?0:-1;document.getElementById('pg-'+k).hidden=!on}
-    (which==='plan'?window.MSplan:window.MSmap).render();
-    try{localStorage.setItem('ms-tab',which)}catch(e){}
-    if(push)try{history.replaceState(null,'','#'+(which==='plan'?'planner':'old-to-new'))}catch(e){}
+
+  /* saved versions: shared Team versions when available, otherwise this browser */
+  const SKEY='msp-saved';
+  const loadLocal=()=>{try{const a=JSON.parse(ls.get(SKEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}};
+  const storeLocal=a=>{try{localStorage.setItem(SKEY,JSON.stringify(a));return true}catch(e){return false}};
+  let TEAM=null,teamList=[],teamReady=false,delArm=null,uploading=false;
+  const errMsg=e=>{const c=e?.code;
+    if(c==='invalid_argument')return 'You can view Team versions but not save to them. Ask the tool’s owner to give you Contributor access.';
+    if(c==='quota_exceeded')return 'The team list is full. Delete some old versions, then try again.';
+    if(c==='resource_exhausted')return 'Too many saves at once. Wait a moment and try again.';
+    if(c==='revoked')return 'Your access to Team versions changed. Reload the page.';
+    if(c==='too_big')return 'This version is too large to save to Team versions.';
+    return 'Couldn’t reach Team versions just now. Check your connection and try again.'};
+  const withRetry=async fn=>{try{return await fn()}catch(e){if(e?.code==='unavailable'){await new Promise(r=>setTimeout(r,600+Math.random()*600));return await fn()}throw e}};
+  const curList=()=>TEAM?teamList:loadLocal();
+  function renderSaved(){
+    const list=curList(),cur=(meta.name||'').toLowerCase();
+    $('savedTitle').textContent=TEAM?'Team versions':'Saved versions';
+    $('savedNote').textContent=TEAM?'Everyone with access to this tool sees these, on any computer':'Kept in this browser on this computer. Use Download Excel to share a version.';
+    const local=TEAM?loadLocal():[],up=$('uploadRow');
+    up.hidden=!(TEAM&&local.length);
+    if(TEAM&&local.length)up.innerHTML=`<span>You have ${local.length} version${local.length>1?'s':''} saved only in this browser.</span><button data-up="1"${uploading?' disabled':''}>${uploading?'Adding…':'Add to Team versions'}</button>`;
+    $('savedList').innerHTML=list.length?list.map(v=>`<li data-vid="${esc(v.id)}"><div><span class="vn">${esc(v.name)}</span>${String(v.name).toLowerCase()===cur?'<span class="now">Open now</span>':''}<span class="vm">${v.by?'by '+esc(v.by)+' · ':''}saved ${fmtDate(v.savedAt)}</span></div>
+      <div class="acts"><button data-v="open">Open</button><button data-v="copy" title="Copy this version to paste into an email or message">Copy</button>${delArm===v.id?'<button data-v="delyes" class="danger">Confirm delete</button><button data-v="delno">Keep</button>':'<button data-v="del" class="danger">Delete</button>'}</div></li>`).join('')
+      :`<li class="empty">${TEAM&&!teamReady?'Loading team versions…':'No saved versions yet. Type a version name and click Save version.'}</li>`;
   }
-  tabs.plan.onclick=()=>show('plan',true); tabs.map.onclick=()=>show('map',true);
-  document.querySelector('.tabs').addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const n=tabs.plan.getAttribute('aria-selected')==='true'?'map':'plan';show(n,true);tabs[n].focus()}});
-  let start='plan'; if(location.hash==='#old-to-new')start='map'; else if(location.hash!=='#planner'){try{if(localStorage.getItem('ms-tab')==='map')start='map'}catch(e){}}
-  show(start,false);
+  async function saveEntry(entry,matchId){
+    if(TEAM){
+      if(JSON.stringify(entry).length>250000)throw {code:'too_big'};
+      const ref=matchId?TEAM.doc('versions/'+matchId):TEAM.collection('versions').doc();
+      await withRetry(()=>ref.set(entry));return;
+    }
+    const list=loadLocal(),i=matchId?list.findIndex(v=>v.id===matchId):-1,id=i>=0?list[i].id:'v'+Date.now();
+    const row={id,...entry};if(i>=0)list[i]=row;else list.unshift(row);
+    if(!storeLocal(list))throw {code:'local_blocked'};
+  }
+  $('saveBtn').onclick=async()=>{
+    saveMeta();
+    if(!meta.name){vName.focus();say('Type a version name first, then click <b>Save version</b>.',true);return}
+    const match=curList().find(v=>String(v.name).toLowerCase()===meta.name.toLowerCase()&&String(v.by||'').toLowerCase()===String(meta.by||'').toLowerCase());
+    const entry={name:meta.name,by:meta.by||'',savedAt:new Date().toISOString(),planner:snapshot()};
+    say('Saving…');
+    try{await saveEntry(entry,match?.id)}
+    catch(e){say(e?.code==='local_blocked'?'This browser won’t let the tool save (for example in a private window). Open the tool from its Claude link instead.':errMsg(e),true);return}
+    meta.from=null;ls.set('msp-version',JSON.stringify(meta));ls.del('msp-backup');showOrigin();
+    say((match?`Updated <b>${esc(meta.name)}</b>`:`Saved <b>${esc(meta.name)}</b>`)+(TEAM?' to Team versions.':' in this browser.')+(match?'':' Change the name before saving again to keep this one as it is.'));
+    renderSaved();
+  };
+  $('uploadRow').addEventListener('click',async e=>{
+    if(!e.target.closest('[data-up]')||!TEAM||uploading)return;
+    uploading=true;renderSaved();const local=loadLocal();let done=0;
+    try{for(const v of local){const {id,...entry}=v;await withRetry(()=>TEAM.collection('versions').doc().set(entry));done++}storeLocal([]);say(`Added ${done} version${done===1?'':'s'} to Team versions.`)}
+    catch(err){storeLocal(local.slice(done));say(errMsg(err),true)}
+    uploading=false;renderSaved();
+  });
+  $('savedList').addEventListener('click',async e=>{
+    const b=e.target.closest('[data-v]'),li=e.target.closest('li');if(!b||!li)return;
+    const v=curList().find(x=>x.id===li.dataset.vid);if(!v)return;const act=b.dataset.v;
+    if(act==='open'){const st=toPlanner({planner:v.planner});if(!st){say('That saved version couldn’t be opened.',true);return}
+      window.MSplan.set(st);meta={name:v.name,by:v.by||'',from:null};vName.value=meta.name;vBy.value=meta.by;ls.set('msp-version',JSON.stringify(meta));ls.del('msp-backup');showOrigin();renderSaved();
+      say(`Opened <b>${esc(v.name)}</b>${v.by?' by '+esc(v.by):''}. To keep your changes as your own, change the version name and your name before saving.`)}
+    else if(act==='copy'){const txt=JSON.stringify({app:'music-sound-planner',format:1,name:v.name,by:v.by||'',savedAt:v.savedAt,planner:v.planner});
+      try{await navigator.clipboard.writeText(txt);say(`Copied <b>${esc(v.name)}</b>. Paste it into an email or Teams message. Your colleague clicks <b>Paste a version</b>, pastes it in and clicks Load.`)}
+      catch(err){det.open=true;box.value=txt;box.focus();box.select();say('Your browser blocked copying. The version is selected in the box at the bottom: press Ctrl+C (Cmd+C on a Mac).',true)}}
+    else if(act==='del'){delArm=v.id;renderSaved()}
+    else if(act==='delno'){delArm=null;renderSaved()}
+    else if(act==='delyes'){delArm=null;
+      if(TEAM){try{await withRetry(()=>TEAM.doc('versions/'+v.id).delete());say(`Deleted <b>${esc(v.name)}</b> from Team versions.`)}catch(err){say(errMsg(err),true)}}
+      else{storeLocal(loadLocal().filter(x=>x.id!==v.id));say(`Deleted <b>${esc(v.name)}</b>.`)}
+      renderSaved()}
+  });
+  /* ---------- Excel export ---------- */
+  const FILL={sh3:'DCEFDC',sh2:'F8ECBF',shc:'FBE1CC',sh1:'DBE8F7',head:'E3E8EA',l4:'DCE9F5',l5:'F4E8D2',l6:'EBDFF3',bad:'F8E0DD'};
+  function buildSheets(){
+    const st=window.MSplan.get(),A=window.MSplan.api,F=A.computeFlags(),M=id=>st.modules[id];
+    const kind=id=>{const n=A.coursesOf(id).length;return n===3?'sh3':n===2?'sh2':A.linksOf(id).length?'shc':'sh1'};
+    const KIND={sh3:'Shared by all 3',sh2:'Shared by 2',shc:'Connected (shared teaching)',sh1:'Single course'};
+    const title=`${meta.name||'Untitled version'}${meta.by?' by '+meta.by:''} · exported ${fmtDate(new Date().toISOString())}`;
+    const slotTxt=(m,s)=>{if(!A.active(m,s))return '—';const xs=A.sessFor(m,s).filter(x=>x.day!=='');return xs.length?xs.map(x=>`${A.DAYS[x.day]} ${x.start}:15–${+x.start+ +x.len}:15${x.rooms&&x.rooms.length?' ('+x.rooms.join(', ')+')':''}`).join('; '):'Not timetabled'};
+    const staffTxt=m=>m.staff.map(id=>A.staffOf(id)?.name).filter(Boolean).join(', ');
+    const sheets=[];
+    /* module map */
+    {const cells=[];let r=0;
+      cells.push({r,c:0,v:'Music & Sound module map',bold:true,size:14,cs:3});r++;
+      cells.push({r,c:0,v:title,italic:true,cs:3});r+=2;
+      for(const lv of A.LV){
+        cells.push({r,c:0,v:'Level '+lv,bold:true,fill:'head',cs:3,border:true});r++;
+        A.C.forEach((c,i)=>cells.push({r,c:i,v:c,bold:true,fill:'head',border:true}));r++;
+        st.grid[lv].forEach(row=>{if(!row.some(Boolean))return;let c=0;
+          while(c<3){const id=row[c];if(!id){cells.push({r,c,v:'',border:true});c++;continue}let n=1;while(c+n<3&&row[c+n]===id)n++;
+            const m=M(id);cells.push({r,c,v:`${m.name} (${m.cat})`,cs:n,fill:kind(id),wrap:true,border:true,bold:true});c+=n}
+          r++});
+        A.C.forEach((c,i)=>{const ids=new Set(st.grid[lv].map(row=>row[i]).filter(Boolean));const cr=[...ids].reduce((a,id)=>a+M(id).cat,0);cells.push({r,c:i,v:`${c} ${cr} / 120 credits`,small:true,color:cr<120?'B3362C':cr>120?'99600A':'5C6B72'})});
+        r+=2;
+      }
+      cells.push({r,c:0,v:'Key',bold:true});r++;
+      ['sh3','sh2','shc','sh1'].forEach(k=>{cells.push({r,c:0,v:KIND[k],fill:k,border:true});r++});
+      sheets.push({name:'Module map',cols:[36,36,36],cells});}
+    /* module list */
+    {const cells=[],H=['Level','Module','CAT','Courses','Sharing','Shared teaching with','Runs in','Staff','Semester 1 slots','Semester 2 slots','Issues','Description'];
+      H.forEach((h,i)=>cells.push({r:0,c:i,v:h,bold:true,fill:'head',border:true}));let r=1;
+      for(const lv of A.LV){const seen=new Set();st.grid[lv].forEach(row=>row.forEach(id=>{if(!id||seen.has(id))return;seen.add(id);const m=M(id);
+        const vals=[lv,m.name,m.cat,A.coursesOf(id).join(', '),KIND[kind(id)],A.linksOf(id).map(x=>M(x).name).join(', '),A.DELIV[m.delivery]+(A.split(m)?' (different days in S2)':''),staffTxt(m),slotTxt(m,1),slotTxt(m,2),(F[id]||[]).map(x=>x.f).join('; '),m.desc||''];
+        vals.forEach((v,i)=>cells.push({r,c:i,v,border:true,wrap:i>=5,fill:i===4?kind(id):undefined}));r++}))}
+      sheets.push({name:'Module list',cols:[7,32,6,16,24,28,22,26,34,34,30,50],cells,freeze:1});}
+    /* timetables */
+    for(const sem of [1,2]){
+      const per=A.DAYS.map((_,d)=>{const it=[];A.live().forEach(m=>A.sessFor(m,sem).forEach(x=>{if(x.day!==''&&+x.day===d)it.push({m,start:+x.start,len:Math.max(1,Math.min(+x.len,A.END-+x.start)),rooms:x.rooms||[]})}));
+        it.sort((a,b)=>a.start-b.start||b.len-a.len);const lanes=[];it.forEach(o=>{let l=lanes.findIndex(e=>e<=o.start);if(l<0){l=lanes.length;lanes.push(0)}lanes[l]=o.start+o.len;o.lane=l});return {it,n:Math.max(1,lanes.length)}});
+      const cells=[],cols=[9];let col=1;const dayCol=[];
+      cells.push({r:0,c:0,v:`Week timetable · Semester ${sem}`,bold:true,size:14,cs:6});
+      cells.push({r:1,c:0,v:title,italic:true,cs:6});
+      cells.push({r:3,c:0,v:'Time',bold:true,fill:'head',border:true});
+      per.forEach((p,d)=>{dayCol[d]=col;cells.push({r:3,c:col,v:A.DAYS[d],bold:true,fill:'head',cs:p.n,border:true});for(let i=0;i<p.n;i++)cols.push(p.n>1?18:28);col+=p.n});
+      const rowH={};
+      for(let h=A.START;h<A.END;h++){const r=4+h-A.START;rowH[r]=34;cells.push({r,c:0,v:`${h}:15`,bold:true,border:true});}
+      per.forEach((p,d)=>p.it.forEach(o=>{const m=o.m,id=m.id,lv=A.levelOf(id),bad=(F[id]||[]).some(x=>x.cls==='bad');
+        cells.push({r:4+o.start-A.START,c:dayCol[d]+o.lane,rs:o.len,v:[`${m.name}`,`L${lv} · ${A.coursesOf(id).join('/')}`,staffTxt(m)||'No staff',o.rooms.join(', ')||'No room',bad?'⚠ Clash':''].filter(Boolean).join('\n'),fill:bad?'bad':'l'+lv,wrap:true,border:true,small:true})}));
+      sheets.push({name:'Semester '+sem,cols,cells,rowH,freeze:4});
+    }
+    /* staff */
+    {const cells=[],H=['Staff','Contract','Days on campus','Modules','Hrs/wk S1','Hrs/wk S2'];H.forEach((h,i)=>cells.push({r:0,c:i,v:h,bold:true,fill:'head',border:true}));
+      st.staff.forEach((s,k)=>{const mods=A.live().filter(m=>m.staff.includes(s.id)),load=sem=>mods.filter(m=>A.active(m,sem)).reduce((a,m)=>a+A.hrs(m),0);
+        [s.name,s.type==='PTHP'?'PTHP':'Permanent',s.days.map(d=>A.DAYS[d]).join(', '),mods.map(m=>m.name).join(', '),load(1),load(2)].forEach((v,i)=>cells.push({r:k+1,c:i,v,border:true,wrap:i===3}))});
+      sheets.push({name:'Staff',cols:[26,12,26,50,10,10],cells,freeze:1});}
+    return sheets;
+  }
+  let xlP=null;
+  const loadXL=()=>xlP||(xlP=new Promise((res,rej)=>{if(window.ExcelJS)return res(window.ExcelJS);const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';sc.onload=()=>window.ExcelJS?res(window.ExcelJS):rej(new Error('missing'));sc.onerror=()=>{xlP=null;rej(new Error('load'))};document.head.appendChild(sc)}));
+  async function toXlsx(sheets){
+    const XL=await loadXL(),wb=new XL.Workbook();wb.creator='Music & Sound planner';
+    for(const sh of sheets){const ws=wb.addWorksheet(sh.name);ws.columns=sh.cols.map(w=>({width:w}));
+      if(sh.freeze)ws.views=[{state:'frozen',ySplit:sh.freeze}];
+      Object.entries(sh.rowH||{}).forEach(([r,h])=>{ws.getRow(+r+1).height=h});
+      for(const c of sh.cells){const cell=ws.getCell(c.r+1,c.c+1);cell.value=c.v;
+        if((c.rs||1)>1||(c.cs||1)>1){try{ws.mergeCells(c.r+1,c.c+1,c.r+(c.rs||1),c.c+(c.cs||1))}catch(e){}}
+        cell.alignment={wrapText:!!c.wrap,vertical:'top'};
+        cell.font={name:'Arial',size:c.size||(c.small?9:10),bold:!!c.bold,italic:!!c.italic,color:c.color?{argb:'FF'+c.color}:undefined};
+        if(c.fill)cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+FILL[c.fill]}};
+        if(c.border){const b={style:'thin',color:{argb:'FFB8C2C6'}};cell.border={top:b,left:b,bottom:b,right:b}}}}
+    return await wb.xlsx.writeBuffer();
+  }
+  function toHtml(sheets){
+    return sheets.map(sh=>{const nR=Math.max(...sh.cells.map(c=>c.r+(c.rs||1))),nC=Math.max(sh.cols.length,...sh.cells.map(c=>c.c+(c.cs||1)));
+      const at={},cover=new Set();sh.cells.forEach(c=>{at[c.r+','+c.c]=c;for(let i=0;i<(c.rs||1);i++)for(let j=0;j<(c.cs||1);j++)if(i||j)cover.add((c.r+i)+','+(c.c+j))});
+      let h=`<table border="1" style="border-collapse:collapse;font-family:Arial;font-size:10pt">`;
+      for(let r=0;r<nR;r++){h+='<tr>';for(let c=0;c<nC;c++){const k=r+','+c;if(cover.has(k))continue;const x=at[k];
+        if(!x){h+='<td></td>';continue}
+        const st=[x.fill?`background:#${FILL[x.fill]}`:'',x.bold?'font-weight:bold':'',x.italic?'font-style:italic':'',x.color?`color:#${x.color}`:'','vertical-align:top'].filter(Boolean).join(';');
+        h+=`<td${(x.rs||1)>1?` rowspan="${x.rs}"`:''}${(x.cs||1)>1?` colspan="${x.cs}"`:''} style="${st}">${esc(String(x.v??'')).replace(/\n/g,'<br style="mso-data-placement:same-cell">')}</td>`}
+        h+='</tr>'}
+      return `<p><b>${esc(sh.name)}</b></p>`+h+'</table><br>'}).join('');
+  }
+  let dlP=null;const getDl=()=>{if(!dlP){try{dlP=Promise.resolve(window.claude?.use?.('downloads')).catch(()=>null)}catch(e){dlP=Promise.resolve(null)}}return dlP};getDl();
+  getDl().then(d=>{if(!d){const b=$('xlBtn');b.textContent='Copy for Excel';b.title='Copies the module map, timetables, module list and staff load to paste into Excel'}});
+  $('xlBtn').onclick=async()=>{
+    saveMeta();
+    const sheets=buildSheets(),dl=await getDl();
+    const copyFallback=async(why)=>{const html=toHtml(sheets);
+      try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([sheets.map(s=>s.name).join('\n')],{type:'text/plain'})})]);
+        say(`${why}The module map, both timetables, the module list and staff load have been <b>copied</b>. Open a new Excel workbook and paste (Ctrl+V, or Cmd+V on a Mac).`)}
+      catch(e){say('Your browser blocked copying, so the Excel export didn’t work here. Try again in Chrome or Edge, or open the tool from its Claude link.',true)}};
+    if(!dl){copyFallback('');return}
+    say('Building the Excel file…');
+    let buf;try{buf=await toXlsx(sheets)}catch(e){copyFallback('The Excel builder couldn’t load. ');return}
+    const day=new Date().toISOString().slice(0,10);
+    const filename=`Music & Sound plan - ${meta.name||meta.by||'version'} - ${day}`.replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').trim()+'.xlsx';
+    try{await dl.save({filename,data:new Blob([buf])});say(`Downloaded <b>${esc(filename)}</b>. It has five sheets: module map, module list, Semester 1, Semester 2 and staff.`)}
+    catch(e){if(e?.code==='declined')say('Download cancelled.');else if(e?.code==='rate_limited')say('A download prompt is already open. Finish that one first.',true);else copyFallback('Downloading isn’t available in this view. ')}
+  };
+  window.MSbuildSheets=buildSheets;window.MStoXlsx=toXlsx;
+  showOrigin();renderSaved();
 })();
 </script>
 
